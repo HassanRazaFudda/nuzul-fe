@@ -1,0 +1,4 @@
+[
+  { "id": "agent-a", "name": "Sample Agent A", "active": true },
+  { "id": "agent-b", "name": "Sample Agent B", "active": true }
+]

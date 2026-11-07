@@ -1,0 +1,1 @@
+export { designSystemRoutes } from './routes';

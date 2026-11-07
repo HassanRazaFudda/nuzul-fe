@@ -1,0 +1,5 @@
+[
+  { "id": "hotel-artal", "name": "Artal International", "city": "Madinah", "active": true },
+  { "id": "hotel-swissotel", "name": "Swissotel Al Maqam", "city": "Makkah", "active": true },
+  { "id": "hotel-dar-al-eiman", "name": "Dar Al Eiman Royal", "city": "Makkah", "active": true }
+]

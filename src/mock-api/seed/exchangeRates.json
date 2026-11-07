@@ -1,0 +1,5 @@
+[
+  { "id": "rate-sar-1", "currencyCode": "SAR", "rateToPkr": "70", "effectiveFrom": "2026-01-01" },
+  { "id": "rate-usd-1", "currencyCode": "USD", "rateToPkr": "280", "effectiveFrom": "2026-01-01" },
+  { "id": "rate-pkr-1", "currencyCode": "PKR", "rateToPkr": "1", "effectiveFrom": "2026-01-01" }
+]

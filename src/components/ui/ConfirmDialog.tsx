@@ -1,0 +1,48 @@
+import type { ReactNode } from 'react';
+
+import { Button } from './Button';
+import { Dialog } from './Dialog';
+
+interface ConfirmDialogProps {
+  open: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+  title: string;
+  /** States the consequence, with the numbers that change, not "Are you sure?". */
+  children: ReactNode;
+  confirmLabel: string;
+  tone?: 'default' | 'danger';
+  isBusy?: boolean;
+}
+
+/** Asks before anything hard to undo. */
+export function ConfirmDialog({
+  open,
+  onCancel,
+  onConfirm,
+  title,
+  children,
+  confirmLabel,
+  tone = 'default',
+  isBusy = false,
+}: ConfirmDialogProps) {
+  return (
+    <Dialog
+      open={open}
+      onClose={onCancel}
+      title={title}
+      footer={
+        <>
+          <Button variant="secondary" onClick={onCancel} disabled={isBusy}>
+            Cancel
+          </Button>
+          <Button variant={tone === 'danger' ? 'danger' : 'primary'} onClick={onConfirm} isLoading={isBusy}>
+            {confirmLabel}
+          </Button>
+        </>
+      }
+    >
+      {children}
+    </Dialog>
+  );
+}

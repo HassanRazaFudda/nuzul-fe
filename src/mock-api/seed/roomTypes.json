@@ -1,0 +1,5 @@
+[
+  { "id": "double", "name": "Double", "capacity": 2 },
+  { "id": "triple", "name": "Triple", "capacity": 3 },
+  { "id": "quad", "name": "Quad", "capacity": 4 }
+]
