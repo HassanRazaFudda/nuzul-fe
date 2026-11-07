@@ -46,8 +46,6 @@ export const NAVIGATION: NavGroup[] = [
         path: 'contracts',
         label: 'Sales contracts',
         icon: FileSignature,
-        purpose:
-          'Rooms sold to agents, showing which vendor supplies each sale, with room conversion and the overbooking warning.',
       },
       {
         path: 'inventory',

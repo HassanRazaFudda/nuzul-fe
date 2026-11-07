@@ -25,6 +25,7 @@ export interface PoolPurchaseInput {
 
 export interface PoolSaleInput {
   id: string;
+  contractId: string;
   reference: string;
   hotelId: string;
   roomTypeId: string;

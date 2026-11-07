@@ -1,10 +1,9 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { purchaseSchema } from '@/features/purchases';
 import { mockDb } from '@/mock-api/db';
 import { renderApp } from '@/test/render';
-
-import { sampleSaleSchema } from '../api/ledger.schemas';
 
 const DOUBLE_POOL = '/inventory/hotel-artal/double';
 
@@ -66,37 +65,33 @@ describe('a pool', () => {
   });
 
   it('warns when the Result hides a shortage', async () => {
-    await mockDb.remove('sampleSales', 'sample-2');
-    await mockDb.remove('sampleSales', 'sample-3');
-    await mockDb.remove('sampleSales', 'sample-1');
+    await mockDb.remove('contracts', 'contract-1');
+    await mockDb.remove('contracts', 'contract-2');
+    const purchase = await mockDb.get('purchases', 'purchase-1', purchaseSchema);
     await mockDb.put('purchases', {
-      ...(await mockDb.get('purchases', 'purchase-1', sampleSaleSchema.pick({ id: true }).loose())),
+      ...purchase,
       id: 'purchase-1',
       checkIn: '2027-05-04',
       checkOut: '2027-05-12',
-      lines: [
-        {
-          roomTypeId: 'double',
-          rooms: 82,
-          rate: '500',
-          personsPerRoom: 2,
-          cost: { amount: '0', currencyCode: 'SAR', rateToPkr: '70', amountPkr: '0' },
-        },
+      lines: [{ ...purchase?.lines[0], roomTypeId: 'double', rooms: 82 }],
+    });
+    const line = (checkIn: string, checkOut: string, rooms: number) => ({
+      hotelId: 'hotel-artal',
+      checkIn,
+      checkOut,
+      lines: [{ sourceTypeId: 'double', rooms }],
+    });
+    // The ledger reads only these fields of a contract.
+    await mockDb.put('contracts', {
+      id: 'contract-1',
+      number: 'CON-0001',
+      status: 'confirmed',
+      hotels: [
+        line('2027-05-08', '2027-05-14', 23),
+        line('2027-05-05', '2027-05-10', 10),
+        line('2027-05-08', '2027-05-12', 17),
       ],
     });
-    const sale = (id: string, checkIn: string, checkOut: string, rooms: number) =>
-      mockDb.put('sampleSales', {
-        id,
-        reference: id,
-        hotelId: 'hotel-artal',
-        roomTypeId: 'double',
-        checkIn,
-        checkOut,
-        rooms,
-      });
-    await sale('a', '2027-05-08', '2027-05-14', 23);
-    await sale('b', '2027-05-05', '2027-05-10', 10);
-    await sale('c', '2027-05-08', '2027-05-12', 17);
 
     renderApp(DOUBLE_POOL);
 
@@ -144,24 +139,6 @@ describe('a pool', () => {
     await router.navigate('/inventory/hotel-artal/triple');
 
     expect(await screen.findAllByText('Overbooked by 60')).not.toHaveLength(0);
-  });
-
-  it('adds and removes a sample sale, and the figures follow', async () => {
-    const { user } = renderApp('/inventory/hotel-artal/triple');
-    await screen.findAllByText('Fully utilised');
-    await user.click(screen.getByRole('button', { name: 'Add sample sale' }));
-    await user.type(screen.getByLabelText(/^Check-in/), '2027-05-08');
-    await user.type(screen.getByLabelText(/^Check-out/), '2027-05-09');
-    await user.type(screen.getByLabelText(/^Rooms/), '2');
-    await user.click(screen.getByRole('button', { name: 'Save' }));
-
-    expect(await screen.findAllByText('Overbooked by 2')).not.toHaveLength(0);
-    const added = (await mockDb.list('sampleSales', sampleSaleSchema)).find((sale) => sale.rooms === 2);
-    await user.click(screen.getByRole('button', { name: `Remove ${added?.reference ?? ''}` }));
-
-    await waitFor(() => {
-      expect(screen.queryByText('Overbooked by 2')).not.toBeInTheDocument();
-    });
   });
 
   it('says so when nothing is on the pool', async () => {

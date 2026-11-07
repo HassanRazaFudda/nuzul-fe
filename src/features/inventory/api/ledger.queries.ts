@@ -1,4 +1,4 @@
-import { keepPreviousData, queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 
 import { ledgerApi } from './ledger.api';
 import type { PoolListParams } from './ledger.schemas';
@@ -34,19 +34,3 @@ export const poolDetailQuery = (hotelId: string, roomTypeId: string) =>
     queryFn: () => ledgerApi.pool(hotelId, roomTypeId),
     staleTime: ALWAYS_STALE,
   });
-
-export function useAddSampleSale() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ledgerApi.addSampleSale,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ledgerKeys.all }),
-  });
-}
-
-export function useRemoveSampleSale() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ledgerApi.removeSampleSale,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ledgerKeys.all }),
-  });
-}

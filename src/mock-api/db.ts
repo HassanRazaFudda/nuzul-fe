@@ -12,6 +12,7 @@ import { ApiError } from '@/lib/api/api-error';
 import agents from './seed/agents.json';
 import calendarMonths from './seed/calendarMonths.json';
 import cities from './seed/cities.json';
+import contracts from './seed/contracts.json';
 import conversionRules from './seed/conversionRules.json';
 import counters from './seed/counters.json';
 import currencies from './seed/currencies.json';
@@ -19,7 +20,6 @@ import exchangeRates from './seed/exchangeRates.json';
 import hotels from './seed/hotels.json';
 import purchases from './seed/purchases.json';
 import roomTypes from './seed/roomTypes.json';
-import sampleSales from './seed/sampleSales.json';
 import vendors from './seed/vendors.json';
 
 /** Records are validated by each feature's schema, so here they are only known to have an id. */
@@ -39,15 +39,15 @@ const SEED = {
   exchangeRates,
   purchases,
   counters,
-  sampleSales,
+  contracts,
 } satisfies Record<string, StoredRecord[]>;
 
 export type CollectionName = keyof typeof SEED;
 
 const NAMES = Object.keys(SEED) as CollectionName[];
 
-/** Bump whenever a collection is added. Existing data stays; new collections get their seed. */
-const DB_VERSION = 4;
+/** Bump whenever a collection changes. Existing data stays; new collections get their seed. */
+const DB_VERSION = 5;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;
@@ -100,6 +100,9 @@ export function createMockDb(databaseName: string): MockDb {
       const created: CollectionName[] = [];
       const db = await openDB(databaseName, DB_VERSION, {
         upgrade(database) {
+          for (const name of [...database.objectStoreNames]) {
+            if (!NAMES.some((known) => known === name)) database.deleteObjectStore(name);
+          }
           for (const name of NAMES) {
             if (database.objectStoreNames.contains(name)) continue;
             database.createObjectStore(name, { keyPath: 'id' });

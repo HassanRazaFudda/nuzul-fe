@@ -2,4 +2,4 @@
 export { purchaseRoutes } from './routes';
 export { confirmedPurchasesQuery } from './api/purchase.queries';
 export { purchasesApi } from './api/purchases.api';
-export type { Purchase } from './api/purchase.schemas';
+export { purchaseSchema, type Purchase } from './api/purchase.schemas';

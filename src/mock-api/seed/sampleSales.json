@@ -1,6 +1,0 @@
-[
-  { "id": "sample-1", "reference": "SAMPLE-1", "hotelId": "hotel-artal", "roomTypeId": "double", "checkIn": "2027-05-08", "checkOut": "2027-05-18", "rooms": 15 },
-  { "id": "sample-2", "reference": "SAMPLE-2", "hotelId": "hotel-artal", "roomTypeId": "double", "checkIn": "2027-05-08", "checkOut": "2027-05-12", "rooms": 10 },
-  { "id": "sample-3", "reference": "SAMPLE-3", "hotelId": "hotel-artal", "roomTypeId": "double", "checkIn": "2027-05-12", "checkOut": "2027-05-18", "rooms": 30 },
-  { "id": "sample-4", "reference": "SAMPLE-4", "hotelId": "hotel-artal", "roomTypeId": "triple", "checkIn": "2027-05-08", "checkOut": "2027-05-18", "rooms": 60 }
-]

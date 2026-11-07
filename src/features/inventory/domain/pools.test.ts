@@ -25,6 +25,7 @@ const purchase = (
 
 const sale = (id: string, from: number, to: number, rooms: number, roomTypeId = 'double'): PoolSaleInput => ({
   id,
+  contractId: id,
   reference: id,
   hotelId: 'hotel',
   roomTypeId,

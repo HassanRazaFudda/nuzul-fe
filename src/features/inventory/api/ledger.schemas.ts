@@ -5,18 +5,20 @@ import type { ListParams } from '@/lib/api/pagination';
 import type { LedgerOutput } from '../domain/ledger-engine';
 import type { Pool, PoolFigures } from '../domain/pools';
 
-/** Stands in for Confirmed contract lines until Phase 4, which deletes it. */
-export const sampleSaleSchema = z.object({
+/** Only what the ledger needs from a contract: this feature does not depend on contracts. */
+export const contractSalesSchema = z.object({
   id: z.string(),
-  reference: z.string(),
-  hotelId: z.string(),
-  roomTypeId: z.string(),
-  checkIn: z.iso.date(),
-  checkOut: z.iso.date(),
-  rooms: z.number().int(),
+  number: z.string(),
+  status: z.string(),
+  hotels: z.array(
+    z.object({
+      hotelId: z.string(),
+      checkIn: z.iso.date(),
+      checkOut: z.iso.date(),
+      lines: z.array(z.object({ sourceTypeId: z.string(), rooms: z.number().int() })),
+    }),
+  ),
 });
-export type SampleSale = z.infer<typeof sampleSaleSchema>;
-export type SampleSaleInput = Omit<SampleSale, 'id' | 'reference'>;
 
 export const POOL_SORT_FIELDS = ['state', 'hotel', 'roomType'] as const;
 export type PoolSortField = (typeof POOL_SORT_FIELDS)[number];

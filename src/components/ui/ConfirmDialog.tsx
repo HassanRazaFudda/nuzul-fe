@@ -11,6 +11,7 @@ interface ConfirmDialogProps {
   /** States the consequence, with the numbers that change, not "Are you sure?". */
   children: ReactNode;
   confirmLabel: string;
+  cancelLabel?: string;
   tone?: 'default' | 'danger';
   isBusy?: boolean;
 }
@@ -23,6 +24,7 @@ export function ConfirmDialog({
   title,
   children,
   confirmLabel,
+  cancelLabel = 'Cancel',
   tone = 'default',
   isBusy = false,
 }: ConfirmDialogProps) {
@@ -34,7 +36,7 @@ export function ConfirmDialog({
       footer={
         <>
           <Button variant="secondary" onClick={onCancel} disabled={isBusy}>
-            Cancel
+            {cancelLabel}
           </Button>
           <Button variant={tone === 'danger' ? 'danger' : 'primary'} onClick={onConfirm} isLoading={isBusy}>
             {confirmLabel}

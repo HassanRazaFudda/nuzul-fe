@@ -1,1 +1,4 @@
-[{ "id": "purchase", "value": 3 }]
+[
+  { "id": "purchase", "value": 3 },
+  { "id": "contract", "value": 4 }
+]

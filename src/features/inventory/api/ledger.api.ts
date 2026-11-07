@@ -6,16 +6,31 @@ import { pageOf } from '@/mock-api/list-query';
 
 import { buildPools, poolFigures, poolLedger, type Pool, type PoolSaleInput } from '../domain/pools';
 import {
-  sampleSaleSchema,
+  contractSalesSchema,
   type PoolDetail,
   type PoolListParams,
   type PoolSummary,
-  type SampleSaleInput,
 } from './ledger.schemas';
 
-/** The one place the ledger reads sales from. Phase 4 points it at Confirmed contract lines. */
-function saleEntries(): Promise<PoolSaleInput[]> {
-  return mockDb.list('sampleSales', sampleSaleSchema);
+/** The one place the ledger reads sales from: the lines of Confirmed contracts. */
+async function saleEntries(): Promise<PoolSaleInput[]> {
+  const contracts = await mockDb.list('contracts', contractSalesSchema);
+  return contracts
+    .filter((contract) => contract.status === 'confirmed')
+    .flatMap((contract) =>
+      contract.hotels.flatMap((entry, hotelIndex) =>
+        entry.lines.map((line, lineIndex) => ({
+          id: `${contract.id}:${String(hotelIndex)}:${String(lineIndex)}`,
+          contractId: contract.id,
+          reference: contract.number,
+          hotelId: entry.hotelId,
+          roomTypeId: line.sourceTypeId,
+          checkIn: entry.checkIn,
+          checkOut: entry.checkOut,
+          rooms: line.rooms,
+        })),
+      ),
+    );
 }
 
 async function namesLookup() {
@@ -93,11 +108,4 @@ export const ledgerApi = {
       figures: ledger && poolFigures(ledger),
     };
   },
-
-  addSampleSale: (input: SampleSaleInput) => {
-    const id = crypto.randomUUID();
-    return mockDb.put('sampleSales', { ...input, id, reference: `SAMPLE-${id.slice(0, 4).toUpperCase()}` });
-  },
-
-  removeSampleSale: (id: string) => mockDb.remove('sampleSales', id),
 };
