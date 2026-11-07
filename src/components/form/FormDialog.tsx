@@ -7,6 +7,8 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Dialog } from '@/components/ui/Dialog';
 import { getErrorMessage } from '@/lib/api/api-error';
 
+import { FormErrorSummary } from './FormErrorSummary';
+
 interface FormDialogProps<TInput extends FieldValues, TOutput> {
   form: UseFormReturn<TInput, unknown, TOutput>;
   /** Field names to their labels, for the error summary. */
@@ -40,11 +42,7 @@ export function FormDialog<TInput extends FieldValues, TOutput>({
   const [isConfirmingDiscard, setIsConfirmingDiscard] = useState(false);
   // useFormState, not form.formState: the Compiler memoises on the stable `form` object,
   // so reading through it can go stale.
-  const formState = useFormState({ control: form.control });
-  const { isDirty, isSubmitting } = formState;
-
-  const labelled = Object.keys(labels) as Path<TInput>[];
-  const invalid = labelled.filter((name) => form.getFieldState(name, formState).invalid);
+  const { isDirty, isSubmitting } = useFormState({ control: form.control });
 
   function handleClose() {
     if (isDirty) setIsConfirmingDiscard(true);
@@ -88,26 +86,7 @@ export function FormDialog<TInput extends FieldValues, TOutput>({
           {saveError !== null && (
             <ErrorNotice title="This could not be saved">{getErrorMessage(saveError)}</ErrorNotice>
           )}
-          {showSummary && invalid.length > 0 && (
-            <div role="alert" className="rounded-card border-danger-border bg-danger-subtle border p-3">
-              <p className="text-foreground text-sm font-semibold">Please fix these first</p>
-              <ul className="mt-1 space-y-0.5">
-                {invalid.map((name) => (
-                  <li key={name}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        form.setFocus(name);
-                      }}
-                      className="text-danger-strong text-start text-sm underline"
-                    >
-                      {labels[name]}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {showSummary && <FormErrorSummary form={form} labels={labels} />}
           {children}
         </form>
       </Dialog>

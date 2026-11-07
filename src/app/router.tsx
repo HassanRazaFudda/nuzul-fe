@@ -7,6 +7,7 @@ import { designSystemRoutes } from '@/features/design-system';
 import { hotelRoutes } from '@/features/hotels';
 import { overviewRoute } from '@/features/overview';
 import { agentRoutes, vendorRoutes } from '@/features/partners';
+import { purchaseRoutes } from '@/features/purchases';
 import { roomTypeRoutes } from '@/features/room-types';
 
 import { AppLayout } from './layout/AppLayout';
@@ -29,6 +30,7 @@ export function createAppRouter(queryClient: QueryClient, createRouter: CreateRo
           ErrorBoundary: RouteErrorBoundary,
           children: [
             overviewRoute(),
+            { path: 'purchases', children: purchaseRoutes(queryClient) },
             { path: 'hotels', children: hotelRoutes(queryClient) },
             { path: 'vendors', children: vendorRoutes() },
             { path: 'agents', children: agentRoutes() },

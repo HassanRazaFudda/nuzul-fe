@@ -1,0 +1,96 @@
+[
+  {
+    "id": "purchase-1",
+    "number": "PUR-0001",
+    "hotelId": "hotel-artal",
+    "vendorId": "vendor-a",
+    "checkIn": "2027-05-08",
+    "checkOut": "2027-05-18",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "70",
+    "perNight": true,
+    "sameRate": false,
+    "lines": [
+      {
+        "roomTypeId": "double",
+        "rooms": 40,
+        "rate": "500",
+        "personsPerRoom": 2,
+        "cost": { "amount": "200000.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "14000000.00" }
+      },
+      {
+        "roomTypeId": "triple",
+        "rooms": 60,
+        "rate": "650",
+        "personsPerRoom": 3,
+        "cost": { "amount": "390000.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "27300000.00" }
+      }
+    ],
+    "meal": { "pricing": "included" },
+    "notes": "",
+    "roomCost": { "amount": "590000.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "41300000.00" },
+    "mealCost": { "amount": "0.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "0.00" },
+    "mealMaximum": null,
+    "total": { "amount": "590000.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "41300000.00" }
+  },
+  {
+    "id": "purchase-2",
+    "number": "PUR-0002",
+    "hotelId": "hotel-swissotel",
+    "vendorId": "vendor-b",
+    "checkIn": "2027-05-10",
+    "checkOut": "2027-05-15",
+    "status": "draft",
+    "version": 1,
+    "currencyCode": "USD",
+    "rateToPkr": "280",
+    "perNight": true,
+    "sameRate": false,
+    "lines": [
+      {
+        "roomTypeId": "quad",
+        "rooms": 10,
+        "rate": "100",
+        "personsPerRoom": 4,
+        "cost": { "amount": "5000.00", "currencyCode": "USD", "rateToPkr": "280", "amountPkr": "1400000.00" }
+      }
+    ],
+    "meal": { "pricing": "separate", "rate": "12.5", "basis": "perPersonPerNight", "chargeBasis": "fullCapacity" },
+    "notes": "",
+    "roomCost": { "amount": "5000.00", "currencyCode": "USD", "rateToPkr": "280", "amountPkr": "1400000.00" },
+    "mealCost": { "amount": "2500.00", "currencyCode": "USD", "rateToPkr": "280", "amountPkr": "700000.00" },
+    "mealMaximum": null,
+    "total": { "amount": "7500.00", "currencyCode": "USD", "rateToPkr": "280", "amountPkr": "2100000.00" }
+  },
+  {
+    "id": "purchase-3",
+    "number": "PUR-0003",
+    "hotelId": "hotel-dar-al-eiman",
+    "vendorId": "vendor-a",
+    "checkIn": "2027-05-01",
+    "checkOut": "2027-05-05",
+    "status": "cancelled",
+    "version": 3,
+    "currencyCode": "SAR",
+    "rateToPkr": "70",
+    "perNight": false,
+    "sameRate": true,
+    "lines": [
+      {
+        "roomTypeId": "double",
+        "rooms": 5,
+        "rate": "2000",
+        "personsPerRoom": 2,
+        "cost": { "amount": "10000.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "700000.00" }
+      }
+    ],
+    "meal": { "pricing": "none" },
+    "notes": "",
+    "roomCost": { "amount": "10000.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "700000.00" },
+    "mealCost": { "amount": "0.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "0.00" },
+    "mealMaximum": null,
+    "total": { "amount": "10000.00", "currencyCode": "SAR", "rateToPkr": "70", "amountPkr": "700000.00" }
+  }
+]

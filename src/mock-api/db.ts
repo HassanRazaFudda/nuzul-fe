@@ -13,9 +13,11 @@ import agents from './seed/agents.json';
 import calendarMonths from './seed/calendarMonths.json';
 import cities from './seed/cities.json';
 import conversionRules from './seed/conversionRules.json';
+import counters from './seed/counters.json';
 import currencies from './seed/currencies.json';
 import exchangeRates from './seed/exchangeRates.json';
 import hotels from './seed/hotels.json';
+import purchases from './seed/purchases.json';
 import roomTypes from './seed/roomTypes.json';
 import vendors from './seed/vendors.json';
 
@@ -34,6 +36,8 @@ const SEED = {
   calendarMonths,
   currencies,
   exchangeRates,
+  purchases,
+  counters,
 } satisfies Record<string, StoredRecord[]>;
 
 export type CollectionName = keyof typeof SEED;
@@ -41,7 +45,7 @@ export type CollectionName = keyof typeof SEED;
 const NAMES = Object.keys(SEED) as CollectionName[];
 
 /** Bump whenever a collection is added. Existing data stays; new collections get their seed. */
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;

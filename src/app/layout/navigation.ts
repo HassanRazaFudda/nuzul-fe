@@ -41,8 +41,6 @@ export const NAVIGATION: NavGroup[] = [
         path: 'purchases',
         label: 'Purchases',
         icon: ShoppingCart,
-        purpose:
-          'Room blocks bought from vendors: dates, room types, cost rates and meal arrangement. Draft, Confirmed and Cancelled views.',
       },
       {
         path: 'contracts',
