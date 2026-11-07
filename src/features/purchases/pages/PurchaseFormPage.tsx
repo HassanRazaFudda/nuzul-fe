@@ -1,6 +1,6 @@
 import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 
 import { toast } from '@/components/feedback/toast';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -14,6 +14,7 @@ import { todayIso } from '@/lib/format/dates';
 import { purchaseDetailQuery, useCreatePurchase, useUpdatePurchase } from '../api/purchase.queries';
 import type { PurchaseView } from '../api/purchase.schemas';
 import { toPurchaseInput, type PurchaseFormValues } from '../components/purchase-form.schema';
+import { readPrefill } from '../components/purchase-prefill';
 import { PurchaseForm } from '../components/PurchaseForm';
 
 function PurchaseFormScreen({ purchase }: { purchase: PurchaseView | null }) {
@@ -37,7 +38,11 @@ function PurchaseFormScreen({ purchase }: { purchase: PurchaseView | null }) {
   const createPurchase = useCreatePurchase();
   const updatePurchase = useUpdatePurchase();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [today] = useState(() => todayIso(new Date()));
+  const sortedRoomTypes = [...roomTypes].sort((a, b) => a.capacity - b.capacity);
+  // Read once: the form takes its starting values when it mounts.
+  const [prefill] = useState(() => (purchase ? null : readPrefill(searchParams, hotels, sortedRoomTypes)));
 
   async function handleSave(values: PurchaseFormValues) {
     const input = toPurchaseInput(values);
@@ -58,7 +63,8 @@ function PurchaseFormScreen({ purchase }: { purchase: PurchaseView | null }) {
         purchase={purchase}
         hotels={hotels}
         vendors={vendors}
-        roomTypes={[...roomTypes].sort((a, b) => a.capacity - b.capacity)}
+        roomTypes={sortedRoomTypes}
+        prefill={prefill}
         currencies={currencies}
         rates={rates}
         months={months}

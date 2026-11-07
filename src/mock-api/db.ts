@@ -19,6 +19,7 @@ import exchangeRates from './seed/exchangeRates.json';
 import hotels from './seed/hotels.json';
 import purchases from './seed/purchases.json';
 import roomTypes from './seed/roomTypes.json';
+import sampleSales from './seed/sampleSales.json';
 import vendors from './seed/vendors.json';
 
 /** Records are validated by each feature's schema, so here they are only known to have an id. */
@@ -38,6 +39,7 @@ const SEED = {
   exchangeRates,
   purchases,
   counters,
+  sampleSales,
 } satisfies Record<string, StoredRecord[]>;
 
 export type CollectionName = keyof typeof SEED;
@@ -45,7 +47,7 @@ export type CollectionName = keyof typeof SEED;
 const NAMES = Object.keys(SEED) as CollectionName[];
 
 /** Bump whenever a collection is added. Existing data stays; new collections get their seed. */
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;
@@ -103,6 +105,11 @@ export function createMockDb(databaseName: string): MockDb {
             database.createObjectStore(name, { keyPath: 'id' });
             created.push(name);
           }
+        },
+        // An old tab must let go, or a newer version in another tab waits on it forever.
+        blocking(_current, _blocked, event) {
+          (event.target as IDBDatabase).close();
+          opened = null;
         },
       });
       await writeSeed(db, created);

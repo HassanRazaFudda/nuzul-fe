@@ -5,6 +5,7 @@ import { calendarRoutes } from '@/features/calendar';
 import { currencyRoutes } from '@/features/currencies';
 import { designSystemRoutes } from '@/features/design-system';
 import { hotelRoutes } from '@/features/hotels';
+import { ledgerRoutes } from '@/features/inventory';
 import { overviewRoute } from '@/features/overview';
 import { agentRoutes, vendorRoutes } from '@/features/partners';
 import { purchaseRoutes } from '@/features/purchases';
@@ -31,6 +32,7 @@ export function createAppRouter(queryClient: QueryClient, createRouter: CreateRo
           children: [
             overviewRoute(),
             { path: 'purchases', children: purchaseRoutes(queryClient) },
+            { path: 'inventory', children: ledgerRoutes(queryClient) },
             { path: 'hotels', children: hotelRoutes(queryClient) },
             { path: 'vendors', children: vendorRoutes() },
             { path: 'agents', children: agentRoutes() },

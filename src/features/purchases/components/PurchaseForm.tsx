@@ -30,6 +30,7 @@ import type { PurchaseView } from '../api/purchase.schemas';
 import { referenceRate } from '../domain/purchase-totals';
 import { MealFields } from './MealFields';
 import { emptyLine, purchaseFormSchema, toFormValues, type PurchaseFormValues } from './purchase-form.schema';
+import type { PurchasePrefill } from './purchase-prefill';
 import { PurchaseTotals } from './PurchaseTotals';
 import { RoomLinesField } from './RoomLinesField';
 
@@ -68,6 +69,8 @@ interface PurchaseFormProps {
   months: CalendarMonth[];
   today: string;
   cancelTo: string;
+  /** A suggested purchase, such as from the ledger. New purchases only. */
+  prefill?: PurchasePrefill | null;
   /** Must reject on failure, so the error stays on screen. */
   onSave: (values: PurchaseFormValues) => Promise<void>;
 }
@@ -82,24 +85,37 @@ export function PurchaseForm({
   months,
   today,
   cancelTo,
+  prefill = null,
   onSave,
 }: PurchaseFormProps) {
+  const prefilledHotel = hotels.find((hotel) => hotel.id === prefill?.hotelId);
   const form = useForm<PurchaseFormValues>({
     resolver: zodResolver(purchaseFormSchema),
     mode: 'onTouched',
     defaultValues: purchase
       ? toFormValues(purchase)
       : {
-          hotelId: '',
+          hotelId: prefill?.hotelId ?? '',
           vendorId: '',
-          checkIn: '',
-          checkOut: '',
+          checkIn: prefill?.checkIn ?? '',
+          checkOut: prefill?.checkOut ?? '',
           currencyCode: DEFAULT_CURRENCY,
           rateToPkr: rateOn(rates, DEFAULT_CURRENCY, today)?.rateToPkr ?? '',
           perNight: true,
           sameRate: false,
           sharedRate: '',
-          lines: [emptyLine()],
+          lines: [
+            {
+              ...emptyLine(),
+              roomTypeId: prefill?.roomType?.id ?? '',
+              rooms: prefill?.rooms ?? Number.NaN,
+              personsPerRoom: prefill?.roomType?.capacity ?? Number.NaN,
+              rate:
+                prefilledHotel?.rateCurrency === DEFAULT_CURRENCY && prefill?.roomType
+                  ? referenceRate(prefilledHotel, prefill.roomType.capacity)
+                  : '',
+            },
+          ],
           mealPricing: 'none',
           mealRate: '',
           mealBasis: 'perPersonPerNight',
@@ -114,8 +130,9 @@ export function PurchaseForm({
   const currencyCode = useWatch({ control: form.control, name: 'currencyCode' });
   const [showSummary, setShowSummary] = useState(false);
   const [saveError, setSaveError] = useState<unknown>(null);
-  // The save itself navigates away, so leaving while it runs needs no question.
-  const blocker = useBlocker(isDirty && !isSubmitting);
+  // The save itself navigates away, so leaving while it runs needs no question. A suggested
+  // purchase counts as unsaved work from the start.
+  const blocker = useBlocker((isDirty || prefill !== null) && !isSubmitting);
 
   const calendarHint = (iso: string) => {
     if (!iso) return undefined;

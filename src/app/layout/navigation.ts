@@ -53,8 +53,6 @@ export const NAVIGATION: NavGroup[] = [
         path: 'inventory',
         label: 'Rooms ledger',
         icon: BookOpenCheck,
-        purpose:
-          'Availability per hotel and room type, night by night: available, fully utilised or overbooked, and how many rooms to buy.',
       },
     ],
   },

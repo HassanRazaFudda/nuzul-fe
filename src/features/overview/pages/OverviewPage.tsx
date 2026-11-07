@@ -1,6 +1,7 @@
 import { useQueryClient, useSuspenseQueries } from '@tanstack/react-query';
 import { RotateCcw } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router';
 
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
@@ -9,19 +10,22 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Stat } from '@/components/ui/Stat';
 import { calendarMonthsQuery } from '@/features/calendar';
 import { hotelOptionsQuery } from '@/features/hotels';
+import { overbookedPoolsQuery } from '@/features/inventory';
 import { partnerOptionsQuery } from '@/features/partners';
 import { mockDb } from '@/mock-api/db';
 
 export function OverviewPage() {
   const queryClient = useQueryClient();
-  const [{ data: hotels }, { data: vendors }, { data: agents }, { data: months }] = useSuspenseQueries({
-    queries: [
-      hotelOptionsQuery,
-      partnerOptionsQuery('vendors'),
-      partnerOptionsQuery('agents'),
-      calendarMonthsQuery,
-    ],
-  });
+  const [{ data: hotels }, { data: vendors }, { data: agents }, { data: months }, { data: overbooked }] =
+    useSuspenseQueries({
+      queries: [
+        hotelOptionsQuery,
+        partnerOptionsQuery('vendors'),
+        partnerOptionsQuery('agents'),
+        calendarMonthsQuery,
+        overbookedPoolsQuery,
+      ],
+    });
   const [isConfirming, setIsConfirming] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
 
@@ -37,7 +41,17 @@ export function OverviewPage() {
     <>
       <PageHeader title="Overview" subtitle="Hotel contracts, purchasing and the rooms ledger" />
       <div className="space-y-5 p-5 lg:p-8">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <Stat
+            label="Overbooked pools"
+            value={
+              <Link to="/inventory?status=overbooked" className="underline">
+                {overbooked}
+              </Link>
+            }
+            hint="Hotel and room types short on a night"
+            {...(overbooked > 0 ? { tone: 'danger' as const } : {})}
+          />
           <Stat label="Active hotels" value={hotels.length} />
           <Stat label="Active vendors" value={vendors.length} />
           <Stat label="Active agents" value={agents.length} />
