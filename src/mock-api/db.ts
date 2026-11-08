@@ -23,6 +23,7 @@ import purchases from './seed/purchases.json';
 import revisions from './seed/revisions.json';
 import roomTypes from './seed/roomTypes.json';
 import session from './seed/session.json';
+import settings from './seed/settings.json';
 import users from './seed/users.json';
 import vendors from './seed/vendors.json';
 
@@ -48,6 +49,7 @@ const SEED = {
   adjustments,
   users,
   session,
+  settings,
 } satisfies Record<string, StoredRecord[]>;
 
 export type CollectionName = keyof typeof SEED;
@@ -55,7 +57,7 @@ export type CollectionName = keyof typeof SEED;
 const NAMES = Object.keys(SEED) as CollectionName[];
 
 /** Bump whenever a collection changes. Existing data stays; new collections get their seed. */
-const DB_VERSION = 7;
+const DB_VERSION = 8;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;

@@ -1,6 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { redirect, type RouteObject } from 'react-router';
 
+import { agreementSettingsQuery } from '@/features/agreement';
 import { calendarMonthsQuery } from '@/features/calendar';
 import { currenciesQuery, exchangeRatesQuery } from '@/features/currencies';
 import { hotelOptionsQuery } from '@/features/hotels';
@@ -57,6 +58,7 @@ export function contractRoutes(queryClient: QueryClient): RouteObject[] {
       path: ':id/print',
       loader: async ({ params }) => {
         await Promise.all([
+          queryClient.query(agreementSettingsQuery),
           queryClient.query(contractDetailQuery(params.id ?? '')),
           queryClient.query(calendarMonthsQuery),
           queryClient.query(roomTypesQuery),

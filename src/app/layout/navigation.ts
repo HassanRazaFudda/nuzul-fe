@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Palette,
   Scale,
+  ScrollText,
   ShoppingCart,
   Store,
   UserCog,
@@ -92,6 +93,12 @@ export const NAVIGATION: NavGroup[] = [
       { path: 'room-types', label: 'Room types', icon: DoorOpen },
       { path: 'calendar', label: 'Calendar', icon: CalendarDays },
       { path: 'currencies', label: 'Currencies', icon: Coins },
+      {
+        path: 'settings/agreement',
+        label: 'Agreement',
+        icon: ScrollText,
+        permissions: ['settings.manage'],
+      },
       {
         path: 'users',
         label: 'Users & permissions',

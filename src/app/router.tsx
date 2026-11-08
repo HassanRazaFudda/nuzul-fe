@@ -1,6 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { createBrowserRouter, redirect, type RouteObject } from 'react-router';
 
+import { agreementRoutes } from '@/features/agreement';
 import { auditRoutes } from '@/features/audit';
 import { calendarRoutes } from '@/features/calendar';
 import { contractRoutes } from '@/features/contracts';
@@ -60,6 +61,7 @@ export function createAppRouter(queryClient: QueryClient, createRouter: CreateRo
             { path: 'design', children: designSystemRoutes() },
             { path: 'users', children: userRoutes(queryClient) },
             { path: 'audit', children: auditRoutes() },
+            { path: 'settings/agreement', children: agreementRoutes(queryClient) },
             ...PLACEHOLDER_ITEMS.map((item) => ({
               path: item.path,
               element: <PlaceholderPage title={item.label} purpose={item.purpose} />,

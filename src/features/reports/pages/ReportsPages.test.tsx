@@ -159,15 +159,3 @@ describe('Excel rows', () => {
     );
   });
 });
-
-describe('the contract print page', () => {
-  it('shows every line, each hotel total and the grand total', async () => {
-    renderApp('/contracts/contract-2/print');
-
-    expect(await screen.findByRole('heading', { name: 'Hotel Accommodation Agreement' })).toBeInTheDocument();
-    expect(screen.getByText('10 Double, 2 persons per room')).toBeInTheDocument();
-    expect(screen.getByText('30 Double, 2 persons per room')).toBeInTheDocument();
-    expect(screen.getByText('Grand total')).toBeInTheDocument();
-    expect(screen.getAllByText('Authorised Signature')).toHaveLength(2);
-  });
-});

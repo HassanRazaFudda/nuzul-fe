@@ -147,6 +147,11 @@ async function toViews(contracts: Contract[]): Promise<ContractView[]> {
     return {
       ...contract,
       agentName: agents.find((agent) => agent.id === contract.agentId)?.name ?? 'Unknown agent',
+      agentCompany: (() => {
+        const agent = agents.find((item) => item.id === contract.agentId);
+        const company = agent?.company?.trim();
+        return company && company.length > 0 ? company : (agent?.name ?? 'Unknown agent');
+      })(),
       tags: { overbooked, needsVendor },
       hotels: views,
     };

@@ -166,3 +166,9 @@
     animation: none !important;
   }
 }
+
+/* Documents print on A4 with their own margins; the page adds none. */
+@page {
+  size: A4;
+  margin: 0;
+}

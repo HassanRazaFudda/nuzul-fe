@@ -35,4 +35,5 @@ export const ENTITY_LABELS: Record<RevisionEntity, string> = {
   currency: 'Currency',
   user: 'User',
   session: 'Sign-in',
+  settings: 'Settings',
 };

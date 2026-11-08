@@ -36,6 +36,7 @@ export const REVISION_ENTITIES = [
   'currency',
   'user',
   'session',
+  'settings',
 ] as const;
 export type RevisionEntity = (typeof REVISION_ENTITIES)[number];
 

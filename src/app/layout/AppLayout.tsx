@@ -65,7 +65,7 @@ export function AppLayout() {
 
   return (
     <div
-      className="min-h-dvh lg:grid lg:transition-[grid-template-columns] lg:duration-200 print:block"
+      className="min-h-dvh lg:grid lg:transition-[grid-template-columns] lg:duration-200 print:block print:min-h-0"
       style={{
         gridTemplateColumns: `${isCollapsed ? 'var(--sidebar-rail-width)' : 'var(--sidebar-width)'} minmax(0, 1fr)`,
       }}

@@ -105,6 +105,8 @@ export type AllocationView = ContractLine['allocations'][number] & { number: str
 /** A contract as the API returns it: with names, and tags worked out from the ledger. */
 export type ContractView = Omit<Contract, 'hotels'> & {
   agentName: string;
+  /** The agent's company for documents, or their name when no company is set. */
+  agentCompany: string;
   tags: LineTags;
   hotels: (Omit<ContractHotelEntry, 'lines'> & {
     hotelName: string;
