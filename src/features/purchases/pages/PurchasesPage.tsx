@@ -38,6 +38,10 @@ const EMPTY: Record<PurchaseStatus, { title: string; hint: string }> = {
   draft: { title: 'No drafts', hint: 'Drafts appear here and never affect the ledger.' },
   confirmed: { title: 'No confirmed purchases', hint: 'Add a purchase, then confirm it.' },
   cancelled: { title: 'No cancelled purchases', hint: 'Cancelled purchases stay here for history.' },
+  terminated: {
+    title: 'No terminated purchases',
+    hint: 'A terminated purchase counts on the ledger only before its effective date.',
+  },
 };
 
 export function PurchasesPage() {
@@ -91,6 +95,7 @@ export function PurchasesPage() {
             { value: 'draft', label: 'Draft', count: counts?.draft },
             { value: 'confirmed', label: 'Confirmed', count: counts?.confirmed },
             { value: 'cancelled', label: 'Cancelled', count: counts?.cancelled },
+            { value: 'terminated', label: 'Terminated', count: counts?.terminated },
           ]}
         />
         <DataList

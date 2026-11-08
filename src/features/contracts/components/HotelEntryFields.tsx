@@ -9,7 +9,7 @@ import { Select } from '@/components/ui/Select';
 import { formatDay, type CalendarMonth } from '@/features/calendar';
 import { isConversionAllowed, type ConversionRule, type RoomType } from '@/features/room-types';
 
-import { suggestAllocation, type Supply, type TakenRooms } from '../domain/allocation';
+import { suggestAllocation, type Supply, type TakenRooms } from '@/features/inventory';
 import { AllocationEditor } from './AllocationEditor';
 import { emptyLine, takenByOtherLines, type ContractFormValues } from './contract-form.schema';
 

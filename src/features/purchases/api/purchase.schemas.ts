@@ -10,7 +10,7 @@ const moneyLineSchema = z.object({
   amountPkr: z.string(),
 });
 
-export const PURCHASE_STATUSES = ['draft', 'confirmed', 'cancelled'] as const;
+export const PURCHASE_STATUSES = ['draft', 'confirmed', 'cancelled', 'terminated'] as const;
 export type PurchaseStatus = (typeof PURCHASE_STATUSES)[number];
 
 export const MEAL_BASES = ['perPersonPerNight', 'perRoomPerNight', 'perPersonPerStay'] as const;
@@ -51,12 +51,27 @@ export const purchaseSchema = z.object({
   ),
   meal: mealSchema,
   notes: z.string(),
+  /** Set when the vendor ended the contract early. It counts only before the effective date. */
+  termination: z
+    .object({ terminationDate: z.iso.date(), effectiveDate: z.iso.date(), reason: z.string() })
+    .optional(),
   roomCost: moneyLineSchema,
   mealCost: moneyLineSchema,
   mealMaximum: z.string().nullable(),
   total: moneyLineSchema,
 });
 export type Purchase = z.infer<typeof purchaseSchema>;
+
+/** A penalty or refund from a termination, dated at its effective date. Never a rate change. */
+export const adjustmentSchema = z.object({
+  id: z.string(),
+  purchaseId: z.string(),
+  kind: z.enum(['penalty', 'refund']),
+  effectiveDate: z.iso.date(),
+  reason: z.string(),
+  amount: moneyLineSchema,
+});
+export type Adjustment = z.infer<typeof adjustmentSchema>;
 
 /** A purchase as the API returns it: with names, so a deactivated hotel still reads correctly. */
 export type PurchaseView = Purchase & { hotelName: string; vendorName: string };

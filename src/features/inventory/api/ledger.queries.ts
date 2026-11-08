@@ -1,5 +1,6 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 
+import { loadLedgerSources } from './ledger-sources.api';
 import { ledgerApi } from './ledger.api';
 import type { PoolListParams } from './ledger.schemas';
 
@@ -12,7 +13,15 @@ export const ledgerKeys = {
   list: (params: PoolListParams) => [...ledgerKeys.all, 'list', params] as const,
   overbookedCount: () => [...ledgerKeys.all, 'overbooked-count'] as const,
   pool: (hotelId: string, roomTypeId: string) => [...ledgerKeys.all, 'pool', hotelId, roomTypeId] as const,
+  sources: () => [...ledgerKeys.all, 'sources'] as const,
 };
+
+/** The records behind every ledger figure, for previewing a change before it is saved. */
+export const ledgerSourcesQuery = queryOptions({
+  queryKey: ledgerKeys.sources(),
+  queryFn: loadLedgerSources,
+  staleTime: ALWAYS_STALE,
+});
 
 export const poolListQuery = (params: PoolListParams) =>
   queryOptions({

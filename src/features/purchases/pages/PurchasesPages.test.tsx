@@ -100,7 +100,7 @@ describe('adding a purchase', () => {
     });
     expect(router.state.location.pathname).toMatch(/^\/purchases\//);
     expect(await screen.findByRole('button', { name: 'Cancel purchase' })).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Edit' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Terminate' })).toBeInTheDocument();
   });
 
   it('shows live totals while typing', async () => {
@@ -256,12 +256,19 @@ describe('a saved purchase', () => {
     expect(router.state.location.pathname).toBe('/purchases/purchase-2/edit');
   });
 
-  it('cancels a confirmed purchase, and offers nothing afterwards', async () => {
+  it('cancels a confirmed purchase with a reason, and offers nothing afterwards', async () => {
     const { user } = renderApp('/purchases/purchase-1');
     await user.click(await screen.findByRole('button', { name: 'Cancel purchase' }));
     const dialog = await screen.findByRole('dialog');
 
-    await user.click(within(dialog).getByRole('button', { name: 'Cancel purchase' }));
+    // It backs CON-0001 and CON-0002, so the preview lists them.
+    expect(within(dialog).getByText('Sales losing their vendor')).toBeInTheDocument();
+    expect(within(dialog).getAllByText(/^CON-0001/).length).toBeGreaterThan(0);
+    await user.click(within(dialog).getByRole('button', { name: /^Cancel purchase/ }));
+    expect(await within(dialog).findByText('Enter the reason for this change')).toBeInTheDocument();
+
+    await user.type(within(dialog).getByLabelText(/^Reason/), 'Vendor withdrew');
+    await user.click(within(dialog).getByRole('button', { name: /^Cancel purchase/ }));
 
     await waitFor(async () => {
       expect((await stored('PUR-0001'))?.status).toBe('cancelled');
@@ -288,11 +295,11 @@ describe('a saved purchase', () => {
     expect(await screen.findByRole('heading', { name: 'PUR-0004' })).toBeInTheDocument();
   });
 
-  it('sends the edit address of a confirmed purchase back to its page', async () => {
-    const { router } = renderApp('/purchases/purchase-1/edit');
+  it('sends the edit address of a cancelled purchase back to its page', async () => {
+    const { router } = renderApp('/purchases/purchase-3/edit');
 
     await waitFor(() => {
-      expect(router.state.location.pathname).toBe('/purchases/purchase-1');
+      expect(router.state.location.pathname).toBe('/purchases/purchase-3');
     });
   });
 });

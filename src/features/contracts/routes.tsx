@@ -58,8 +58,10 @@ export function contractRoutes(queryClient: QueryClient): RouteObject[] {
       loader: async ({ params }) => {
         const id = params.id ?? '';
         const [contract] = await Promise.all([queryClient.query(contractDetailQuery(id)), loadFormData(id)]);
-        // Only a Draft is editable in this form.
-        return contract.status === 'draft' ? null : redirect(`/contracts/${id}`);
+        // Drafts, and Confirmed contracts through the preview. The rest are history.
+        return contract.status === 'draft' || contract.status === 'confirmed'
+          ? null
+          : redirect(`/contracts/${id}`);
       },
       lazy: { Component: async () => (await import('./pages/ContractFormPage')).EditContractPage },
     },

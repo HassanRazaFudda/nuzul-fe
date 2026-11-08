@@ -1,8 +1,18 @@
 import { z } from 'zod';
 
+import { assertSameStamp, revisionsApi, type RevisionAction } from '@/features/changes';
 import { currencySchema } from '@/features/currencies';
 import { hotelSchema } from '@/features/hotels';
-import { buildPools, poolLedger, type PoolPurchaseInput, type PoolSaleInput } from '@/features/inventory';
+import {
+  buildPools,
+  loadLedgerSources,
+  poolLedger,
+  trimToFree,
+  type Supply,
+  type TakenRooms,
+  type PoolPurchaseInput,
+  type PoolSaleInput,
+} from '@/features/inventory';
 import { partnerSchema } from '@/features/partners';
 import { purchasesApi } from '@/features/purchases';
 import { roomTypeSchema } from '@/features/room-types';
@@ -11,7 +21,6 @@ import { moneyLine } from '@/lib/money/money';
 import { mockDb } from '@/mock-api/db';
 import { pageOf } from '@/mock-api/list-query';
 
-import { trimToFree, type Supply, type TakenRooms } from '../domain/allocation';
 import { contractTotals } from '../domain/contract-totals';
 import { lineTags } from '../domain/overbooking';
 import {
@@ -56,9 +65,7 @@ const takenBy = (contract: Contract): TakenRooms[] =>
     ),
   );
 
-async function suppliesFrom(
-  purchases: Awaited<ReturnType<typeof purchasesApi.confirmed>>,
-): Promise<Supply[]> {
+async function suppliesFrom(purchases: Awaited<ReturnType<typeof purchasesApi.counting>>): Promise<Supply[]> {
   const vendors = await mockDb.list('vendors', partnerSchema);
   return purchases.flatMap((purchase) =>
     purchase.lines.map((line) => ({
@@ -76,7 +83,7 @@ async function suppliesFrom(
 
 async function contextFor(excludeId: string | null): Promise<ContractContext> {
   const [purchases, contracts] = await Promise.all([
-    purchasesApi.confirmed(),
+    purchasesApi.counting(),
     mockDb.list('contracts', contractSchema),
   ]);
   const others = contracts.filter((contract) => contract.status === 'confirmed' && contract.id !== excludeId);
@@ -212,6 +219,41 @@ async function current(id: string, version: number, allowed: ContractStatus): Pr
   return contract;
 }
 
+/** Saves the next version of a contract, and its history entry. */
+async function saveVersion(before: Contract, after: Contract, action: RevisionAction, reason: string) {
+  const saved = await mockDb.put('contracts', after);
+  await revisionsApi.record({
+    entity: 'contract',
+    entityId: after.id,
+    version: after.version,
+    action,
+    reason,
+    before,
+    totalBefore: before.total.amount,
+    totalAfter: after.total.amount,
+  });
+  return saved;
+}
+
+/** Cuts allocations back to vendors' free rooms now. Any excess becomes Unallocated. */
+async function withinFreeRooms(contract: Contract) {
+  const context = await contextFor(contract.id);
+  const running: TakenRooms[] = [...context.taken];
+  let trimmedRooms = 0;
+  const hotels = contract.hotels.map((entry) => ({
+    ...entry,
+    lines: entry.lines.map((line) => {
+      const trimmed = trimToFree(line.allocations, line.sourceTypeId, context.supplies, running);
+      trimmedRooms += trimmed.trimmedRooms;
+      running.push(
+        ...trimmed.allocations.map((allocation) => ({ ...allocation, roomTypeId: line.sourceTypeId })),
+      );
+      return { ...line, allocations: trimmed.allocations };
+    }),
+  }));
+  return { hotels, trimmedRooms };
+}
+
 export const contractsApi = {
   list: async (params: ContractListParams) => {
     const stored = await mockDb.list('contracts', contractSchema);
@@ -257,12 +299,28 @@ export const contractsApi = {
       status: 'draft',
       version: 1,
     };
-    return mockDb.put('contracts', record);
+    const saved = await mockDb.put('contracts', record);
+    await revisionsApi.record({
+      entity: 'contract',
+      entityId: saved.id,
+      version: 1,
+      action: 'created',
+      reason: '',
+      before: null,
+      totalBefore: null,
+      totalAfter: saved.total.amount,
+    });
+    return saved;
   },
 
   update: async (id: string, version: number, input: ContractInput) => {
     const contract = await current(id, version, 'draft');
-    return mockDb.put('contracts', { ...contract, ...(await priced(input)), version: version + 1 });
+    return saveVersion(
+      contract,
+      { ...contract, ...(await priced(input)), version: version + 1 },
+      'edited',
+      '',
+    );
   },
 
   /**
@@ -271,32 +329,78 @@ export const contractsApi = {
    */
   confirm: async (id: string, version: number) => {
     const contract = await current(id, version, 'draft');
-    const context = await contextFor(id);
-    const running: TakenRooms[] = [...context.taken];
-    let trimmedRooms = 0;
-    const hotels = contract.hotels.map((entry) => ({
-      ...entry,
-      lines: entry.lines.map((line) => {
-        const trimmed = trimToFree(line.allocations, line.sourceTypeId, context.supplies, running);
-        trimmedRooms += trimmed.trimmedRooms;
-        running.push(
-          ...trimmed.allocations.map((allocation) => ({ ...allocation, roomTypeId: line.sourceTypeId })),
-        );
-        return { ...line, allocations: trimmed.allocations };
-      }),
-    }));
-    const saved = await mockDb.put('contracts', {
-      ...contract,
-      hotels,
-      status: 'confirmed',
-      version: version + 1,
-    });
+    const { hotels, trimmedRooms } = await withinFreeRooms(contract);
+    const saved = await saveVersion(
+      contract,
+      { ...contract, hotels, status: 'confirmed', version: version + 1 },
+      'confirmed',
+      '',
+    );
     return { contract: saved, trimmedRooms };
   },
 
-  cancel: async (id: string, version: number) => {
+  /** Edits a Confirmed contract. `stamp` is the one the preview was worked out from. */
+  updateConfirmed: async (
+    id: string,
+    version: number,
+    input: ContractInput,
+    reason: string,
+    stamp: string,
+  ) => {
     const contract = await current(id, version, 'confirmed');
-    return mockDb.put('contracts', { ...contract, status: 'cancelled', version: version + 1 });
+    assertSameStamp(stamp, (await loadLedgerSources()).stamp);
+    const edited: Contract = { ...contract, ...(await priced(input)), version: version + 1 };
+    const { hotels, trimmedRooms } = await withinFreeRooms(edited);
+    const saved = await saveVersion(contract, { ...edited, hotels }, 'edited', reason);
+    return { contract: saved, trimmedRooms };
+  },
+
+  /** Rooms return to the pools and vendors' rooms are freed. The record stays as Cancelled. */
+  cancel: async (id: string, version: number, reason: string) => {
+    const contract = await current(id, version, 'confirmed');
+    return saveVersion(
+      contract,
+      { ...contract, status: 'cancelled', version: version + 1 },
+      'cancelled',
+      reason,
+    );
+  },
+
+  /**
+   * Part of a termination: removes lines from a Confirmed contract and reprices it. Removing
+   * its last line cancels the whole contract, which keeps its lines for history.
+   */
+  cancelLines: async (
+    id: string,
+    version: number,
+    lines: { hotelIndex: number; lineIndex: number }[],
+    reason: string,
+  ) => {
+    const contract = await current(id, version, 'confirmed');
+    const isRemoved = (hotelIndex: number, lineIndex: number) =>
+      lines.some((line) => line.hotelIndex === hotelIndex && line.lineIndex === lineIndex);
+    const hotels = contract.hotels
+      .map((entry, hotelIndex) => ({
+        ...entry,
+        lines: entry.lines.filter((_, lineIndex) => !isRemoved(hotelIndex, lineIndex)),
+      }))
+      .filter((entry) => entry.lines.length > 0);
+    if (hotels.length === 0) {
+      return saveVersion(
+        contract,
+        { ...contract, status: 'cancelled', version: version + 1 },
+        'cancelled',
+        reason,
+      );
+    }
+    const { mealPlan, agentId, date, currencyCode, rateToPkr, notes } = contract;
+    const repriced = await priced({ agentId, date, currencyCode, rateToPkr, mealPlan, notes, hotels });
+    return saveVersion(
+      contract,
+      { ...contract, ...repriced, version: version + 1 },
+      'line-cancelled',
+      reason,
+    );
   },
 
   /** Only a Draft can be deleted. A Confirmed contract is cancelled, and stays on record. */

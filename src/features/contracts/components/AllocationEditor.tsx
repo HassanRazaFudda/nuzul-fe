@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { formatDay, type CalendarMonth } from '@/features/calendar';
 
-import { fewestFree, unallocatedBlocks, type Supply, type TakenRooms } from '../domain/allocation';
+import { fewestFree, unallocatedBlocks, type Supply, type TakenRooms } from '@/features/inventory';
 import { takenByOtherLines, type ContractFormValues } from './contract-form.schema';
 
 const isUsableStay = (checkIn: string, checkOut: string) =>

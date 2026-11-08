@@ -14,7 +14,13 @@ import {
 import { isConversionAllowed, type ConversionRule, type RoomType } from '@/features/room-types';
 import { dayNumber } from '@/lib/format/dates';
 
-import { freeOnNight, unallocatedBlocks, type Allocation, type Supply, type TakenRooms } from './allocation';
+import {
+  freeOnNight,
+  unallocatedBlocks,
+  type Allocation,
+  type Supply,
+  type TakenRooms,
+} from '@/features/inventory';
 
 export interface DraftLine {
   hotelId: string;

@@ -4,7 +4,7 @@ import type { RoomType } from '@/features/room-types';
 import { exchangeRate, isoDateField, optionalRate, optionalText, wholeNumber } from '@/lib/forms/fields';
 
 import { MEAL_PLANS, type Contract, type ContractInput, type ContractView } from '../api/contract.schemas';
-import { allocationProblems, type Supply, type TakenRooms } from '../domain/allocation';
+import { allocationProblems, type Supply, type TakenRooms } from '@/features/inventory';
 
 const MAX_ROOMS_PER_LINE = 9999;
 const MAX_GUESTS_PER_ROOM = 20;

@@ -247,7 +247,7 @@ describe('confirming', () => {
       expect((await stored('CON-0005'))?.status).toBe('confirmed');
     });
     expect(await screen.findByRole('button', { name: 'Cancel contract' })).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Edit' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Edit' })).toBeInTheDocument();
 
     await router.navigate('/inventory/hotel-artal/double');
     const grid = await screen.findByRole('table', { name: 'Night by night' });
@@ -334,9 +334,9 @@ describe('a saved contract', () => {
   it('cancelling gives the rooms back to the ledger', async () => {
     const { user, router } = renderApp('/contracts/contract-2');
     await user.click(await screen.findByRole('button', { name: 'Cancel contract' }));
-    await user.click(
-      within(await screen.findByRole('dialog')).getByRole('button', { name: 'Cancel contract' }),
-    );
+    const dialog = await screen.findByRole('dialog');
+    await user.type(within(dialog).getByLabelText(/^Reason/), 'Agent withdrew');
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel contract' }));
     await waitFor(async () => {
       expect((await stored('CON-0002'))?.status).toBe('cancelled');
     });
@@ -412,11 +412,11 @@ describe('a saved contract', () => {
     expect(await screen.findByRole('heading', { name: 'CON-0005' })).toBeInTheDocument();
   });
 
-  it('sends the edit address of a confirmed contract back to its page', async () => {
-    const { router } = renderApp('/contracts/contract-1/edit');
+  it('sends the edit address of a cancelled contract back to its page', async () => {
+    const { router } = renderApp('/contracts/contract-4/edit');
 
     await waitFor(() => {
-      expect(router.state.location.pathname).toBe('/contracts/contract-1');
+      expect(router.state.location.pathname).toBe('/contracts/contract-4');
     });
   });
 

@@ -1,37 +1,11 @@
 import { hotelSchema } from '@/features/hotels';
-import { purchasesApi } from '@/features/purchases';
 import { roomTypeSchema } from '@/features/room-types';
 import { mockDb } from '@/mock-api/db';
 import { pageOf } from '@/mock-api/list-query';
 
-import { buildPools, poolFigures, poolLedger, type Pool, type PoolSaleInput } from '../domain/pools';
-import {
-  contractSalesSchema,
-  type PoolDetail,
-  type PoolListParams,
-  type PoolSummary,
-} from './ledger.schemas';
-
-/** The one place the ledger reads sales from: the lines of Confirmed contracts. */
-async function saleEntries(): Promise<PoolSaleInput[]> {
-  const contracts = await mockDb.list('contracts', contractSalesSchema);
-  return contracts
-    .filter((contract) => contract.status === 'confirmed')
-    .flatMap((contract) =>
-      contract.hotels.flatMap((entry, hotelIndex) =>
-        entry.lines.map((line, lineIndex) => ({
-          id: `${contract.id}:${String(hotelIndex)}:${String(lineIndex)}`,
-          contractId: contract.id,
-          reference: contract.number,
-          hotelId: entry.hotelId,
-          roomTypeId: line.sourceTypeId,
-          checkIn: entry.checkIn,
-          checkOut: entry.checkOut,
-          rooms: line.rooms,
-        })),
-      ),
-    );
-}
+import { buildPools, poolFigures, poolLedger, type Pool } from '../domain/pools';
+import { loadLedgerSources } from './ledger-sources.api';
+import type { PoolDetail, PoolListParams, PoolSummary } from './ledger.schemas';
 
 async function namesLookup() {
   const [hotels, roomTypes] = await Promise.all([
@@ -45,7 +19,7 @@ async function namesLookup() {
 }
 
 async function currentPools(): Promise<Pool[]> {
-  const [purchases, sales] = await Promise.all([purchasesApi.confirmed(), saleEntries()]);
+  const { purchases, sales } = await loadLedgerSources();
   return buildPools(purchases, sales);
 }
 

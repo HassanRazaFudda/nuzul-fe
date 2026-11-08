@@ -59,8 +59,10 @@ export function purchaseRoutes(queryClient: QueryClient): RouteObject[] {
       loader: async ({ params }) => {
         const id = params.id ?? '';
         const [purchase] = await Promise.all([queryClient.query(purchaseDetailQuery(id)), loadFormData()]);
-        // Only a Draft is editable in this form.
-        return purchase.status === 'draft' ? null : redirect(`/purchases/${id}`);
+        // Drafts, and Confirmed purchases through the preview. The rest are history.
+        return purchase.status === 'draft' || purchase.status === 'confirmed'
+          ? null
+          : redirect(`/purchases/${id}`);
       },
       lazy: { Component: async () => (await import('./pages/PurchaseFormPage')).EditPurchasePage },
     },

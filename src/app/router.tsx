@@ -11,6 +11,7 @@ import { overviewRoute } from '@/features/overview';
 import { agentRoutes, vendorRoutes } from '@/features/partners';
 import { purchaseRoutes } from '@/features/purchases';
 import { roomTypeRoutes } from '@/features/room-types';
+import { terminationRoutes } from '@/features/termination';
 
 import { AppLayout } from './layout/AppLayout';
 import { LoadingScreen } from './layout/LoadingScreen';
@@ -32,7 +33,10 @@ export function createAppRouter(queryClient: QueryClient, createRouter: CreateRo
           ErrorBoundary: RouteErrorBoundary,
           children: [
             overviewRoute(),
-            { path: 'purchases', children: purchaseRoutes(queryClient) },
+            {
+              path: 'purchases',
+              children: [...purchaseRoutes(queryClient), ...terminationRoutes(queryClient)],
+            },
             { path: 'contracts', children: contractRoutes(queryClient) },
             { path: 'inventory', children: ledgerRoutes(queryClient) },
             { path: 'hotels', children: hotelRoutes(queryClient) },

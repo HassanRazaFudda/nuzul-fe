@@ -1,6 +1,27 @@
 // Public API of the inventory feature. Other features import ONLY from here.
 export { ledgerRoutes } from './routes';
-export { ledgerKeys, overbookedPoolsQuery } from './api/ledger.queries';
+export { ledgerKeys, ledgerSourcesQuery, overbookedPoolsQuery } from './api/ledger.queries';
+export { contractRecordSchema, loadLedgerSources } from './api/ledger-sources.api';
+export {
+  allocationProblems,
+  fewestFree,
+  freeOnNight,
+  suggestAllocation,
+  trimToFree,
+  unallocatedBlocks,
+  type Allocation,
+  type AllocationProblem,
+  type Stay,
+  type Supply,
+  type TakenRooms,
+} from './domain/allocation';
+export {
+  countingPurchases,
+  saleKey,
+  type LedgerPurchase,
+  type LedgerSale,
+  type LedgerSources,
+} from './domain/ledger-sources';
 export { InventoryStateTag } from './components/InventoryStateTag';
 export { UnknownCost } from './components/UnknownCost';
 export {

@@ -12,7 +12,9 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Stat } from '@/components/ui/Stat';
 import { calendarMonthsQuery, formatDay } from '@/features/calendar';
+import { HistoryCard, ImpactReviewDialog, type Impact } from '@/features/changes';
 import { currenciesQuery } from '@/features/currencies';
+import { ledgerSourcesQuery, unallocatedBlocks } from '@/features/inventory';
 import { conversionRulesQuery, roomTypesQuery } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
 import { formatIsoDate, nightsBetween } from '@/lib/format/dates';
@@ -30,13 +32,13 @@ import { ContractStatusBadge } from '../components/ContractStatusBadge';
 import { ContractTags } from '../components/ContractTags';
 import { MEAL_PLAN_LABELS } from '../components/meal-plan-labels';
 import { OverbookingList } from '../components/OverbookingList';
-import { unallocatedBlocks } from '../domain/allocation';
+import { contractImpact } from '../domain/contract-change';
 import { overbookingPreview, type OverbookingPreview } from '../domain/overbooking';
 
 const PKR_FORMAT = { symbol: 'PKR', decimals: 2 };
 const NO_SHORTAGE: OverbookingPreview = { shortages: [], suggestions: [] };
 
-type PendingAction = 'confirm' | 'cancel' | 'delete';
+type PendingAction = 'confirm' | 'delete';
 
 export function ContractDetailPage() {
   const { id = '' } = useParams();
@@ -53,6 +55,7 @@ export function ContractDetailPage() {
   const [preview, setPreview] = useState(NO_SHORTAGE);
   const [actionError, setActionError] = useState<unknown>(null);
   const [trimmedRooms, setTrimmedRooms] = useState(0);
+  const [cancelImpact, setCancelImpact] = useState<Impact | null>(null);
 
   const { number, status, version, mealPlan, currencyCode } = contract;
   const format = currencies.find((item) => item.code === currencyCode) ?? {
@@ -64,7 +67,7 @@ export function ContractDetailPage() {
     contract.hotels.find((entry) => entry.hotelId === hotelId)?.hotelName ?? hotelId;
   const range = (checkIn: string, checkOut: string) =>
     `${formatDay(checkIn, months)} to ${formatDay(checkOut, months)}`;
-  const isBusy = confirmContract.isPending || cancelContract.isPending || removeContract.isPending;
+  const isBusy = confirmContract.isPending || removeContract.isPending;
 
   /** Checks against the records as they are now, not as they were when the page opened. */
   async function startConfirm() {
@@ -99,9 +102,6 @@ export function ContractDetailPage() {
         const result = await confirmContract.mutateAsync({ id, version });
         setTrimmedRooms(result.trimmedRooms);
         toast(`${number} confirmed`);
-      } else if (pending === 'cancel') {
-        await cancelContract.mutateAsync({ id, version });
-        toast(`${number} cancelled`);
       } else if (pending === 'delete') {
         await removeContract.mutateAsync({ id, version });
         toast(`${number} deleted`);
@@ -112,6 +112,23 @@ export function ContractDetailPage() {
       setActionError(error);
     }
     setPending(null);
+  }
+
+  /** Cancelling only frees rooms, but the preview still shows where. */
+  async function startCancel() {
+    setActionError(null);
+    try {
+      const sources = await queryClient.query(ledgerSourcesQuery);
+      setCancelImpact(contractImpact(sources, contract, null));
+    } catch (error) {
+      setActionError(error);
+    }
+  }
+
+  async function handleCancel(reason: string) {
+    await cancelContract.mutateAsync({ id, version, reason });
+    toast(`${number} cancelled`);
+    setCancelImpact(null);
   }
 
   const isOverbooking = preview.shortages.length > 0;
@@ -142,14 +159,14 @@ export function ContractDetailPage() {
               </>
             )}
             {status === 'confirmed' && (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setPending('cancel');
-                }}
-              >
-                Cancel contract
-              </Button>
+              <>
+                <Button variant="ghost" onClick={() => void startCancel()}>
+                  Cancel contract
+                </Button>
+                <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary')}>
+                  Edit
+                </Link>
+              </>
             )}
           </div>
         }
@@ -261,6 +278,8 @@ export function ContractDetailPage() {
             <p className="text-foreground p-5 text-sm whitespace-pre-line">{contract.notes}</p>
           </Card>
         )}
+
+        <HistoryCard entity="contract" entityId={id} money={format} />
       </div>
 
       <ConfirmDialog
@@ -281,21 +300,19 @@ export function ContractDetailPage() {
           'These rooms join the ledger at once. A confirmed contract can no longer be edited here, only cancelled.'
         )}
       </ConfirmDialog>
-      <ConfirmDialog
-        open={pending === 'cancel'}
-        onCancel={() => {
-          setPending(null);
-        }}
-        onConfirm={() => void runAction()}
-        title={`Cancel ${number}?`}
-        confirmLabel="Cancel contract"
-        cancelLabel="Keep contract"
-        tone="danger"
-        isBusy={isBusy}
-      >
-        Its rooms go back on the ledger and its vendors&apos; rooms are freed. The contract stays on record as
-        Cancelled, and this cannot be undone.
-      </ConfirmDialog>
+      {cancelImpact && (
+        <ImpactReviewDialog
+          title={`Cancel ${number}?`}
+          impact={cancelImpact}
+          names={{ hotelName, roomTypeName: typeName }}
+          months={months}
+          confirmLabel="Cancel contract"
+          onConfirm={handleCancel}
+          onCancel={() => {
+            setCancelImpact(null);
+          }}
+        />
+      )}
       <ConfirmDialog
         open={pending === 'delete'}
         onCancel={() => {

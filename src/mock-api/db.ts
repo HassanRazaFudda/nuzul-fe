@@ -9,6 +9,7 @@ import type { z } from 'zod';
 
 import { ApiError } from '@/lib/api/api-error';
 
+import adjustments from './seed/adjustments.json';
 import agents from './seed/agents.json';
 import calendarMonths from './seed/calendarMonths.json';
 import cities from './seed/cities.json';
@@ -19,6 +20,7 @@ import currencies from './seed/currencies.json';
 import exchangeRates from './seed/exchangeRates.json';
 import hotels from './seed/hotels.json';
 import purchases from './seed/purchases.json';
+import revisions from './seed/revisions.json';
 import roomTypes from './seed/roomTypes.json';
 import vendors from './seed/vendors.json';
 
@@ -40,6 +42,8 @@ const SEED = {
   purchases,
   counters,
   contracts,
+  revisions,
+  adjustments,
 } satisfies Record<string, StoredRecord[]>;
 
 export type CollectionName = keyof typeof SEED;
@@ -47,7 +51,7 @@ export type CollectionName = keyof typeof SEED;
 const NAMES = Object.keys(SEED) as CollectionName[];
 
 /** Bump whenever a collection changes. Existing data stays; new collections get their seed. */
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;

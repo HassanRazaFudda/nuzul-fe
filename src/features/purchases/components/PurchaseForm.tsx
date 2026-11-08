@@ -69,6 +69,8 @@ interface PurchaseFormProps {
   months: CalendarMonth[];
   today: string;
   cancelTo: string;
+  /** A Confirmed record ends in a review of what the change does, so the label says so. */
+  submitLabel?: string;
   /** A suggested purchase, such as from the ledger. New purchases only. */
   prefill?: PurchasePrefill | null;
   /** Must reject on failure, so the error stays on screen. */
@@ -85,6 +87,7 @@ export function PurchaseForm({
   months,
   today,
   cancelTo,
+  submitLabel = 'Save as draft',
   prefill = null,
   onSave,
 }: PurchaseFormProps) {
@@ -349,7 +352,7 @@ export function PurchaseForm({
               Cancel
             </Link>
             <Button type="submit" isLoading={isSubmitting}>
-              Save as draft
+              {submitLabel}
             </Button>
           </div>
         </Card>

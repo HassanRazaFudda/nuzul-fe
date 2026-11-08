@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
+import { assertSameStamp, revisionsApi, saveSaleChanges, type RevisionAction } from '@/features/changes';
 import { currencySchema } from '@/features/currencies';
 import { hotelSchema } from '@/features/hotels';
+import { countingPurchases, loadLedgerSources, type LedgerPurchase } from '@/features/inventory';
 import { partnerSchema } from '@/features/partners';
 import { ApiError } from '@/lib/api/api-error';
 import { nightsBetween } from '@/lib/format/dates';
@@ -9,9 +11,13 @@ import { moneyLine } from '@/lib/money/money';
 import { mockDb } from '@/mock-api/db';
 import { pageOf } from '@/mock-api/list-query';
 
+import { purchaseChange } from '../domain/purchase-change';
 import { purchaseTotals } from '../domain/purchase-totals';
 import {
+  adjustmentSchema,
+  PURCHASE_STATUSES,
   purchaseSchema,
+  type Adjustment,
   type Purchase,
   type PurchaseInput,
   type PurchaseListParams,
@@ -77,8 +83,37 @@ async function current(id: string, version: number, allowed: PurchaseStatus): Pr
   return purchase;
 }
 
-async function moveTo(purchase: Purchase, status: PurchaseStatus) {
-  return mockDb.put('purchases', { ...purchase, status, version: purchase.version + 1 });
+/** Saves the next version of a purchase, and its history entry. */
+async function saveVersion(before: Purchase, after: Purchase, action: RevisionAction, reason: string) {
+  const saved = await mockDb.put('purchases', after);
+  await revisionsApi.record({
+    entity: 'purchase',
+    entityId: after.id,
+    version: after.version,
+    action,
+    reason,
+    before,
+    totalBefore: before.total.amount,
+    totalAfter: after.total.amount,
+  });
+  return saved;
+}
+
+/** The purchase as the ledger and vendor checks will count it. */
+export async function asLedgerPurchase(
+  purchase: Purchase | (PurchaseInput & { id: string; number: string }),
+) {
+  const vendor = await mockDb.get('vendors', purchase.vendorId, partnerSchema);
+  return {
+    id: purchase.id,
+    number: purchase.number,
+    hotelId: purchase.hotelId,
+    vendorId: purchase.vendorId,
+    vendorName: vendor?.name ?? 'Unknown vendor',
+    checkIn: purchase.checkIn,
+    checkOut: purchase.checkOut,
+    lines: purchase.lines.map(({ roomTypeId, rooms }) => ({ roomTypeId, rooms })),
+  } satisfies LedgerPurchase;
 }
 
 export const purchasesApi = {
@@ -86,7 +121,9 @@ export const purchasesApi = {
     const stored = await mockDb.list('purchases', purchaseSchema);
     const inHotel = params.hotelId ? stored.filter((item) => item.hotelId === params.hotelId) : stored;
     const named = await withNames(inHotel);
-    const count = (status: PurchaseStatus) => named.filter((item) => item.status === status).length;
+    const counts = Object.fromEntries(
+      PURCHASE_STATUSES.map((status) => [status, named.filter((item) => item.status === status).length]),
+    ) as Record<PurchaseStatus, number>;
     return {
       ...pageOf(
         named.filter((item) => item.status === params.status),
@@ -100,7 +137,7 @@ export const purchasesApi = {
           },
         },
       ),
-      counts: { draft: count('draft'), confirmed: count('confirmed'), cancelled: count('cancelled') },
+      counts,
     };
   },
 
@@ -112,10 +149,12 @@ export const purchasesApi = {
     return named;
   },
 
-  /** Only Confirmed purchases count on the ledger. */
-  confirmed: async () => {
-    const stored = await mockDb.list('purchases', purchaseSchema);
-    return stored.filter((purchase) => purchase.status === 'confirmed');
+  /** The purchases that count on the ledger: Terminated ones end at their effective date. */
+  counting: async () => countingPurchases(await mockDb.list('purchases', purchaseSchema)),
+
+  adjustments: async (purchaseId: string): Promise<Adjustment[]> => {
+    const all = await mockDb.list('adjustments', adjustmentSchema);
+    return all.filter((adjustment) => adjustment.purchaseId === purchaseId);
   },
 
   create: async (input: PurchaseInput) => {
@@ -126,21 +165,107 @@ export const purchasesApi = {
       status: 'draft',
       version: 1,
     };
-    return mockDb.put('purchases', record);
+    const saved = await mockDb.put('purchases', record);
+    await revisionsApi.record({
+      entity: 'purchase',
+      entityId: saved.id,
+      version: 1,
+      action: 'created',
+      reason: '',
+      before: null,
+      totalBefore: null,
+      totalAfter: saved.total.amount,
+    });
+    return saved;
   },
 
   update: async (id: string, version: number, input: PurchaseInput) => {
     const purchase = await current(id, version, 'draft');
-    return mockDb.put('purchases', { ...purchase, ...(await priced(input)), version: version + 1 });
+    return saveVersion(
+      purchase,
+      { ...purchase, ...(await priced(input)), version: version + 1 },
+      'edited',
+      '',
+    );
   },
 
-  confirm: async (id: string, version: number) => moveTo(await current(id, version, 'draft'), 'confirmed'),
+  confirm: async (id: string, version: number) => {
+    const purchase = await current(id, version, 'draft');
+    return saveVersion(purchase, { ...purchase, status: 'confirmed', version: version + 1 }, 'confirmed', '');
+  },
 
-  cancel: async (id: string, version: number) => moveTo(await current(id, version, 'confirmed'), 'cancelled'),
+  /**
+   * Edits a Confirmed purchase. Sales that lose their rooms keep the rest of their
+   * allocations; the part no longer supplied becomes Unallocated. `stamp` is the one the
+   * preview was worked out from.
+   */
+  updateConfirmed: async (
+    id: string,
+    version: number,
+    input: PurchaseInput,
+    reason: string,
+    stamp: string,
+  ) => {
+    const purchase = await current(id, version, 'confirmed');
+    const sources = await loadLedgerSources();
+    assertSameStamp(stamp, sources.stamp);
+    const after: Purchase = { ...purchase, ...(await priced(input)), version: version + 1 };
+    const change = purchaseChange(sources, id, await asLedgerPurchase(after));
+    const saved = await saveVersion(purchase, after, 'edited', reason);
+    await saveSaleChanges(change.changedSales, 'vendor-released', `${purchase.number} edited: ${reason}`);
+    return saved;
+  },
+
+  /** A Confirmed purchase is cancelled, never erased. The sales it supplied become Unallocated. */
+  cancel: async (id: string, version: number, reason: string, stamp: string) => {
+    const purchase = await current(id, version, 'confirmed');
+    const sources = await loadLedgerSources();
+    assertSameStamp(stamp, sources.stamp);
+    const change = purchaseChange(sources, id, null);
+    const saved = await saveVersion(
+      purchase,
+      { ...purchase, status: 'cancelled', version: version + 1 },
+      'cancelled',
+      reason,
+    );
+    await saveSaleChanges(change.changedSales, 'vendor-released', `${purchase.number} cancelled: ${reason}`);
+    return saved;
+  },
 
   /** Only a Draft can be deleted. A Confirmed purchase is cancelled, and stays on record. */
   remove: async (id: string, version: number) => {
     await current(id, version, 'draft');
     await mockDb.remove('purchases', id);
+  },
+
+  /** Part of a termination: the server saves this with the contracts' decisions as one change. */
+  terminate: async (
+    id: string,
+    version: number,
+    termination: NonNullable<Purchase['termination']>,
+    adjustments: Omit<Adjustment, 'id' | 'purchaseId' | 'effectiveDate' | 'reason'>[],
+  ) => {
+    const purchase = await current(id, version, 'confirmed');
+    const saved = await saveVersion(
+      purchase,
+      { ...purchase, status: 'terminated', termination, version: version + 1 },
+      'terminated',
+      termination.reason,
+    );
+    for (const adjustment of adjustments) {
+      await mockDb.put('adjustments', {
+        ...adjustment,
+        id: crypto.randomUUID(),
+        purchaseId: id,
+        effectiveDate: termination.effectiveDate,
+        reason: termination.reason,
+      } satisfies Adjustment);
+    }
+    return saved;
+  },
+
+  /** Throws a conflict unless the purchase is still this version of a Confirmed record. */
+  assertCurrent: async (id: string, version: number) => {
+    await current(id, version, 'confirmed');
   },
 };

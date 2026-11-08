@@ -11,7 +11,7 @@ import {
   trimToFree,
   unallocatedBlocks,
   type Supply,
-} from './allocation';
+} from '@/features/inventory';
 import { contractTotals, lineRate, type TotalsEntry } from './contract-totals';
 import { lineTags, overbookingPreview } from './overbooking';
 

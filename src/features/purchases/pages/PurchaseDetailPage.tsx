@@ -12,13 +12,17 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Stat } from '@/components/ui/Stat';
 import { calendarMonthsQuery, formatDay } from '@/features/calendar';
+import { HistoryCard, ImpactReviewDialog, type Impact } from '@/features/changes';
 import { currenciesQuery } from '@/features/currencies';
+import { hotelOptionsQuery } from '@/features/hotels';
+import { ledgerSourcesQuery } from '@/features/inventory';
 import { roomTypesQuery } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
 import { formatIsoDate, nightsBetween } from '@/lib/format/dates';
 import { formatMoney } from '@/lib/money/money';
 
 import {
+  adjustmentsQuery,
   purchaseDetailQuery,
   purchaseKeys,
   useCancelPurchase,
@@ -27,16 +31,23 @@ import {
 } from '../api/purchase.queries';
 import { CHARGE_BASIS_LABELS, MEAL_BASIS_LABELS } from '../components/meal-labels';
 import { PurchaseStatusBadge } from '../components/PurchaseStatusBadge';
+import { purchaseImpact } from '../domain/purchase-change';
 
 const PKR_FORMAT = { symbol: 'PKR', decimals: 2 };
 
-type PendingAction = 'confirm' | 'cancel' | 'delete';
+type PendingAction = 'confirm' | 'delete';
 
 export function PurchaseDetailPage() {
   const { id = '' } = useParams();
   const { data: purchase } = useSuspenseQuery(purchaseDetailQuery(id));
-  const [{ data: months }, { data: roomTypes }, { data: currencies }] = useSuspenseQueries({
-    queries: [calendarMonthsQuery, roomTypesQuery, currenciesQuery],
+  const [
+    { data: months },
+    { data: roomTypes },
+    { data: currencies },
+    { data: hotels },
+    { data: adjustments },
+  ] = useSuspenseQueries({
+    queries: [calendarMonthsQuery, roomTypesQuery, currenciesQuery, hotelOptionsQuery, adjustmentsQuery(id)],
   });
   const confirmPurchase = useConfirmPurchase();
   const cancelPurchase = useCancelPurchase();
@@ -45,6 +56,7 @@ export function PurchaseDetailPage() {
   const navigate = useNavigate();
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [actionError, setActionError] = useState<unknown>(null);
+  const [cancelReview, setCancelReview] = useState<{ impact: Impact; stamp: string } | null>(null);
 
   const { number, status, version, meal, currencyCode } = purchase;
   const format = currencies.find((item) => item.code === currencyCode) ?? {
@@ -61,9 +73,6 @@ export function PurchaseDetailPage() {
       if (pending === 'confirm') {
         await confirmPurchase.mutateAsync({ id, version });
         toast(`${number} confirmed`);
-      } else if (pending === 'cancel') {
-        await cancelPurchase.mutateAsync({ id, version });
-        toast(`${number} cancelled`);
       } else if (pending === 'delete') {
         await removePurchase.mutateAsync({ id, version });
         toast(`${number} deleted`);
@@ -76,7 +85,31 @@ export function PurchaseDetailPage() {
     setPending(null);
   }
 
-  const isBusy = confirmPurchase.isPending || cancelPurchase.isPending || removePurchase.isPending;
+  /** Shows which sales lose their vendor, worked out from the records as they are now. */
+  async function startCancel() {
+    setActionError(null);
+    try {
+      const sources = await queryClient.query(ledgerSourcesQuery);
+      setCancelReview({ impact: purchaseImpact(sources, id, null), stamp: sources.stamp });
+    } catch (error) {
+      setActionError(error);
+    }
+  }
+
+  async function handleCancel(reason: string) {
+    if (!cancelReview) return;
+    await cancelPurchase.mutateAsync({ id, version, reason, stamp: cancelReview.stamp });
+    toast(`${number} cancelled`);
+    setCancelReview(null);
+  }
+
+  const names = {
+    hotelName: (hotelId: string) =>
+      hotels.find((hotel) => hotel.id === hotelId)?.name ??
+      (hotelId === purchase.hotelId ? purchase.hotelName : hotelId),
+    roomTypeName: (typeId: string) => roomTypes.find((type) => type.id === typeId)?.name ?? typeId,
+  };
+  const isBusy = confirmPurchase.isPending || removePurchase.isPending;
 
   return (
     <>
@@ -109,14 +142,17 @@ export function PurchaseDetailPage() {
               </>
             )}
             {status === 'confirmed' && (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setPending('cancel');
-                }}
-              >
-                Cancel purchase
-              </Button>
+              <>
+                <Button variant="ghost" onClick={() => void startCancel()}>
+                  Cancel purchase
+                </Button>
+                <Link to={`/purchases/${id}/terminate`} className={buttonClass('secondary')}>
+                  Terminate
+                </Link>
+                <Link to={`/purchases/${id}/edit`} className={buttonClass('secondary')}>
+                  Edit
+                </Link>
+              </>
             )}
           </div>
         }
@@ -233,7 +269,62 @@ export function PurchaseDetailPage() {
             )}
           </div>
         </Card>
+
+        {purchase.termination && (
+          <Card>
+            <CardHeader
+              title="Terminated"
+              subtitle="Rooms count on the ledger only before the effective date"
+            />
+            <dl className="grid gap-x-6 gap-y-3 p-5 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="text-muted text-xs">Termination date</dt>
+                <dd className="text-foreground">{dayLabel(purchase.termination.terminationDate)}</dd>
+              </div>
+              <div>
+                <dt className="text-muted text-xs">First released night</dt>
+                <dd className="text-foreground">{dayLabel(purchase.termination.effectiveDate)}</dd>
+              </div>
+              <div className="sm:col-span-2">
+                <dt className="text-muted text-xs">Reason</dt>
+                <dd className="text-foreground whitespace-pre-line">{purchase.termination.reason}</dd>
+              </div>
+              {adjustments.map((adjustment) => (
+                <div key={adjustment.id}>
+                  <dt className="text-muted text-xs">
+                    {adjustment.kind === 'penalty' ? 'Penalty paid' : 'Refund received'}
+                  </dt>
+                  <dd className="text-foreground tabular-nums">
+                    {formatMoney(adjustment.amount.amount, {
+                      symbol: adjustment.amount.currencyCode,
+                      decimals: 2,
+                    })}{' '}
+                    <span className="text-muted text-xs">
+                      ({formatMoney(adjustment.amount.amountPkr, PKR_FORMAT)})
+                    </span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Card>
+        )}
+
+        <HistoryCard entity="purchase" entityId={id} money={format} />
       </div>
+
+      {cancelReview && (
+        <ImpactReviewDialog
+          title={`Cancel ${number}?`}
+          impact={cancelReview.impact}
+          names={names}
+          months={months}
+          confirmLabel="Cancel purchase"
+          onConfirm={handleCancel}
+          onCancel={() => {
+            setCancelReview(null);
+          }}
+        />
+      )}
 
       <ConfirmDialog
         open={pending === 'confirm'}
@@ -247,20 +338,6 @@ export function PurchaseDetailPage() {
       >
         {roomTotal} rooms for {nights} nights join the ledger at once. A confirmed purchase can no longer be
         edited here, only cancelled.
-      </ConfirmDialog>
-      <ConfirmDialog
-        open={pending === 'cancel'}
-        onCancel={() => {
-          setPending(null);
-        }}
-        onConfirm={() => void runAction()}
-        title={`Cancel ${number}?`}
-        confirmLabel="Cancel purchase"
-        tone="danger"
-        isBusy={isBusy}
-      >
-        {roomTotal} rooms for {nights} nights leave the ledger. The purchase stays on record as Cancelled, and
-        this cannot be undone.
       </ConfirmDialog>
       <ConfirmDialog
         open={pending === 'delete'}

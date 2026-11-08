@@ -1,19 +1,23 @@
 import { X } from 'lucide-react';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 
+import { cn } from '@/lib/cn';
+
 interface DialogProps {
   open: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
   footer?: ReactNode;
+  /** Wide fits a table, such as a before-and-after preview. */
+  size?: 'md' | 'lg';
 }
 
 /**
  * A modal on the native <dialog>: focus trap, Esc, the top layer and returning focus come
  * from the browser. The effect is legitimate: it synchronises React state with that API.
  */
-export function Dialog({ open, onClose, title, children, footer }: DialogProps) {
+export function Dialog({ open, onClose, title, children, footer, size = 'md' }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -45,7 +49,10 @@ export function Dialog({ open, onClose, title, children, footer }: DialogProps) 
         if (open) onClose();
       }}
       aria-labelledby={titleId}
-      className="rounded-card border-border bg-surface text-foreground shadow-overlay m-auto w-[calc(100%-2rem)] max-w-xl border p-0"
+      className={cn(
+        'rounded-card border-border bg-surface text-foreground shadow-overlay m-auto w-[calc(100%-2rem)] border p-0',
+        size === 'lg' ? 'max-w-3xl' : 'max-w-xl',
+      )}
     >
       <header className="border-border flex items-center justify-between gap-3 border-b px-5 py-3.5">
         <h2 id={titleId} className="text-sm font-semibold">

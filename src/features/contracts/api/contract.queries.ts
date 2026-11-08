@@ -1,7 +1,5 @@
 import { keepPreviousData, queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { ledgerKeys } from '@/features/inventory';
-
 import type { ContractInput, ContractListParams } from './contract.schemas';
 import { contractsApi } from './contracts.api';
 
@@ -44,14 +42,10 @@ interface VersionedInput {
   version: number;
 }
 
-/** A status change moves the ledger too, so both are refreshed. */
+/** A change moves the ledger, purchases' free rooms and history too, so everything is refreshed. */
 function useRefresh() {
   const queryClient = useQueryClient();
-  return () =>
-    Promise.all([
-      queryClient.invalidateQueries({ queryKey: contractKeys.all }),
-      queryClient.invalidateQueries({ queryKey: ledgerKeys.all }),
-    ]);
+  return () => queryClient.invalidateQueries();
 }
 
 export function useCreateContract() {
@@ -68,6 +62,21 @@ export function useUpdateContract() {
   });
 }
 
+export function useUpdateConfirmedContract() {
+  const refresh = useRefresh();
+  return useMutation({
+    mutationFn: ({
+      id,
+      version,
+      input,
+      reason,
+      stamp,
+    }: VersionedInput & { input: ContractInput; reason: string; stamp: string }) =>
+      contractsApi.updateConfirmed(id, version, input, reason, stamp),
+    onSuccess: refresh,
+  });
+}
+
 export function useConfirmContract() {
   const refresh = useRefresh();
   return useMutation({
@@ -79,7 +88,8 @@ export function useConfirmContract() {
 export function useCancelContract() {
   const refresh = useRefresh();
   return useMutation({
-    mutationFn: ({ id, version }: VersionedInput) => contractsApi.cancel(id, version),
+    mutationFn: ({ id, version, reason }: VersionedInput & { reason: string }) =>
+      contractsApi.cancel(id, version, reason),
     onSuccess: refresh,
   });
 }

@@ -79,12 +79,13 @@ describe('a pool', () => {
       hotelId: 'hotel-artal',
       checkIn,
       checkOut,
-      lines: [{ sourceTypeId: 'double', rooms }],
+      lines: [{ soldAsTypeId: 'double', sourceTypeId: 'double', rooms, allocations: [] }],
     });
     // The ledger reads only these fields of a contract.
     await mockDb.put('contracts', {
       id: 'contract-1',
       number: 'CON-0001',
+      version: 2,
       status: 'confirmed',
       hotels: [
         line('2027-05-08', '2027-05-14', 23),
@@ -129,9 +130,9 @@ describe('a pool', () => {
   it('shows the shortage again when a purchase is cancelled', async () => {
     const { user, router } = renderApp('/purchases/purchase-1');
     await user.click(await screen.findByRole('button', { name: 'Cancel purchase' }));
-    await user.click(
-      within(await screen.findByRole('dialog')).getByRole('button', { name: 'Cancel purchase' }),
-    );
+    const dialog = await screen.findByRole('dialog');
+    await user.type(within(dialog).getByLabelText(/^Reason/), 'Vendor withdrew');
+    await user.click(within(dialog).getByRole('button', { name: /^Cancel purchase/ }));
     await waitFor(() => {
       expect(screen.queryByRole('button', { name: 'Cancel purchase' })).not.toBeInTheDocument();
     });

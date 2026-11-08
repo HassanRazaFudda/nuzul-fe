@@ -107,6 +107,8 @@ interface ContractFormProps {
   context: ContractContext;
   today: string;
   cancelTo: string;
+  /** A Confirmed record ends in a review of what the change does, so the label says so. */
+  submitLabel?: string;
   /** Must reject on failure, so the error stays on screen. */
   onSave: (values: ContractFormValues) => Promise<void>;
 }
@@ -123,6 +125,7 @@ export function ContractForm({
   context,
   today,
   cancelTo,
+  submitLabel = 'Save as draft',
   onSave,
 }: ContractFormProps) {
   const form = useForm<ContractFormValues>({
@@ -364,7 +367,7 @@ export function ContractForm({
                 Cancel
               </Link>
               <Button type="submit" isLoading={isSubmitting}>
-                Save as draft
+                {submitLabel}
               </Button>
             </div>
           </Card>

@@ -6,6 +6,7 @@ const STATUS: Record<PurchaseStatus, { label: string; tone: BadgeTone }> = {
   draft: { label: 'Draft', tone: 'neutral' },
   confirmed: { label: 'Confirmed', tone: 'success' },
   cancelled: { label: 'Cancelled', tone: 'danger' },
+  terminated: { label: 'Terminated', tone: 'warning' },
 };
 
 export function PurchaseStatusBadge({ status }: { status: PurchaseStatus }) {
