@@ -69,15 +69,11 @@ export const NAVIGATION: NavGroup[] = [
         path: 'profit-loss',
         label: 'Profit & loss',
         icon: Scale,
-        purpose:
-          'Weighted-average profit by stay date and by contract, with overbooked rooms shown as cost unknown, in a chosen currency.',
       },
       {
         path: 'reports',
         label: 'Reports',
         icon: ChartColumn,
-        purpose:
-          'Sales by date, agent, hotel and vendor; sold and unsold inventory; unsold cost exposure; vendor-wise margin.',
       },
     ],
   },

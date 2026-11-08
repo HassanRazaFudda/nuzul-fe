@@ -37,18 +37,25 @@ export interface PurchaseTotals {
   total: string;
 }
 
+/** A separately bought meal on one purchase line, before rounding. */
+export function mealCostOfLine(
+  { rooms, personsPerRoom }: Pick<CostLine, 'rooms' | 'personsPerRoom'>,
+  nights: number,
+  rate: string,
+  basis: MealBasis,
+) {
+  switch (basis) {
+    case 'perPersonPerNight':
+      return dec(rate).times(rooms).times(personsPerRoom).times(nights);
+    case 'perRoomPerNight':
+      return dec(rate).times(rooms).times(nights);
+    case 'perPersonPerStay':
+      return dec(rate).times(rooms).times(personsPerRoom);
+  }
+}
+
 function fullMealCost(lines: CostLine[], nights: number, rate: string, basis: MealBasis) {
-  const costs = lines.map(({ rooms, personsPerRoom }) => {
-    switch (basis) {
-      case 'perPersonPerNight':
-        return dec(rate).times(rooms).times(personsPerRoom).times(nights);
-      case 'perRoomPerNight':
-        return dec(rate).times(rooms).times(nights);
-      case 'perPersonPerStay':
-        return dec(rate).times(rooms).times(personsPerRoom);
-    }
-  });
-  return sum(costs);
+  return sum(lines.map((line) => mealCostOfLine(line, nights, rate, basis)));
 }
 
 export function purchaseTotals(

@@ -13,9 +13,9 @@ describe('the app shell', () => {
   });
 
   it('says what an unbuilt module will do', async () => {
-    renderApp('/profit-loss');
+    renderApp('/users');
 
-    expect(await screen.findByRole('heading', { name: 'Profit & loss' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Users & permissions' })).toBeInTheDocument();
     expect(screen.getByText('Not built yet')).toBeInTheDocument();
   });
 

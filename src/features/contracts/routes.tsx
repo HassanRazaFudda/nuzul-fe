@@ -54,6 +54,19 @@ export function contractRoutes(queryClient: QueryClient): RouteObject[] {
       lazy: { Component: async () => (await import('./pages/ContractDetailPage')).ContractDetailPage },
     },
     {
+      path: ':id/print',
+      loader: async ({ params }) => {
+        await Promise.all([
+          queryClient.query(contractDetailQuery(params.id ?? '')),
+          queryClient.query(calendarMonthsQuery),
+          queryClient.query(roomTypesQuery),
+          queryClient.query(currenciesQuery),
+        ]);
+        return null;
+      },
+      lazy: { Component: async () => (await import('./pages/ContractPrintPage')).ContractPrintPage },
+    },
+    {
       path: ':id/edit',
       loader: async ({ params }) => {
         const id = params.id ?? '';

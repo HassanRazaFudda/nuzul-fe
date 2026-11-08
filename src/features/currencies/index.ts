@@ -3,6 +3,7 @@ export { currencyRoutes } from './routes';
 export { currenciesQuery, exchangeRatesQuery } from './api/currency.queries';
 export {
   currencySchema,
+  exchangeRateSchema,
   DEFAULT_CURRENCY,
   RATE_BASE_CURRENCY,
   type CurrencyRecord,

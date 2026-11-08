@@ -10,6 +10,7 @@ import { ledgerRoutes } from '@/features/inventory';
 import { overviewRoute } from '@/features/overview';
 import { agentRoutes, vendorRoutes } from '@/features/partners';
 import { purchaseRoutes } from '@/features/purchases';
+import { profitLossRoutes, reportRoutes } from '@/features/reports';
 import { roomTypeRoutes } from '@/features/room-types';
 import { terminationRoutes } from '@/features/termination';
 
@@ -39,6 +40,8 @@ export function createAppRouter(queryClient: QueryClient, createRouter: CreateRo
             },
             { path: 'contracts', children: contractRoutes(queryClient) },
             { path: 'inventory', children: ledgerRoutes(queryClient) },
+            { path: 'profit-loss', children: profitLossRoutes(queryClient) },
+            { path: 'reports', children: reportRoutes(queryClient) },
             { path: 'hotels', children: hotelRoutes(queryClient) },
             { path: 'vendors', children: vendorRoutes() },
             { path: 'agents', children: agentRoutes() },

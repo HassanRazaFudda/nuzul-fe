@@ -14,6 +14,8 @@ import { overbookedPoolsQuery } from '@/features/inventory';
 import { partnerOptionsQuery } from '@/features/partners';
 import { mockDb } from '@/mock-api/db';
 
+import { MonthFigures } from '../components/MonthFigures';
+
 export function OverviewPage() {
   const queryClient = useQueryClient();
   const [{ data: hotels }, { data: vendors }, { data: agents }, { data: months }, { data: overbooked }] =
@@ -41,7 +43,7 @@ export function OverviewPage() {
     <>
       <PageHeader title="Overview" subtitle="Hotel contracts, purchasing and the rooms ledger" />
       <div className="space-y-5 p-5 lg:p-8">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Stat
             label="Overbooked pools"
             value={
@@ -52,6 +54,7 @@ export function OverviewPage() {
             hint="Hotel and room types short on a night"
             {...(overbooked > 0 ? { tone: 'danger' as const } : {})}
           />
+          <MonthFigures />
           <Stat label="Active hotels" value={hotels.length} />
           <Stat label="Active vendors" value={vendors.length} />
           <Stat label="Active agents" value={agents.length} />

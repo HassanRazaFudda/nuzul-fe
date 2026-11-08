@@ -64,7 +64,7 @@ export function AppLayout() {
 
   return (
     <div
-      className="min-h-dvh lg:grid lg:transition-[grid-template-columns] lg:duration-200"
+      className="min-h-dvh lg:grid lg:transition-[grid-template-columns] lg:duration-200 print:block"
       style={{
         gridTemplateColumns: `${isCollapsed ? 'var(--sidebar-rail-width)' : 'var(--sidebar-width)'} minmax(0, 1fr)`,
       }}
@@ -77,7 +77,7 @@ export function AppLayout() {
       </a>
 
       {/* Desktop sidebar */}
-      <aside className="border-border bg-surface sticky top-0 hidden h-dvh flex-col overflow-hidden border-e lg:flex">
+      <aside className="border-border bg-surface sticky top-0 hidden h-dvh flex-col overflow-hidden border-e lg:flex print:hidden">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2 py-4">
             <Mark />
@@ -113,7 +113,7 @@ export function AppLayout() {
       </aside>
 
       {/* Mobile top bar */}
-      <div className="border-border bg-surface flex items-center gap-3 border-b px-4 py-3 lg:hidden">
+      <div className="border-border bg-surface flex items-center gap-3 border-b px-4 py-3 lg:hidden print:hidden">
         <button
           type="button"
           onClick={() => {

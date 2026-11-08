@@ -142,6 +142,9 @@ export function ContractDetailPage() {
           <div className="flex flex-wrap items-center gap-2">
             <ContractTags tags={contract.tags} />
             <ContractStatusBadge status={status} />
+            <Link to={`/contracts/${id}/print`} className={buttonClass('ghost')}>
+              Print
+            </Link>
             {status === 'draft' && (
               <>
                 <Button
