@@ -1,0 +1,6 @@
+[
+  {"id":"user-admin","name":"Sample Admin","active":true,"permissions":["purchase.view","purchase.create","purchase.edit","purchase.delete","purchase.confirm","purchase.terminate","purchase.unlock","contract.view","contract.create","contract.edit","contract.delete","contract.confirm","contract.unlock","inventory.view","inventory.override_overbooking","report.view","report.export","finance.view_cost","finance.set_rate","currency.manage_rates","period.close","directory.manage","calendar.manage","conversion.manage","settings.manage","user.manage","permission.assign","audit.view"]},
+  {"id":"user-purchasing","name":"Sample Purchasing","active":true,"permissions":["purchase.view","purchase.create","purchase.edit","purchase.delete","purchase.confirm","purchase.terminate","inventory.view","directory.manage","finance.view_cost"]},
+  {"id":"user-sales","name":"Sample Sales","active":true,"permissions":["contract.view","contract.create","contract.edit","contract.delete","contract.confirm","inventory.view","inventory.override_overbooking"]},
+  {"id":"user-accounts","name":"Sample Accounts","active":true,"permissions":["report.view","report.export","finance.view_cost","finance.set_rate","currency.manage_rates","purchase.view","contract.view","inventory.view"]}
+]

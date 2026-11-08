@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { TabBar } from '@/components/ui/TabBar';
 import { currenciesQuery } from '@/features/currencies';
+import { useCan } from '@/lib/auth/session';
 import { createListParams } from '@/lib/router/useListParams';
 
 import { cityOptionsQuery, hotelListQuery, useSaveHotel, useSetHotelActive } from '../api/hotel.queries';
@@ -26,6 +27,8 @@ const useHotelListParams = createListParams({
 const isSortField = (id: string): id is HotelSortField => HOTEL_SORT_FIELDS.some((field) => field === id);
 
 export function HotelsPage() {
+  const can = useCan();
+  const canManage = can('directory.manage');
   const { params, updateParams } = useHotelListParams();
   const query = useQuery(hotelListQuery(params));
   // Loaded by the page, not the form, so opening the form never suspends the page.
@@ -64,14 +67,16 @@ export function HotelsPage() {
         title="Hotels"
         subtitle="Where rooms are bought and sold"
         action={
-          <Button
-            icon={<Plus aria-hidden className="size-4" />}
-            onClick={() => {
-              setEditing('new');
-            }}
-          >
-            Add hotel
-          </Button>
+          canManage && (
+            <Button
+              icon={<Plus aria-hidden className="size-4" />}
+              onClick={() => {
+                setEditing('new');
+              }}
+            >
+              Add hotel
+            </Button>
+          )
         }
       />
       <div className="space-y-4 p-5 lg:p-8">
@@ -88,7 +93,7 @@ export function HotelsPage() {
         />
         <DataList
           caption="Hotels"
-          columns={columns}
+          columns={canManage ? columns : columns.filter((column) => column.id !== 'actions')}
           getRowId={(hotel) => hotel.id}
           query={query}
           params={params}

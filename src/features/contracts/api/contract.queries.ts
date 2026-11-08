@@ -102,3 +102,21 @@ export function useRemoveContract() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: contractKeys.lists() }),
   });
 }
+
+export function useSetContractLocked() {
+  const refresh = useRefresh();
+  return useMutation({
+    mutationFn: ({ id, version, locked }: VersionedInput & { locked: boolean }) =>
+      contractsApi.setLocked(id, version, locked),
+    onSuccess: refresh,
+  });
+}
+
+export function useRestoreContract() {
+  const refresh = useRefresh();
+  return useMutation({
+    mutationFn: ({ id, version, reason, stamp }: VersionedInput & { reason: string; stamp: string }) =>
+      contractsApi.restore(id, version, reason, stamp),
+    onSuccess: refresh,
+  });
+}

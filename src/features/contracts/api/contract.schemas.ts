@@ -11,7 +11,7 @@ const moneyLineSchema = z.object({
   amountPkr: z.string(),
 });
 
-export const CONTRACT_STATUSES = ['draft', 'confirmed', 'cancelled'] as const;
+export const CONTRACT_STATUSES = ['draft', 'confirmed', 'locked', 'cancelled'] as const;
 export type ContractStatus = (typeof CONTRACT_STATUSES)[number];
 
 export const MEAL_PLANS = ['perNightPerPerson', 'halfboard', 'fullboard'] as const;

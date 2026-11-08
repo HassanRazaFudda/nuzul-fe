@@ -24,6 +24,7 @@ import type { Hotel } from '@/features/hotels';
 import type { Partner } from '@/features/partners';
 import type { RoomType } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
+import { useCan } from '@/lib/auth/session';
 import { rateOn } from '@/lib/money/money';
 
 import type { PurchaseView } from '../api/purchase.schemas';
@@ -132,6 +133,7 @@ export function PurchaseForm({
   const checkOut = useWatch({ control: form.control, name: 'checkOut' });
   const currencyCode = useWatch({ control: form.control, name: 'currencyCode' });
   const [showSummary, setShowSummary] = useState(false);
+  const canSetRate = useCan()('finance.set_rate');
   const [saveError, setSaveError] = useState<unknown>(null);
   // The save itself navigates away, so leaving while it runs needs no question. A suggested
   // purchase counts as unsaved work from the start.
@@ -302,7 +304,7 @@ export function PurchaseForm({
                     <Input
                       {...field}
                       inputMode="decimal"
-                      readOnly={currencyCode === RATE_BASE_CURRENCY}
+                      readOnly={currencyCode === RATE_BASE_CURRENCY || !canSetRate}
                       {...form.register('rateToPkr')}
                     />
                   )}

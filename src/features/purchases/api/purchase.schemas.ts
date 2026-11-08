@@ -10,7 +10,7 @@ const moneyLineSchema = z.object({
   amountPkr: z.string(),
 });
 
-export const PURCHASE_STATUSES = ['draft', 'confirmed', 'cancelled', 'terminated'] as const;
+export const PURCHASE_STATUSES = ['draft', 'confirmed', 'locked', 'cancelled', 'terminated'] as const;
 export type PurchaseStatus = (typeof PURCHASE_STATUSES)[number];
 
 export const MEAL_BASES = ['perPersonPerNight', 'perRoomPerNight', 'perPersonPerStay'] as const;

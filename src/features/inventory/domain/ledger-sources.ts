@@ -17,7 +17,8 @@ export interface CountableRecord {
 /** Records as they count: Terminated ones end at their effective date, others drop out. */
 export function countingPurchases<T extends CountableRecord>(records: readonly T[]): T[] {
   return records.flatMap((record) => {
-    if (record.status === 'confirmed') return [record];
+    // Locked records still count; they only cannot be changed.
+    if (record.status === 'confirmed' || record.status === 'locked') return [record];
     if (record.status !== 'terminated' || !record.termination) return [];
     const { effectiveDate } = record.termination;
     if (effectiveDate <= record.checkIn) return [];

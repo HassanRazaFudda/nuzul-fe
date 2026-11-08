@@ -5,6 +5,7 @@ import type { PurchaseStatus } from '../api/purchase.schemas';
 const STATUS: Record<PurchaseStatus, { label: string; tone: BadgeTone }> = {
   draft: { label: 'Draft', tone: 'neutral' },
   confirmed: { label: 'Confirmed', tone: 'success' },
+  locked: { label: 'Locked', tone: 'brand' },
   cancelled: { label: 'Cancelled', tone: 'danger' },
   terminated: { label: 'Terminated', tone: 'warning' },
 };

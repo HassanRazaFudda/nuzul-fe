@@ -17,6 +17,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
+import type { Permission } from '@/lib/auth/permissions';
+
 export interface NavItem {
   /** Path under the root; empty for the overview. */
   path: string;
@@ -24,6 +26,8 @@ export interface NavItem {
   icon: LucideIcon;
   /** What the module will do, shown until it is built. */
   purpose?: string;
+  /** Shown when the signed-in user holds any of these. Every one, when there are none. */
+  permissions?: readonly Permission[];
 }
 
 export interface NavGroup {
@@ -41,16 +45,19 @@ export const NAVIGATION: NavGroup[] = [
         path: 'purchases',
         label: 'Purchases',
         icon: ShoppingCart,
+        permissions: ['purchase.view'],
       },
       {
         path: 'contracts',
         label: 'Sales contracts',
         icon: FileSignature,
+        permissions: ['contract.view'],
       },
       {
         path: 'inventory',
         label: 'Rooms ledger',
         icon: BookOpenCheck,
+        permissions: ['inventory.view'],
       },
     ],
   },
@@ -69,11 +76,13 @@ export const NAVIGATION: NavGroup[] = [
         path: 'profit-loss',
         label: 'Profit & loss',
         icon: Scale,
+        permissions: ['finance.view_cost'],
       },
       {
         path: 'reports',
         label: 'Reports',
         icon: ChartColumn,
+        permissions: ['report.view'],
       },
     ],
   },
@@ -87,13 +96,13 @@ export const NAVIGATION: NavGroup[] = [
         path: 'users',
         label: 'Users & permissions',
         icon: UserCog,
-        purpose: 'Staff logins and the permissions given to each person.',
+        permissions: ['user.manage', 'permission.assign'],
       },
       {
         path: 'audit',
         label: 'Audit log',
         icon: History,
-        purpose: 'Who changed what and when, with the values before and after.',
+        permissions: ['audit.view'],
       },
       { path: 'design', label: 'Design system', icon: Palette },
     ],

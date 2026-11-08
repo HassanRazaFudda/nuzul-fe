@@ -22,6 +22,8 @@ import hotels from './seed/hotels.json';
 import purchases from './seed/purchases.json';
 import revisions from './seed/revisions.json';
 import roomTypes from './seed/roomTypes.json';
+import session from './seed/session.json';
+import users from './seed/users.json';
 import vendors from './seed/vendors.json';
 
 /** Records are validated by each feature's schema, so here they are only known to have an id. */
@@ -44,6 +46,8 @@ const SEED = {
   contracts,
   revisions,
   adjustments,
+  users,
+  session,
 } satisfies Record<string, StoredRecord[]>;
 
 export type CollectionName = keyof typeof SEED;
@@ -51,7 +55,7 @@ export type CollectionName = keyof typeof SEED;
 const NAMES = Object.keys(SEED) as CollectionName[];
 
 /** Bump whenever a collection changes. Existing data stays; new collections get their seed. */
-const DB_VERSION = 6;
+const DB_VERSION = 7;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;

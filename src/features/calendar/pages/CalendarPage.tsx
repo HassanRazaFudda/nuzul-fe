@@ -10,6 +10,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { useCan } from '@/lib/auth/session';
 import { dayNumber, isoDate } from '@/lib/format/dates';
 
 import { calendarMonthsQuery, useRemoveCalendarMonth, useSaveCalendarMonth } from '../api/calendar.queries';
@@ -21,6 +22,8 @@ import { calendarProblems, sortMonths, type CalendarMonth } from '../domain/cale
 const USUAL_MONTH_DAYS = 30;
 
 export function CalendarPage() {
+  const can = useCan();
+  const canManage = can('calendar.manage');
   const { data: months } = useSuspenseQuery(calendarMonthsQuery);
   const saveMonth = useSaveCalendarMonth();
   const removeMonth = useRemoveCalendarMonth();
@@ -62,14 +65,16 @@ export function CalendarPage() {
         title="Calendar"
         subtitle="Months, day counts and their English dates"
         action={
-          <Button
-            icon={<Plus aria-hidden className="size-4" />}
-            onClick={() => {
-              setEditing('new');
-            }}
-          >
-            Add month
-          </Button>
+          canManage && (
+            <Button
+              icon={<Plus aria-hidden className="size-4" />}
+              onClick={() => {
+                setEditing('new');
+              }}
+            >
+              Add month
+            </Button>
+          )
         }
       />
       <div className="space-y-5 p-5 lg:p-8">
@@ -85,7 +90,7 @@ export function CalendarPage() {
         <Card>
           <DataTable
             caption="Calendar months"
-            columns={columns}
+            columns={canManage ? columns : columns.filter((column) => column.id !== 'actions')}
             data={sorted}
             getRowId={(month) => month.id}
             sort={undefined}

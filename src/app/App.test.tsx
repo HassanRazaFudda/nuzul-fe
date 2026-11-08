@@ -12,13 +12,6 @@ describe('the app shell', () => {
     expect(screen.getByText('This is a prototype')).toBeInTheDocument();
   });
 
-  it('says what an unbuilt module will do', async () => {
-    renderApp('/users');
-
-    expect(await screen.findByRole('heading', { name: 'Users & permissions' })).toBeInTheDocument();
-    expect(screen.getByText('Not built yet')).toBeInTheDocument();
-  });
-
   it('collapses the sidebar and keeps every link reachable by name', async () => {
     const { user } = renderApp('/');
     await screen.findByRole('heading', { name: 'Overview' });

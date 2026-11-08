@@ -14,6 +14,8 @@ interface ConfirmDialogProps {
   cancelLabel?: string;
   tone?: 'default' | 'danger';
   isBusy?: boolean;
+  /** When going ahead is not allowed; the text says why. */
+  isConfirmDisabled?: boolean;
 }
 
 /** Asks before anything hard to undo. */
@@ -27,6 +29,7 @@ export function ConfirmDialog({
   cancelLabel = 'Cancel',
   tone = 'default',
   isBusy = false,
+  isConfirmDisabled = false,
 }: ConfirmDialogProps) {
   return (
     <Dialog
@@ -38,7 +41,12 @@ export function ConfirmDialog({
           <Button variant="secondary" onClick={onCancel} disabled={isBusy}>
             {cancelLabel}
           </Button>
-          <Button variant={tone === 'danger' ? 'danger' : 'primary'} onClick={onConfirm} isLoading={isBusy}>
+          <Button
+            variant={tone === 'danger' ? 'danger' : 'primary'}
+            onClick={onConfirm}
+            isLoading={isBusy}
+            disabled={isConfirmDisabled}
+          >
             {confirmLabel}
           </Button>
         </>

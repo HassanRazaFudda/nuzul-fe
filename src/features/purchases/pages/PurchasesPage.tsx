@@ -10,6 +10,7 @@ import { TabBar } from '@/components/ui/TabBar';
 import { calendarMonthsQuery } from '@/features/calendar';
 import { currenciesQuery } from '@/features/currencies';
 import { hotelOptionsQuery } from '@/features/hotels';
+import { useCan } from '@/lib/auth/session';
 import { createListParams } from '@/lib/router/useListParams';
 
 import { purchaseListQuery } from '../api/purchase.queries';
@@ -37,6 +38,10 @@ const isSortField = (id: string): id is PurchaseSortField =>
 const EMPTY: Record<PurchaseStatus, { title: string; hint: string }> = {
   draft: { title: 'No drafts', hint: 'Drafts appear here and never affect the ledger.' },
   confirmed: { title: 'No confirmed purchases', hint: 'Add a purchase, then confirm it.' },
+  locked: {
+    title: 'No locked purchases',
+    hint: 'Locked purchases count on the ledger and cannot be changed.',
+  },
   cancelled: { title: 'No cancelled purchases', hint: 'Cancelled purchases stay here for history.' },
   terminated: {
     title: 'No terminated purchases',
@@ -45,6 +50,8 @@ const EMPTY: Record<PurchaseStatus, { title: string; hint: string }> = {
 };
 
 export function PurchasesPage() {
+  const can = useCan();
+  const canManage = can('purchase.create');
   const { params, updateParams } = usePurchaseListParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const hotelId = searchParams.get(HOTEL_PARAM) ?? '';
@@ -78,10 +85,12 @@ export function PurchasesPage() {
         title="Purchases"
         subtitle="Room blocks bought from vendors"
         action={
-          <Link to="/purchases/new" className={buttonClass('primary')}>
-            <Plus aria-hidden className="size-4" />
-            Add purchase
-          </Link>
+          canManage && (
+            <Link to="/purchases/new" className={buttonClass('primary')}>
+              <Plus aria-hidden className="size-4" />
+              Add purchase
+            </Link>
+          )
         }
       />
       <div className="space-y-4 p-5 lg:p-8">
@@ -94,6 +103,7 @@ export function PurchasesPage() {
           items={[
             { value: 'draft', label: 'Draft', count: counts?.draft },
             { value: 'confirmed', label: 'Confirmed', count: counts?.confirmed },
+            { value: 'locked', label: 'Locked', count: counts?.locked },
             { value: 'cancelled', label: 'Cancelled', count: counts?.cancelled },
             { value: 'terminated', label: 'Terminated', count: counts?.terminated },
           ]}

@@ -9,6 +9,7 @@ import { ApiError } from '@/lib/api/api-error';
 import { nightsBetween } from '@/lib/format/dates';
 import { dec, roundTo } from '@/lib/money/money';
 import { mockDb } from '@/mock-api/db';
+import { assertCan } from '@/mock-api/session';
 
 import { converter, MissingRateError, type Convert } from '../domain/currency';
 import { nightFacts, type PurchaseRecord, type SaleRecord } from '../domain/night-facts';
@@ -81,7 +82,10 @@ async function load() {
       })),
     };
   });
-  const confirmed = contracts.filter((contract) => contract.status === 'confirmed');
+  // Locked contracts still count; they only cannot be changed.
+  const confirmed = contracts.filter(
+    (contract) => contract.status === 'confirmed' || contract.status === 'locked',
+  );
   return {
     purchases: purchaseRecords,
     contracts,
@@ -130,6 +134,7 @@ const range = (params: ReportParams) => ({ from: params.from, to: params.to });
 /** Every report the server would serve. Each loads fresh records and works its figures out. */
 export const reportsApi = {
   profitAndLoss: async (params: ReportParams) => {
+    await assertCan('report.view', 'finance.view_cost');
     const data = await load();
     const { convert, decimals } = convertFor(data, params);
     const result = profitAndLoss(
@@ -157,6 +162,7 @@ export const reportsApi = {
   },
 
   contractProfit: async (params: ReportParams) => {
+    await assertCan('report.view', 'finance.view_cost');
     const data = await load();
     const { convert, decimals } = convertFor(data, params);
     const rows = contractProfit(nightFacts(data.purchases, data.sales, convert), range(params), decimals);
@@ -164,6 +170,7 @@ export const reportsApi = {
   },
 
   vendorMargin: async (params: ReportParams) => {
+    await assertCan('report.view', 'finance.view_cost');
     const data = await load();
     const { convert, decimals } = convertFor(data, params);
     const rows = vendorMargin(
@@ -177,6 +184,7 @@ export const reportsApi = {
   },
 
   inventory: async (params: ReportParams) => {
+    await assertCan('report.view', 'finance.view_cost');
     const data = await load();
     const { convert, decimals } = convertFor(data, params);
     const rows = inventoryRows(
@@ -189,6 +197,7 @@ export const reportsApi = {
   },
 
   sales: async (params: SalesParams) => {
+    await assertCan('report.view');
     const data = await load();
     const { convert, decimals } = convertFor(data, params);
     const contracts = data.contracts.filter(

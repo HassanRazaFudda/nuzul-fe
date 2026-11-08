@@ -18,6 +18,7 @@ import { hotelOptionsQuery } from '@/features/hotels';
 import { ledgerSourcesQuery } from '@/features/inventory';
 import { roomTypesQuery } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
+import { useCan } from '@/lib/auth/session';
 import { formatIsoDate, nightsBetween } from '@/lib/format/dates';
 import { formatMoney } from '@/lib/money/money';
 
@@ -26,6 +27,8 @@ import {
   purchaseDetailQuery,
   purchaseKeys,
   useCancelPurchase,
+  useRestorePurchase,
+  useSetPurchaseLocked,
   useConfirmPurchase,
   useRemovePurchase,
 } from '../api/purchase.queries';
@@ -51,12 +54,17 @@ export function PurchaseDetailPage() {
   });
   const confirmPurchase = useConfirmPurchase();
   const cancelPurchase = useCancelPurchase();
+  const restorePurchase = useRestorePurchase();
+  const setLocked = useSetPurchaseLocked();
+  const can = useCan();
   const removePurchase = useRemovePurchase();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [actionError, setActionError] = useState<unknown>(null);
-  const [cancelReview, setCancelReview] = useState<{ impact: Impact; stamp: string } | null>(null);
+  const [review, setReview] = useState<{ kind: 'cancel' | 'restore'; impact: Impact; stamp: string } | null>(
+    null,
+  );
 
   const { number, status, version, meal, currencyCode } = purchase;
   const format = currencies.find((item) => item.code === currencyCode) ?? {
@@ -86,21 +94,53 @@ export function PurchaseDetailPage() {
   }
 
   /** Shows which sales lose their vendor, worked out from the records as they are now. */
-  async function startCancel() {
+  /** Works out what cancelling or restoring does, from the records as they are now. */
+  async function startReview(kind: 'cancel' | 'restore') {
     setActionError(null);
     try {
       const sources = await queryClient.query(ledgerSourcesQuery);
-      setCancelReview({ impact: purchaseImpact(sources, id, null), stamp: sources.stamp });
+      const replacement =
+        kind === 'cancel'
+          ? null
+          : {
+              id,
+              number,
+              hotelId: purchase.hotelId,
+              vendorId: purchase.vendorId,
+              vendorName: purchase.vendorName,
+              checkIn: purchase.checkIn,
+              checkOut: purchase.checkOut,
+              lines: purchase.lines.map(({ roomTypeId, rooms }) => ({ roomTypeId, rooms })),
+            };
+      setReview({ kind, impact: purchaseImpact(sources, id, replacement), stamp: sources.stamp });
     } catch (error) {
       setActionError(error);
     }
   }
 
-  async function handleCancel(reason: string) {
-    if (!cancelReview) return;
-    await cancelPurchase.mutateAsync({ id, version, reason, stamp: cancelReview.stamp });
-    toast(`${number} cancelled`);
-    setCancelReview(null);
+  async function handleReview(reason: string) {
+    if (!review) return;
+    if (review.kind === 'cancel') {
+      await cancelPurchase.mutateAsync({ id, version, reason, stamp: review.stamp });
+      toast(`${number} cancelled`);
+    } else {
+      await restorePurchase.mutateAsync({ id, version, reason, stamp: review.stamp });
+      toast(`${number} restored`);
+    }
+    setReview(null);
+  }
+
+  function handleLock(locked: boolean) {
+    setActionError(null);
+    setLocked.mutate(
+      { id, version, locked },
+      {
+        onSuccess: () => {
+          toast(`${number} ${locked ? 'locked' : 'unlocked'}`);
+        },
+        onError: setActionError,
+      },
+    );
   }
 
   const names = {
@@ -121,38 +161,77 @@ export function PurchaseDetailPage() {
             <PurchaseStatusBadge status={status} />
             {status === 'draft' && (
               <>
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setPending('delete');
-                  }}
-                >
-                  Delete
-                </Button>
-                <Link to={`/purchases/${id}/edit`} className={buttonClass('secondary')}>
-                  Edit
-                </Link>
-                <Button
-                  onClick={() => {
-                    setPending('confirm');
-                  }}
-                >
-                  Confirm
-                </Button>
+                {can('purchase.delete') && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setPending('delete');
+                    }}
+                  >
+                    Delete
+                  </Button>
+                )}
+                {can('purchase.edit') && (
+                  <Link to={`/purchases/${id}/edit`} className={buttonClass('secondary')}>
+                    Edit
+                  </Link>
+                )}
+                {can('purchase.confirm') && (
+                  <Button
+                    onClick={() => {
+                      setPending('confirm');
+                    }}
+                  >
+                    Confirm
+                  </Button>
+                )}
               </>
             )}
             {status === 'confirmed' && (
               <>
-                <Button variant="ghost" onClick={() => void startCancel()}>
-                  Cancel purchase
-                </Button>
-                <Link to={`/purchases/${id}/terminate`} className={buttonClass('secondary')}>
-                  Terminate
-                </Link>
-                <Link to={`/purchases/${id}/edit`} className={buttonClass('secondary')}>
-                  Edit
-                </Link>
+                {can('purchase.delete') && (
+                  <Button variant="ghost" onClick={() => void startReview('cancel')}>
+                    Cancel purchase
+                  </Button>
+                )}
+                {can('purchase.unlock') && (
+                  <Button
+                    variant="ghost"
+                    isLoading={setLocked.isPending}
+                    onClick={() => {
+                      handleLock(true);
+                    }}
+                  >
+                    Lock
+                  </Button>
+                )}
+                {can('purchase.terminate') && (
+                  <Link to={`/purchases/${id}/terminate`} className={buttonClass('secondary')}>
+                    Terminate
+                  </Link>
+                )}
+                {can('purchase.edit') && (
+                  <Link to={`/purchases/${id}/edit`} className={buttonClass('secondary')}>
+                    Edit
+                  </Link>
+                )}
               </>
+            )}
+            {status === 'locked' && can('purchase.unlock') && (
+              <Button
+                variant="secondary"
+                isLoading={setLocked.isPending}
+                onClick={() => {
+                  handleLock(false);
+                }}
+              >
+                Unlock
+              </Button>
+            )}
+            {status === 'cancelled' && can('purchase.edit') && (
+              <Button variant="secondary" onClick={() => void startReview('restore')}>
+                Restore
+              </Button>
             )}
           </div>
         }
@@ -312,16 +391,17 @@ export function PurchaseDetailPage() {
         <HistoryCard entity="purchase" entityId={id} money={format} />
       </div>
 
-      {cancelReview && (
+      {review && (
         <ImpactReviewDialog
-          title={`Cancel ${number}?`}
-          impact={cancelReview.impact}
+          title={review.kind === 'cancel' ? `Cancel ${number}?` : `Restore ${number}?`}
+          impact={review.impact}
           names={names}
           months={months}
-          confirmLabel="Cancel purchase"
-          onConfirm={handleCancel}
+          confirmLabel={review.kind === 'cancel' ? 'Cancel purchase' : 'Restore purchase'}
+          canOverride={can('inventory.override_overbooking')}
+          onConfirm={handleReview}
           onCancel={() => {
-            setCancelReview(null);
+            setReview(null);
           }}
         />
       )}

@@ -7,6 +7,7 @@ import { toast } from '@/components/feedback/toast';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { TabBar } from '@/components/ui/TabBar';
+import { useCan } from '@/lib/auth/session';
 import { createListParams } from '@/lib/router/useListParams';
 
 import { partnerListQuery, useSavePartner, useSetPartnerActive } from '../api/partner.queries';
@@ -39,6 +40,8 @@ interface PartnersListProps {
 
 /** Vendors and agents are the same screen, on the buying and the selling side. */
 export function PartnersList({ kind, title, subtitle, noun }: PartnersListProps) {
+  const can = useCan();
+  const canManage = can('directory.manage');
   const { params, updateParams } = usePartnerListParams();
   const query = useQuery(partnerListQuery(kind, params));
   const savePartner = useSavePartner(kind);
@@ -73,14 +76,16 @@ export function PartnersList({ kind, title, subtitle, noun }: PartnersListProps)
         title={title}
         subtitle={subtitle}
         action={
-          <Button
-            icon={<Plus aria-hidden className="size-4" />}
-            onClick={() => {
-              setEditing('new');
-            }}
-          >
-            Add {noun}
-          </Button>
+          canManage && (
+            <Button
+              icon={<Plus aria-hidden className="size-4" />}
+              onClick={() => {
+                setEditing('new');
+              }}
+            >
+              Add {noun}
+            </Button>
+          )
         }
       />
       <div className="space-y-4 p-5 lg:p-8">
@@ -97,7 +102,7 @@ export function PartnersList({ kind, title, subtitle, noun }: PartnersListProps)
         />
         <DataList
           caption={title}
-          columns={columns}
+          columns={canManage ? columns : columns.filter((column) => column.id !== 'actions')}
           getRowId={(partner) => partner.id}
           query={query}
           params={params}

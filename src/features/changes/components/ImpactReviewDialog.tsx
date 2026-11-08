@@ -19,6 +19,8 @@ interface ImpactReviewDialogProps {
   names: ImpactNames;
   months: CalendarMonth[];
   confirmLabel: string;
+  /** Holds `inventory.override_overbooking`. Without it, a change that overbooks cannot be saved. */
+  canOverride: boolean;
   /** Must reject on failure, so the error stays on screen. */
   onConfirm: (reason: string) => Promise<void>;
   onCancel: () => void;
@@ -34,6 +36,7 @@ export function ImpactReviewDialog({
   names,
   months,
   confirmLabel,
+  canOverride,
   onConfirm,
   onCancel,
 }: ImpactReviewDialogProps) {
@@ -42,6 +45,7 @@ export function ImpactReviewDialog({
   const [reasonError, setReasonError] = useState<string | undefined>();
   const [saveError, setSaveError] = useState<unknown>(null);
   const [isBusy, setIsBusy] = useState(false);
+  const isBlocked = impact.worsens && !canOverride;
 
   async function handleConfirm() {
     const trimmed = reason.trim();
@@ -76,6 +80,7 @@ export function ImpactReviewDialog({
             form={formId}
             variant={impact.worsens ? 'danger' : 'primary'}
             isLoading={isBusy}
+            disabled={isBlocked}
           >
             {impact.worsens ? `${confirmLabel} with overbooking` : confirmLabel}
           </Button>
@@ -96,7 +101,9 @@ export function ImpactReviewDialog({
         )}
         {impact.worsens && (
           <ErrorNotice title="This overbooks">
-            Some nights below end up short. You can still go ahead; the sales on them are tagged OVERBOOKED.
+            {isBlocked
+              ? 'Some nights below end up short, and going ahead with overbooking needs a permission you do not hold. Ask someone who has it, or change the record so nothing is short.'
+              : 'Some nights below end up short. You can still go ahead; the sales on them are tagged OVERBOOKED.'}
           </ErrorNotice>
         )}
         <ImpactPreview impact={impact} names={names} months={months} />

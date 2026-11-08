@@ -1,4 +1,5 @@
 import { mockDb } from '@/mock-api/db';
+import { saveAudited } from '@/mock-api/session';
 import { pageOf } from '@/mock-api/list-query';
 
 import {
@@ -31,13 +32,23 @@ export const hotelsApi = {
   },
 
   create: (payload: HotelUpsertPayload) =>
-    mockDb.put('hotels', { ...payload, id: crypto.randomUUID(), active: true } satisfies Hotel),
+    saveAudited('directory.manage', 'hotels', 'hotel', 'created', {
+      ...payload,
+      id: crypto.randomUUID(),
+      active: true,
+    } satisfies Hotel),
 
-  update: (hotel: Hotel, payload: HotelUpsertPayload) => mockDb.put('hotels', { ...hotel, ...payload }),
+  update: (hotel: Hotel, payload: HotelUpsertPayload) =>
+    saveAudited('directory.manage', 'hotels', 'hotel', 'edited', { ...hotel, ...payload }),
 
-  setActive: (hotel: Hotel, active: boolean) => mockDb.put('hotels', { ...hotel, active }),
+  setActive: (hotel: Hotel, active: boolean) =>
+    saveAudited('directory.manage', 'hotels', 'hotel', active ? 'activated' : 'deactivated', {
+      ...hotel,
+      active,
+    }),
 
   cities: () => mockDb.list('cities', citySchema),
 
-  addCity: (name: string) => mockDb.put('cities', { id: crypto.randomUUID(), name }),
+  addCity: (name: string) =>
+    saveAudited('directory.manage', 'cities', 'city', 'created', { id: crypto.randomUUID(), name }),
 };

@@ -6,6 +6,7 @@ import { toast } from '@/components/feedback/toast';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Select } from '@/components/ui/Select';
 import { hotelOptionsQuery } from '@/features/hotels';
+import { useCan } from '@/lib/auth/session';
 
 import {
   conversionRulesQuery,
@@ -25,6 +26,7 @@ export function ConversionMatrix() {
   const saveRule = useSaveConversionRule();
   const removeRule = useRemoveConversionRule();
   const [scope, setScope] = useState(ALL_HOTELS);
+  const canManage = useCan()('conversion.manage');
 
   const hotelId = scope === ALL_HOTELS ? null : scope;
   const pairs = conversionPairs(types);
@@ -100,6 +102,7 @@ export function ConversionMatrix() {
                       className="accent-primary size-4"
                       aria-label={label}
                       checked={own?.allowed ?? false}
+                      disabled={!canManage}
                       onChange={(event) => {
                         handleSetRule(pair, event.target.checked);
                       }}
@@ -110,6 +113,7 @@ export function ConversionMatrix() {
                   <Select
                     aria-label={label}
                     className="w-56"
+                    disabled={!canManage}
                     value={own ? (own.allowed ? 'yes' : 'no') : 'default'}
                     onChange={(event) => {
                       const { value } = event.target;

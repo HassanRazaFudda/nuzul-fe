@@ -100,3 +100,21 @@ export function useRemovePurchase() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: purchaseKeys.lists() }),
   });
 }
+
+export function useSetPurchaseLocked() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, version, locked }: VersionedInput & { locked: boolean }) =>
+      purchasesApi.setLocked(id, version, locked),
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+}
+
+export function useRestorePurchase() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, version, reason, stamp }: ReasonedInput) =>
+      purchasesApi.restore(id, version, reason, stamp),
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+}

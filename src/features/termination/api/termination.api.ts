@@ -1,10 +1,11 @@
-import { assertSameStamp, saveSaleChanges } from '@/features/changes';
+import { assertSameStamp, impactOf, saveSaleChanges } from '@/features/changes';
 import { contractsApi } from '@/features/contracts';
 import { contractRecordSchema, loadLedgerSources } from '@/features/inventory';
 import { asLedgerPurchase, purchasesApi, purchaseSchema } from '@/features/purchases';
 import { ApiError } from '@/lib/api/api-error';
 import { moneyLine } from '@/lib/money/money';
 import { mockDb } from '@/mock-api/db';
+import { assertCan } from '@/mock-api/session';
 
 import { affectedLines, applyTermination, type Decision } from '../domain/termination';
 
@@ -34,6 +35,7 @@ export interface TerminationInput {
 export const terminationApi = {
   terminate: async (input: TerminationInput) => {
     const { purchaseId, version, effectiveDate, reason } = input;
+    await assertCan('purchase.terminate');
     await purchasesApi.assertCurrent(purchaseId, version);
     const purchase = await mockDb.get('purchases', purchaseId, purchaseSchema);
     if (!purchase) throw new ApiError({ kind: 'not_found', message: 'Purchase not found' });
@@ -58,6 +60,9 @@ export const terminationApi = {
       effectiveDate,
       input.decisions,
     );
+    if (impactOf(sources, result, { before: sources.sales, after: result.sales }).worsens) {
+      await assertCan('inventory.override_overbooking');
+    }
 
     await purchasesApi.terminate(
       purchaseId,

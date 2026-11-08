@@ -3,7 +3,15 @@
 export { revisionKeys } from './api/revision.queries';
 export { revisionsApi } from './api/revisions.api';
 export { assertSameStamp, saveSaleChanges } from './api/sale-changes.api';
-export type { RevisionAction, RevisionEntity } from './api/revision.schemas';
+export { ACTION_LABELS, ENTITY_LABELS } from './api/revision-labels';
+export {
+  REVISION_ACTIONS,
+  REVISION_ENTITIES,
+  type Revision,
+  type RevisionAction,
+  type RevisionEntity,
+} from './api/revision.schemas';
+export { type AuditFilters } from './api/revisions.api';
 export { HistoryCard } from './components/HistoryCard';
 export { ImpactPreview, type ImpactNames } from './components/ImpactPreview';
 export { ImpactReviewDialog } from './components/ImpactReviewDialog';

@@ -19,8 +19,10 @@ import { roomTypeSchema } from '@/features/room-types';
 import { ApiError } from '@/lib/api/api-error';
 import { moneyLine } from '@/lib/money/money';
 import { mockDb } from '@/mock-api/db';
+import { assertCan } from '@/mock-api/session';
 import { pageOf } from '@/mock-api/list-query';
 
+import { contractImpact } from '../domain/contract-change';
 import { contractTotals } from '../domain/contract-totals';
 import { lineTags } from '../domain/overbooking';
 import {
@@ -86,7 +88,7 @@ async function contextFor(excludeId: string | null): Promise<ContractContext> {
     purchasesApi.counting(),
     mockDb.list('contracts', contractSchema),
   ]);
-  const others = contracts.filter((contract) => contract.status === 'confirmed' && contract.id !== excludeId);
+  const others = contracts.filter((contract) => counts(contract) && contract.id !== excludeId);
   return {
     purchases,
     sales: others.flatMap(salesOf),
@@ -109,7 +111,7 @@ async function toViews(contracts: Contract[]): Promise<ContractView[]> {
     return pool ? poolLedger(pool) : null;
   };
   // Each line's own allocations stay in `taken`: a vendor's free rooms are what no one holds.
-  const taken = allContracts.filter((item) => item.status === 'confirmed').flatMap(takenBy);
+  const taken = allContracts.filter(counts).flatMap(takenBy);
 
   return contracts.map((contract) => {
     let overbooked = false;
@@ -118,15 +120,14 @@ async function toViews(contracts: Contract[]): Promise<ContractView[]> {
       ...entry,
       hotelName: hotels.find((hotel) => hotel.id === entry.hotelId)?.name ?? 'Unknown hotel',
       lines: entry.lines.map((line) => {
-        const tags =
-          contract.status === 'confirmed'
-            ? lineTags(
-                { ...line, hotelId: entry.hotelId, checkIn: entry.checkIn, checkOut: entry.checkOut },
-                ledgerOf(entry.hotelId, line.sourceTypeId),
-                context.supplies,
-                taken,
-              )
-            : { overbooked: false, needsVendor: false };
+        const tags = counts(contract)
+          ? lineTags(
+              { ...line, hotelId: entry.hotelId, checkIn: entry.checkIn, checkOut: entry.checkOut },
+              ledgerOf(entry.hotelId, line.sourceTypeId),
+              context.supplies,
+              taken,
+            )
+          : { overbooked: false, needsVendor: false };
         overbooked ||= tags.overbooked;
         needsVendor ||= tags.needsVendor;
         return {
@@ -219,6 +220,17 @@ async function current(id: string, version: number, allowed: ContractStatus): Pr
   return contract;
 }
 
+/** Locked contracts still count on the ledger; they only cannot be changed. */
+const counts = (contract: Pick<Contract, 'status'>) =>
+  contract.status === 'confirmed' || contract.status === 'locked';
+
+/** Going ahead with a change that overbooks needs the override; otherwise it never blocks. */
+async function assertOverbookingAllowed(contract: Contract, hotels: Contract['hotels'] | null) {
+  const sources = await loadLedgerSources();
+  if (contractImpact(sources, contract, hotels).worsens) await assertCan('inventory.override_overbooking');
+  return sources;
+}
+
 /** Saves the next version of a contract, and its history entry. */
 async function saveVersion(before: Contract, after: Contract, action: RevisionAction, reason: string) {
   const saved = await mockDb.put('contracts', after);
@@ -256,6 +268,7 @@ async function withinFreeRooms(contract: Contract) {
 
 export const contractsApi = {
   list: async (params: ContractListParams) => {
+    await assertCan('contract.view');
     const stored = await mockDb.list('contracts', contractSchema);
     const inHotel = params.hotelId
       ? stored.filter((item) => item.hotels.some((entry) => entry.hotelId === params.hotelId))
@@ -276,11 +289,17 @@ export const contractsApi = {
           },
         },
       ),
-      counts: { draft: count('draft'), confirmed: count('confirmed'), cancelled: count('cancelled') },
+      counts: {
+        draft: count('draft'),
+        confirmed: count('confirmed'),
+        locked: count('locked'),
+        cancelled: count('cancelled'),
+      },
     };
   },
 
   get: async (id: string): Promise<ContractView> => {
+    await assertCan('contract.view');
     const contract = await mockDb.get('contracts', id, contractSchema);
     if (!contract) throw new ApiError({ kind: 'not_found', message: 'Contract not found' });
     const [view] = await toViews([contract]);
@@ -291,6 +310,7 @@ export const contractsApi = {
   context: contextFor,
 
   create: async (input: ContractInput) => {
+    await assertCan('contract.create');
     const existing = await mockDb.list('contracts', contractSchema);
     const record: Contract = {
       ...(await priced(input)),
@@ -314,6 +334,7 @@ export const contractsApi = {
   },
 
   update: async (id: string, version: number, input: ContractInput) => {
+    await assertCan('contract.edit');
     const contract = await current(id, version, 'draft');
     return saveVersion(
       contract,
@@ -328,7 +349,9 @@ export const contractsApi = {
    * `trimmedRooms` says so. The contract is confirmed either way.
    */
   confirm: async (id: string, version: number) => {
+    await assertCan('contract.confirm');
     const contract = await current(id, version, 'draft');
+    await assertOverbookingAllowed(contract, contract.hotels);
     const { hotels, trimmedRooms } = await withinFreeRooms(contract);
     const saved = await saveVersion(
       contract,
@@ -347,9 +370,10 @@ export const contractsApi = {
     reason: string,
     stamp: string,
   ) => {
+    await assertCan('contract.edit');
     const contract = await current(id, version, 'confirmed');
-    assertSameStamp(stamp, (await loadLedgerSources()).stamp);
     const edited: Contract = { ...contract, ...(await priced(input)), version: version + 1 };
+    assertSameStamp(stamp, (await assertOverbookingAllowed(contract, edited.hotels)).stamp);
     const { hotels, trimmedRooms } = await withinFreeRooms(edited);
     const saved = await saveVersion(contract, { ...edited, hotels }, 'edited', reason);
     return { contract: saved, trimmedRooms };
@@ -357,6 +381,7 @@ export const contractsApi = {
 
   /** Rooms return to the pools and vendors' rooms are freed. The record stays as Cancelled. */
   cancel: async (id: string, version: number, reason: string) => {
+    await assertCan('contract.delete');
     const contract = await current(id, version, 'confirmed');
     return saveVersion(
       contract,
@@ -404,7 +429,35 @@ export const contractsApi = {
   },
 
   /** Only a Draft can be deleted. A Confirmed contract is cancelled, and stays on record. */
+  /** A Locked contract still counts, but nobody can change it until it is unlocked. */
+  setLocked: async (id: string, version: number, locked: boolean) => {
+    await assertCan('contract.unlock');
+    const contract = await current(id, version, locked ? 'confirmed' : 'locked');
+    return saveVersion(
+      contract,
+      { ...contract, status: locked ? 'locked' : 'confirmed', version: version + 1 },
+      locked ? 'locked' : 'unlocked',
+      '',
+    );
+  },
+
+  /** Brings a Cancelled contract back, as a change that may overbook. */
+  restore: async (id: string, version: number, reason: string, stamp: string) => {
+    await assertCan('contract.edit');
+    const contract = await current(id, version, 'cancelled');
+    assertSameStamp(stamp, (await assertOverbookingAllowed(contract, contract.hotels)).stamp);
+    const { hotels, trimmedRooms } = await withinFreeRooms(contract);
+    const saved = await saveVersion(
+      contract,
+      { ...contract, hotels, status: 'confirmed', version: version + 1 },
+      'restored',
+      reason,
+    );
+    return { contract: saved, trimmedRooms };
+  },
+
   remove: async (id: string, version: number) => {
+    await assertCan('contract.delete');
     await current(id, version, 'draft');
     await mockDb.remove('contracts', id);
   },

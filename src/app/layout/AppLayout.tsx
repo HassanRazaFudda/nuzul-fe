@@ -6,6 +6,7 @@ import { Toaster } from '@/components/feedback/Toaster';
 import { Spinner } from '@/components/ui/Spinner';
 
 import { SidebarNav } from './SidebarNav';
+import { UserMenu } from './UserMenu';
 
 const COLLAPSE_KEY = 'nuzul.sidebar.collapsed';
 
@@ -110,6 +111,7 @@ export function AppLayout() {
           </div>
         )}
         <SidebarNav isRail={isCollapsed} />
+        <UserMenu isRail={isCollapsed} />
       </aside>
 
       {/* Mobile top bar */}
@@ -147,6 +149,7 @@ export function AppLayout() {
               </button>
             </div>
             <SidebarNav isRail={false} onNavigate={closeDrawer} />
+            <UserMenu isRail={false} />
           </aside>
         </div>
       )}

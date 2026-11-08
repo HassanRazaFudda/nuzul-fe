@@ -11,6 +11,7 @@ import { hotelOptionsQuery } from '@/features/hotels';
 import { ledgerSourcesQuery } from '@/features/inventory';
 import { partnerOptionsQuery } from '@/features/partners';
 import { conversionRulesQuery, roomTypesQuery } from '@/features/room-types';
+import { useCan } from '@/lib/auth/session';
 import { todayIso } from '@/lib/format/dates';
 
 import {
@@ -60,6 +61,7 @@ function ContractFormScreen({ contract }: { contract: ContractView | null }) {
   const updateConfirmed = useUpdateConfirmedContract();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const can = useCan();
   const [today] = useState(() => todayIso(new Date()));
   const [review, setReview] = useState<Review | null>(null);
   const isConfirmed = contract?.status === 'confirmed';
@@ -148,6 +150,7 @@ function ContractFormScreen({ contract }: { contract: ContractView | null }) {
           names={names}
           months={months}
           confirmLabel="Save changes"
+          canOverride={can('inventory.override_overbooking')}
           onConfirm={handleConfirmReview}
           onCancel={closeReview}
         />

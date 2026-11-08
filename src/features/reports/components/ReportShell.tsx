@@ -8,6 +8,7 @@ import { TableSkeleton } from '@/components/feedback/TableSkeleton';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { getErrorMessage } from '@/lib/api/api-error';
+import { useCan } from '@/lib/auth/session';
 import { saveWorkbook, type WorkbookSheet } from '@/lib/export/workbook';
 
 interface ReportShellProps<TData> {
@@ -33,6 +34,7 @@ export function ReportShell<TData>({
 }: ReportShellProps<TData>) {
   const { data, error, isPending, refetch } = query;
   const [isExporting, setIsExporting] = useState(false);
+  const canExport = useCan()('report.export');
   const [exportError, setExportError] = useState<unknown>(null);
 
   async function handleExport() {
@@ -54,15 +56,17 @@ export function ReportShell<TData>({
         subtitle={subtitle}
         action={
           <div className="flex flex-wrap gap-2 print:hidden">
-            <Button
-              variant="secondary"
-              icon={<Download aria-hidden className="size-4" />}
-              disabled={!data}
-              isLoading={isExporting}
-              onClick={() => void handleExport()}
-            >
-              Export to Excel
-            </Button>
+            {canExport && (
+              <Button
+                variant="secondary"
+                icon={<Download aria-hidden className="size-4" />}
+                disabled={!data}
+                isLoading={isExporting}
+                onClick={() => void handleExport()}
+              >
+                Export to Excel
+              </Button>
+            )}
             <Button
               variant="secondary"
               icon={<Printer aria-hidden className="size-4" />}

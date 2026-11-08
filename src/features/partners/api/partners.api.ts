@@ -1,4 +1,5 @@
 import { mockDb } from '@/mock-api/db';
+import { saveAudited } from '@/mock-api/session';
 import { pageOf } from '@/mock-api/list-query';
 
 import {
@@ -8,6 +9,8 @@ import {
   type PartnerListParams,
   type PartnerUpsertPayload,
 } from './partner.schemas';
+
+const entityOf = (kind: PartnerKind) => (kind === 'vendors' ? 'vendor' : 'agent');
 
 export const partnersApi = {
   list: async (kind: PartnerKind, params: PartnerListParams) => {
@@ -32,11 +35,18 @@ export const partnersApi = {
   },
 
   create: (kind: PartnerKind, payload: PartnerUpsertPayload) =>
-    mockDb.put(kind, { ...payload, id: crypto.randomUUID(), active: true } satisfies Partner),
+    saveAudited('directory.manage', kind, entityOf(kind), 'created', {
+      ...payload,
+      id: crypto.randomUUID(),
+      active: true,
+    } satisfies Partner),
 
   update: (kind: PartnerKind, partner: Partner, payload: PartnerUpsertPayload) =>
-    mockDb.put(kind, { ...partner, ...payload }),
+    saveAudited('directory.manage', kind, entityOf(kind), 'edited', { ...partner, ...payload }),
 
   setActive: (kind: PartnerKind, partner: Partner, active: boolean) =>
-    mockDb.put(kind, { ...partner, active }),
+    saveAudited('directory.manage', kind, entityOf(kind), active ? 'activated' : 'deactivated', {
+      ...partner,
+      active,
+    }),
 };

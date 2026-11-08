@@ -1,6 +1,7 @@
 import { hotelSchema } from '@/features/hotels';
 import { roomTypeSchema } from '@/features/room-types';
 import { mockDb } from '@/mock-api/db';
+import { assertCan } from '@/mock-api/session';
 import { pageOf } from '@/mock-api/list-query';
 
 import { buildPools, poolFigures, poolLedger, type Pool } from '../domain/pools';
@@ -42,6 +43,7 @@ async function poolSummaries(): Promise<PoolSummary[]> {
 
 export const ledgerApi = {
   list: async (params: PoolListParams) => {
+    await assertCan('inventory.view');
     const all = await poolSummaries();
     const inHotel = params.hotelId ? all.filter((pool) => pool.hotelId === params.hotelId) : all;
     return pageOf(
@@ -64,6 +66,7 @@ export const ledgerApi = {
   },
 
   pool: async (hotelId: string, roomTypeId: string): Promise<PoolDetail> => {
+    await assertCan('inventory.view');
     const [pools, names] = await Promise.all([currentPools(), namesLookup()]);
     const pool = pools.find((item) => item.hotelId === hotelId && item.roomTypeId === roomTypeId) ?? {
       hotelId,

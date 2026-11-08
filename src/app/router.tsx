@@ -1,6 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { createBrowserRouter, type RouteObject } from 'react-router';
+import { createBrowserRouter, redirect, type RouteObject } from 'react-router';
 
+import { auditRoutes } from '@/features/audit';
 import { calendarRoutes } from '@/features/calendar';
 import { contractRoutes } from '@/features/contracts';
 import { currencyRoutes } from '@/features/currencies';
@@ -13,6 +14,8 @@ import { purchaseRoutes } from '@/features/purchases';
 import { profitLossRoutes, reportRoutes } from '@/features/reports';
 import { roomTypeRoutes } from '@/features/room-types';
 import { terminationRoutes } from '@/features/termination';
+import { signInRoute, userRoutes } from '@/features/users';
+import { currentUserQuery } from '@/lib/auth/session';
 
 import { AppLayout } from './layout/AppLayout';
 import { LoadingScreen } from './layout/LoadingScreen';
@@ -24,8 +27,14 @@ type CreateRouter = (routes: RouteObject[]) => ReturnType<typeof createBrowserRo
 
 export function createAppRouter(queryClient: QueryClient, createRouter: CreateRouter = createBrowserRouter) {
   return createRouter([
+    signInRoute(queryClient),
     {
       path: '/',
+      // Nobody signed in: the prototype's sign-in screen first.
+      loader: async () => {
+        const user = await queryClient.query(currentUserQuery);
+        return user ? null : redirect('/sign-in');
+      },
       Component: AppLayout,
       HydrateFallback: LoadingScreen,
       ErrorBoundary: RouteErrorBoundary,
@@ -49,6 +58,8 @@ export function createAppRouter(queryClient: QueryClient, createRouter: CreateRo
             { path: 'calendar', children: calendarRoutes(queryClient) },
             { path: 'currencies', children: currencyRoutes(queryClient) },
             { path: 'design', children: designSystemRoutes() },
+            { path: 'users', children: userRoutes(queryClient) },
+            { path: 'audit', children: auditRoutes() },
             ...PLACEHOLDER_ITEMS.map((item) => ({
               path: item.path,
               element: <PlaceholderPage title={item.label} purpose={item.purpose} />,

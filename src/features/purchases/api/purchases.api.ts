@@ -9,9 +9,10 @@ import { ApiError } from '@/lib/api/api-error';
 import { nightsBetween } from '@/lib/format/dates';
 import { moneyLine } from '@/lib/money/money';
 import { mockDb } from '@/mock-api/db';
+import { assertCan } from '@/mock-api/session';
 import { pageOf } from '@/mock-api/list-query';
 
-import { purchaseChange } from '../domain/purchase-change';
+import { purchaseChange, purchaseImpact } from '../domain/purchase-change';
 import { purchaseTotals } from '../domain/purchase-totals';
 import {
   adjustmentSchema,
@@ -83,6 +84,11 @@ async function current(id: string, version: number, allowed: PurchaseStatus): Pr
   return purchase;
 }
 
+/** Going ahead with a change that overbooks needs the override; otherwise it never blocks. */
+export async function assertOverbookingAllowed(worsens: boolean) {
+  if (worsens) await assertCan('inventory.override_overbooking');
+}
+
 /** Saves the next version of a purchase, and its history entry. */
 async function saveVersion(before: Purchase, after: Purchase, action: RevisionAction, reason: string) {
   const saved = await mockDb.put('purchases', after);
@@ -118,6 +124,7 @@ export async function asLedgerPurchase(
 
 export const purchasesApi = {
   list: async (params: PurchaseListParams) => {
+    await assertCan('purchase.view');
     const stored = await mockDb.list('purchases', purchaseSchema);
     const inHotel = params.hotelId ? stored.filter((item) => item.hotelId === params.hotelId) : stored;
     const named = await withNames(inHotel);
@@ -142,6 +149,7 @@ export const purchasesApi = {
   },
 
   get: async (id: string): Promise<PurchaseView> => {
+    await assertCan('purchase.view');
     const purchase = await mockDb.get('purchases', id, purchaseSchema);
     if (!purchase) throw new ApiError({ kind: 'not_found', message: 'Purchase not found' });
     const [named] = await withNames([purchase]);
@@ -153,11 +161,13 @@ export const purchasesApi = {
   counting: async () => countingPurchases(await mockDb.list('purchases', purchaseSchema)),
 
   adjustments: async (purchaseId: string): Promise<Adjustment[]> => {
+    await assertCan('purchase.view');
     const all = await mockDb.list('adjustments', adjustmentSchema);
     return all.filter((adjustment) => adjustment.purchaseId === purchaseId);
   },
 
   create: async (input: PurchaseInput) => {
+    await assertCan('purchase.create');
     const record: Purchase = {
       ...(await priced(input)),
       id: crypto.randomUUID(),
@@ -180,6 +190,7 @@ export const purchasesApi = {
   },
 
   update: async (id: string, version: number, input: PurchaseInput) => {
+    await assertCan('purchase.edit');
     const purchase = await current(id, version, 'draft');
     return saveVersion(
       purchase,
@@ -190,6 +201,7 @@ export const purchasesApi = {
   },
 
   confirm: async (id: string, version: number) => {
+    await assertCan('purchase.confirm');
     const purchase = await current(id, version, 'draft');
     return saveVersion(purchase, { ...purchase, status: 'confirmed', version: version + 1 }, 'confirmed', '');
   },
@@ -206,11 +218,14 @@ export const purchasesApi = {
     reason: string,
     stamp: string,
   ) => {
+    await assertCan('purchase.edit');
     const purchase = await current(id, version, 'confirmed');
     const sources = await loadLedgerSources();
     assertSameStamp(stamp, sources.stamp);
     const after: Purchase = { ...purchase, ...(await priced(input)), version: version + 1 };
-    const change = purchaseChange(sources, id, await asLedgerPurchase(after));
+    const replacement = await asLedgerPurchase(after);
+    await assertOverbookingAllowed(purchaseImpact(sources, id, replacement).worsens);
+    const change = purchaseChange(sources, id, replacement);
     const saved = await saveVersion(purchase, after, 'edited', reason);
     await saveSaleChanges(change.changedSales, 'vendor-released', `${purchase.number} edited: ${reason}`);
     return saved;
@@ -218,9 +233,11 @@ export const purchasesApi = {
 
   /** A Confirmed purchase is cancelled, never erased. The sales it supplied become Unallocated. */
   cancel: async (id: string, version: number, reason: string, stamp: string) => {
+    await assertCan('purchase.delete');
     const purchase = await current(id, version, 'confirmed');
     const sources = await loadLedgerSources();
     assertSameStamp(stamp, sources.stamp);
+    await assertOverbookingAllowed(purchaseImpact(sources, id, null).worsens);
     const change = purchaseChange(sources, id, null);
     const saved = await saveVersion(
       purchase,
@@ -234,6 +251,7 @@ export const purchasesApi = {
 
   /** Only a Draft can be deleted. A Confirmed purchase is cancelled, and stays on record. */
   remove: async (id: string, version: number) => {
+    await assertCan('purchase.delete');
     await current(id, version, 'draft');
     await mockDb.remove('purchases', id);
   },
@@ -245,6 +263,7 @@ export const purchasesApi = {
     termination: NonNullable<Purchase['termination']>,
     adjustments: Omit<Adjustment, 'id' | 'purchaseId' | 'effectiveDate' | 'reason'>[],
   ) => {
+    await assertCan('purchase.terminate');
     const purchase = await current(id, version, 'confirmed');
     const saved = await saveVersion(
       purchase,
@@ -262,6 +281,31 @@ export const purchasesApi = {
       } satisfies Adjustment);
     }
     return saved;
+  },
+
+  /** A Locked purchase still counts, but nobody can change it until it is unlocked. */
+  setLocked: async (id: string, version: number, locked: boolean) => {
+    await assertCan('purchase.unlock');
+    const purchase = await current(id, version, locked ? 'confirmed' : 'locked');
+    return saveVersion(
+      purchase,
+      { ...purchase, status: locked ? 'locked' : 'confirmed', version: version + 1 },
+      locked ? 'locked' : 'unlocked',
+      '',
+    );
+  },
+
+  /** Brings a Cancelled purchase back. It only adds rooms, so it can never overbook. */
+  restore: async (id: string, version: number, reason: string, stamp: string) => {
+    await assertCan('purchase.edit');
+    const purchase = await current(id, version, 'cancelled');
+    assertSameStamp(stamp, (await loadLedgerSources()).stamp);
+    return saveVersion(
+      purchase,
+      { ...purchase, status: 'confirmed', version: version + 1 },
+      'restored',
+      reason,
+    );
   },
 
   /** Throws a conflict unless the purchase is still this version of a Confirmed record. */

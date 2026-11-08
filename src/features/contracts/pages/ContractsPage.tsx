@@ -9,6 +9,7 @@ import { Select } from '@/components/ui/Select';
 import { TabBar } from '@/components/ui/TabBar';
 import { currenciesQuery } from '@/features/currencies';
 import { hotelOptionsQuery } from '@/features/hotels';
+import { useCan } from '@/lib/auth/session';
 import { createListParams } from '@/lib/router/useListParams';
 
 import { contractListQuery } from '../api/contract.queries';
@@ -36,10 +37,16 @@ const isSortField = (id: string): id is ContractSortField =>
 const EMPTY: Record<ContractStatus, { title: string; hint: string }> = {
   draft: { title: 'No drafts', hint: 'Drafts appear here and never affect the ledger.' },
   confirmed: { title: 'No confirmed contracts', hint: 'Add a contract, then confirm it.' },
+  locked: {
+    title: 'No locked contracts',
+    hint: 'Locked contracts count on the ledger and cannot be changed.',
+  },
   cancelled: { title: 'No cancelled contracts', hint: 'Cancelled contracts stay here for history.' },
 };
 
 export function ContractsPage() {
+  const can = useCan();
+  const canManage = can('contract.create');
   const { params, updateParams } = useContractListParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const hotelId = searchParams.get(HOTEL_PARAM) ?? '';
@@ -72,10 +79,12 @@ export function ContractsPage() {
         title="Sales contracts"
         subtitle="Rooms sold to agents"
         action={
-          <Link to="/contracts/new" className={buttonClass('primary')}>
-            <Plus aria-hidden className="size-4" />
-            Add contract
-          </Link>
+          canManage && (
+            <Link to="/contracts/new" className={buttonClass('primary')}>
+              <Plus aria-hidden className="size-4" />
+              Add contract
+            </Link>
+          )
         }
       />
       <div className="space-y-4 p-5 lg:p-8">
@@ -88,6 +97,7 @@ export function ContractsPage() {
           items={[
             { value: 'draft', label: 'Draft', count: counts?.draft },
             { value: 'confirmed', label: 'Confirmed', count: counts?.confirmed },
+            { value: 'locked', label: 'Locked', count: counts?.locked },
             { value: 'cancelled', label: 'Cancelled', count: counts?.cancelled },
           ]}
         />

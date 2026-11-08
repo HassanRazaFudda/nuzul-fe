@@ -17,6 +17,7 @@ import { currenciesQuery } from '@/features/currencies';
 import { ledgerSourcesQuery, unallocatedBlocks } from '@/features/inventory';
 import { conversionRulesQuery, roomTypesQuery } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
+import { useCan } from '@/lib/auth/session';
 import { formatIsoDate, nightsBetween } from '@/lib/format/dates';
 import { formatMoney } from '@/lib/money/money';
 
@@ -25,6 +26,8 @@ import {
   contractDetailQuery,
   contractKeys,
   useCancelContract,
+  useRestoreContract,
+  useSetContractLocked,
   useConfirmContract,
   useRemoveContract,
 } from '../api/contract.queries';
@@ -48,6 +51,9 @@ export function ContractDetailPage() {
   });
   const confirmContract = useConfirmContract();
   const cancelContract = useCancelContract();
+  const restoreContract = useRestoreContract();
+  const setLocked = useSetContractLocked();
+  const can = useCan();
   const removeContract = useRemoveContract();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -55,7 +61,9 @@ export function ContractDetailPage() {
   const [preview, setPreview] = useState(NO_SHORTAGE);
   const [actionError, setActionError] = useState<unknown>(null);
   const [trimmedRooms, setTrimmedRooms] = useState(0);
-  const [cancelImpact, setCancelImpact] = useState<Impact | null>(null);
+  const [review, setReview] = useState<{ kind: 'cancel' | 'restore'; impact: Impact; stamp: string } | null>(
+    null,
+  );
 
   const { number, status, version, mealPlan, currencyCode } = contract;
   const format = currencies.find((item) => item.code === currencyCode) ?? {
@@ -114,24 +122,49 @@ export function ContractDetailPage() {
     setPending(null);
   }
 
-  /** Cancelling only frees rooms, but the preview still shows where. */
-  async function startCancel() {
+  /** Works out what cancelling or restoring does, from the records as they are now. */
+  async function startReview(kind: 'cancel' | 'restore') {
     setActionError(null);
     try {
       const sources = await queryClient.query(ledgerSourcesQuery);
-      setCancelImpact(contractImpact(sources, contract, null));
+      setReview({
+        kind,
+        impact: contractImpact(sources, contract, kind === 'cancel' ? null : contract.hotels),
+        stamp: sources.stamp,
+      });
     } catch (error) {
       setActionError(error);
     }
   }
 
-  async function handleCancel(reason: string) {
-    await cancelContract.mutateAsync({ id, version, reason });
-    toast(`${number} cancelled`);
-    setCancelImpact(null);
+  async function handleReview(reason: string) {
+    if (!review) return;
+    if (review.kind === 'cancel') {
+      await cancelContract.mutateAsync({ id, version, reason });
+      toast(`${number} cancelled`);
+    } else {
+      const result = await restoreContract.mutateAsync({ id, version, reason, stamp: review.stamp });
+      setTrimmedRooms(result.trimmedRooms);
+      toast(`${number} restored`);
+    }
+    setReview(null);
+  }
+
+  function handleLock(locked: boolean) {
+    setActionError(null);
+    setLocked.mutate(
+      { id, version, locked },
+      {
+        onSuccess: () => {
+          toast(`${number} ${locked ? 'locked' : 'unlocked'}`);
+        },
+        onError: setActionError,
+      },
+    );
   }
 
   const isOverbooking = preview.shortages.length > 0;
+  const canOverride = can('inventory.override_overbooking');
 
   return (
     <>
@@ -147,29 +180,64 @@ export function ContractDetailPage() {
             </Link>
             {status === 'draft' && (
               <>
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setPending('delete');
-                  }}
-                >
-                  Delete
-                </Button>
-                <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary')}>
-                  Edit
-                </Link>
-                <Button onClick={() => void startConfirm()}>Confirm</Button>
+                {can('contract.delete') && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setPending('delete');
+                    }}
+                  >
+                    Delete
+                  </Button>
+                )}
+                {can('contract.edit') && (
+                  <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary')}>
+                    Edit
+                  </Link>
+                )}
+                {can('contract.confirm') && <Button onClick={() => void startConfirm()}>Confirm</Button>}
               </>
             )}
             {status === 'confirmed' && (
               <>
-                <Button variant="ghost" onClick={() => void startCancel()}>
-                  Cancel contract
-                </Button>
-                <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary')}>
-                  Edit
-                </Link>
+                {can('contract.delete') && (
+                  <Button variant="ghost" onClick={() => void startReview('cancel')}>
+                    Cancel contract
+                  </Button>
+                )}
+                {can('contract.unlock') && (
+                  <Button
+                    variant="ghost"
+                    isLoading={setLocked.isPending}
+                    onClick={() => {
+                      handleLock(true);
+                    }}
+                  >
+                    Lock
+                  </Button>
+                )}
+                {can('contract.edit') && (
+                  <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary')}>
+                    Edit
+                  </Link>
+                )}
               </>
+            )}
+            {status === 'locked' && can('contract.unlock') && (
+              <Button
+                variant="secondary"
+                isLoading={setLocked.isPending}
+                onClick={() => {
+                  handleLock(false);
+                }}
+              >
+                Unlock
+              </Button>
+            )}
+            {status === 'cancelled' && can('contract.edit') && (
+              <Button variant="secondary" onClick={() => void startReview('restore')}>
+                Restore
+              </Button>
             )}
           </div>
         }
@@ -296,23 +364,32 @@ export function ContractDetailPage() {
         cancelLabel={isOverbooking ? 'Go back' : 'Cancel'}
         tone={isOverbooking ? 'danger' : 'default'}
         isBusy={isBusy}
+        isConfirmDisabled={isOverbooking && !canOverride}
       >
         {isOverbooking ? (
-          <OverbookingList preview={preview} hotelName={hotelName} roomTypes={roomTypes} months={months} />
+          <>
+            <OverbookingList preview={preview} hotelName={hotelName} roomTypes={roomTypes} months={months} />
+            {!canOverride && (
+              <p className="text-danger-strong mt-2">
+                Going ahead with overbooking needs a permission you do not hold, so this stays a Draft.
+              </p>
+            )}
+          </>
         ) : (
           'These rooms join the ledger at once. A confirmed contract can no longer be edited here, only cancelled.'
         )}
       </ConfirmDialog>
-      {cancelImpact && (
+      {review && (
         <ImpactReviewDialog
-          title={`Cancel ${number}?`}
-          impact={cancelImpact}
+          title={review.kind === 'cancel' ? `Cancel ${number}?` : `Restore ${number}?`}
+          impact={review.impact}
           names={{ hotelName, roomTypeName: typeName }}
           months={months}
-          confirmLabel="Cancel contract"
-          onConfirm={handleCancel}
+          confirmLabel={review.kind === 'cancel' ? 'Cancel contract' : 'Restore contract'}
+          canOverride={canOverride}
+          onConfirm={handleReview}
           onCancel={() => {
-            setCancelImpact(null);
+            setReview(null);
           }}
         />
       )}

@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router';
 
+import { useCan } from '@/lib/auth/session';
 import { cn } from '@/lib/cn';
 
 import { NAVIGATION } from './navigation';
@@ -10,12 +11,19 @@ interface SidebarNavProps {
 }
 
 export function SidebarNav({ isRail, onNavigate }: SidebarNavProps) {
+  const can = useCan();
+  // Areas the signed-in user cannot open are left out of the menu.
+  const groups = NAVIGATION.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => !item.permissions || item.permissions.some(can)),
+  })).filter((group) => group.items.length > 0);
+
   return (
     <nav
       aria-label="Main"
       className={cn('flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pb-3', isRail ? 'px-2' : 'px-3')}
     >
-      {NAVIGATION.map((group) => (
+      {groups.map((group) => (
         <div key={group.label ?? 'top'} className="flex flex-col gap-1">
           {group.label &&
             (isRail ? (

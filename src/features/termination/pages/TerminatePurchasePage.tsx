@@ -25,6 +25,7 @@ import { ledgerSourcesQuery } from '@/features/inventory';
 import { purchaseDetailQuery } from '@/features/purchases';
 import { conversionRulesQuery, isConversionAllowed, roomTypesQuery } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
+import { useCan } from '@/lib/auth/session';
 import { todayIso } from '@/lib/format/dates';
 import { rateOn } from '@/lib/money/money';
 
@@ -69,6 +70,7 @@ export function TerminatePurchasePage() {
     ],
   });
   const queryClient = useQueryClient();
+  const canOverride = useCan()('inventory.override_overbooking');
   const navigate = useNavigate();
   const [today] = useState(() => todayIso(new Date()));
   const [showSummary, setShowSummary] = useState(false);
@@ -324,8 +326,12 @@ export function TerminatePurchasePage() {
         cancelLabel="Go back"
         tone="danger"
         isBusy={terminate.isPending}
+        isConfirmDisabled={worsens && !canOverride}
       >
-        {worsens ? 'Some nights end up short. The sales on them are tagged OVERBOOKED. ' : ''}
+        {worsens &&
+          (canOverride
+            ? 'Some nights end up short. The sales on them are tagged OVERBOOKED. '
+            : 'Some nights end up short, and going ahead needs a permission you do not hold. Change the decisions so nothing is short. ')}
         The purchase stays on record as Terminated, and this cannot be undone.
       </ConfirmDialog>
       <ConfirmDialog

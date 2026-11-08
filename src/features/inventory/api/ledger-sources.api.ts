@@ -67,7 +67,9 @@ export async function loadLedgerSources(): Promise<LedgerSources> {
     mockDb.list('vendors', partnerSchema),
   ]);
   const counting = countingPurchases(purchaseRecords);
-  const confirmed = contracts.filter((contract) => contract.status === 'confirmed');
+  const confirmed = contracts.filter(
+    (contract) => contract.status === 'confirmed' || contract.status === 'locked',
+  );
 
   const purchases: LedgerPurchase[] = counting.map((purchase) => ({
     id: purchase.id,

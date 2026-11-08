@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 
 import { buttonClass } from '@/components/ui/buttonStyles';
 import type { CalendarMonth } from '@/features/calendar';
+import { useCan } from '@/lib/auth/session';
 import { isoDate } from '@/lib/format/dates';
 
 import type { LedgerNeedRow } from '../domain/ledger-engine';
@@ -27,6 +28,7 @@ interface BuyListProps {
 
 /** What to buy to clear the shortage, each one a step away from a pre-filled purchase. */
 export function BuyList({ hotelId, roomTypeId, need, months }: BuyListProps) {
+  const canPurchase = useCan()('purchase.create');
   return (
     <ul className="divide-border divide-y">
       {need.map((row) => (
@@ -36,13 +38,15 @@ export function BuyList({ hotelId, roomTypeId, need, months }: BuyListProps) {
             {row.buy === 1 ? 'room' : 'rooms'}, <DayCell day={row.from} months={months} /> to{' '}
             <DayCell day={row.to} months={months} />
           </span>
-          <Link
-            to={purchaseLink(hotelId, roomTypeId, row)}
-            aria-label={`Purchase ${String(row.buy)} rooms`}
-            className={buttonClass('secondary', 'sm')}
-          >
-            Purchase
-          </Link>
+          {canPurchase && (
+            <Link
+              to={purchaseLink(hotelId, roomTypeId, row)}
+              aria-label={`Purchase ${String(row.buy)} rooms`}
+              className={buttonClass('secondary', 'sm')}
+            >
+              Purchase
+            </Link>
+          )}
         </li>
       ))}
     </ul>

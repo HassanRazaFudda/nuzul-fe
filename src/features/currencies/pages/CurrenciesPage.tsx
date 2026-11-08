@@ -8,6 +8,7 @@ import { toast } from '@/components/feedback/toast';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { useCan } from '@/lib/auth/session';
 import { todayIso } from '@/lib/format/dates';
 import { rateOn } from '@/lib/money/money';
 
@@ -27,6 +28,8 @@ import { RateForm } from '../components/RateForm';
 import { RateHistoryDialog } from '../components/RateHistoryDialog';
 
 export function CurrenciesPage() {
+  const can = useCan();
+  const canManage = can('currency.manage_rates');
   const [{ data: currencies }, { data: rates }] = useSuspenseQueries({
     queries: [currenciesQuery, exchangeRatesQuery],
   });
@@ -82,21 +85,23 @@ export function CurrenciesPage() {
         title="Currencies"
         subtitle="Rates against PKR. Saved records keep the rate they were saved with."
         action={
-          <Button
-            icon={<Plus aria-hidden className="size-4" />}
-            onClick={() => {
-              setEditing('new');
-            }}
-          >
-            Add currency
-          </Button>
+          canManage && (
+            <Button
+              icon={<Plus aria-hidden className="size-4" />}
+              onClick={() => {
+                setEditing('new');
+              }}
+            >
+              Add currency
+            </Button>
+          )
         }
       />
       <div className="p-5 lg:p-8">
         <Card>
           <DataTable
             caption="Currencies"
-            columns={columns}
+            columns={canManage ? columns : columns.filter((column) => column.id !== 'actions')}
             data={currencies}
             getRowId={(currency) => currency.code}
             sort={undefined}

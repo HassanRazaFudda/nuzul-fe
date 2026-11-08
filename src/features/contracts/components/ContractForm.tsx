@@ -24,6 +24,7 @@ import {
 import type { Partner } from '@/features/partners';
 import type { ConversionRule, RoomType } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
+import { useCan } from '@/lib/auth/session';
 import { rateOn } from '@/lib/money/money';
 
 import { MEAL_PLANS, type ContractView } from '../api/contract.schemas';
@@ -152,6 +153,7 @@ export function ContractForm({
   const mealKind = useWatch({ control: form.control, name: 'mealKind' });
   const currencyCode = useWatch({ control: form.control, name: 'currencyCode' });
   const [showSummary, setShowSummary] = useState(false);
+  const canSetRate = useCan()('finance.set_rate');
   const [saveError, setSaveError] = useState<unknown>(null);
   // The save itself navigates away, so leaving while it runs needs no question.
   const blocker = useBlocker(isDirty && !isSubmitting);
@@ -269,7 +271,7 @@ export function ContractForm({
                   <Input
                     {...field}
                     inputMode="decimal"
-                    readOnly={currencyCode === RATE_BASE_CURRENCY}
+                    readOnly={currencyCode === RATE_BASE_CURRENCY || !canSetRate}
                     {...form.register('rateToPkr')}
                   />
                 )}

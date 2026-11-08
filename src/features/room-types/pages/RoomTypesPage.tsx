@@ -3,6 +3,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
+import { useCan } from '@/lib/auth/session';
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
 import { DataTable } from '@/components/data-table/DataTable';
 import { EmptyState } from '@/components/feedback/EmptyState';
@@ -50,6 +51,8 @@ function roomTypeColumns(onEdit: (roomType: RoomType) => void) {
 }
 
 export function RoomTypesPage() {
+  const can = useCan();
+  const canManage = can('conversion.manage');
   const { data: types } = useSuspenseQuery(roomTypesQuery);
   const saveRoomType = useSaveRoomType();
   const [editing, setEditing] = useState<RoomType | 'new' | null>(null);
@@ -67,21 +70,27 @@ export function RoomTypesPage() {
         title="Room types"
         subtitle="Occupancy categories, and how they may convert"
         action={
-          <Button
-            icon={<Plus aria-hidden className="size-4" />}
-            onClick={() => {
-              setEditing('new');
-            }}
-          >
-            Add room type
-          </Button>
+          canManage && (
+            <Button
+              icon={<Plus aria-hidden className="size-4" />}
+              onClick={() => {
+                setEditing('new');
+              }}
+            >
+              Add room type
+            </Button>
+          )
         }
       />
       <div className="space-y-5 p-5 lg:p-8">
         <Card>
           <DataTable
             caption="Room types"
-            columns={roomTypeColumns(setEditing)}
+            columns={
+              canManage
+                ? roomTypeColumns(setEditing)
+                : roomTypeColumns(setEditing).filter((column) => column.id !== 'actions')
+            }
             data={[...types].sort((a, b) => a.capacity - b.capacity)}
             getRowId={(type) => type.id}
             sort={undefined}

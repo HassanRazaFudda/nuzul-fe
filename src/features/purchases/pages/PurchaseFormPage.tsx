@@ -11,6 +11,7 @@ import { hotelOptionsQuery } from '@/features/hotels';
 import { ledgerSourcesQuery } from '@/features/inventory';
 import { partnerOptionsQuery } from '@/features/partners';
 import { roomTypesQuery } from '@/features/room-types';
+import { useCan } from '@/lib/auth/session';
 import { todayIso } from '@/lib/format/dates';
 
 import {
@@ -56,6 +57,7 @@ function PurchaseFormScreen({ purchase }: { purchase: PurchaseView | null }) {
   const updatePurchase = useUpdatePurchase();
   const updateConfirmed = useUpdateConfirmedPurchase();
   const navigate = useNavigate();
+  const can = useCan();
   const [searchParams] = useSearchParams();
   const [today] = useState(() => todayIso(new Date()));
   const [review, setReview] = useState<Review | null>(null);
@@ -152,6 +154,7 @@ function PurchaseFormScreen({ purchase }: { purchase: PurchaseView | null }) {
           names={names}
           months={months}
           confirmLabel="Save changes"
+          canOverride={can('inventory.override_overbooking')}
           onConfirm={handleConfirmReview}
           onCancel={closeReview}
         />
