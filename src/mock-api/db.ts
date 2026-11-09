@@ -23,9 +23,12 @@ export type CollectionName = keyof typeof SEED;
 const NAMES = Object.keys(SEED) as CollectionName[];
 
 /** Bump whenever a collection changes. Existing data stays; new collections get their seed. */
-const DB_VERSION = 9;
-/** Version 9 replaced the demo data, so a browser on an older version starts again from it. */
-const RESEED_BELOW = 9;
+const DB_VERSION = 10;
+/**
+ * Version 10 replaced the demo data, so a browser on an older version starts again from it.
+ * (Some browsers reached version 9 while it still held the old data.)
+ */
+const RESEED_BELOW = 10;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;
