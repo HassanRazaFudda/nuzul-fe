@@ -12,6 +12,7 @@ export const ledgerKeys = {
   all: ['ledger'] as const,
   list: (params: PoolListParams) => [...ledgerKeys.all, 'list', params] as const,
   overbookedCount: () => [...ledgerKeys.all, 'overbooked-count'] as const,
+  season: () => [...ledgerKeys.all, 'season'] as const,
   pool: (hotelId: string, roomTypeId: string) => [...ledgerKeys.all, 'pool', hotelId, roomTypeId] as const,
   sources: () => [...ledgerKeys.all, 'sources'] as const,
 };
@@ -30,6 +31,12 @@ export const poolListQuery = (params: PoolListParams) =>
     placeholderData: keepPreviousData,
     staleTime: ALWAYS_STALE,
   });
+
+export const seasonPoolsQuery = queryOptions({
+  queryKey: ledgerKeys.season(),
+  queryFn: () => ledgerApi.season(),
+  staleTime: ALWAYS_STALE,
+});
 
 export const overbookedPoolsQuery = queryOptions({
   queryKey: ledgerKeys.overbookedCount(),

@@ -127,12 +127,7 @@ function PurchaseFormScreen({ purchase }: { purchase: PurchaseView | null }) {
 
   return (
     <>
-      <PageHeader
-        title={purchase ? `Edit ${purchase.number}` : 'Add purchase'}
-        subtitle={
-          isConfirmed ? 'You will see what this changes before it is saved' : 'Drafts never affect the ledger'
-        }
-      />
+      <PageHeader title={purchase ? `Edit ${purchase.number}` : 'Add purchase'} />
       <PurchaseForm
         purchase={purchase}
         hotels={hotels}

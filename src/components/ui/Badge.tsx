@@ -2,31 +2,46 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/cn';
 
-const TONE_CLASSES = {
-  neutral: 'border-neutral-border bg-neutral-subtle text-neutral-strong',
-  brand: 'border-primary-border bg-primary-subtle text-primary-strong',
-  success: 'border-success-border bg-success-subtle text-success-strong',
-  warning: 'border-warning-border bg-warning-subtle text-warning-strong',
-  danger: 'border-danger-border bg-danger-subtle text-danger-strong',
+const DOT_CLASSES = {
+  neutral: 'bg-neutral',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  danger: 'bg-danger',
 } as const;
 
-export type BadgeTone = keyof typeof TONE_CLASSES;
+const TEXT_CLASSES = {
+  neutral: 'text-secondary',
+  success: 'text-success-strong',
+  warning: 'text-warning-strong',
+  danger: 'text-danger-strong',
+} as const;
+
+export type BadgeTone = keyof typeof DOT_CLASSES;
 
 interface BadgeProps {
   tone?: BadgeTone;
+  /**
+   * `dot` is a state: a coloured dot and the word. `text` is the word alone in its colour,
+   * for something that needs a look, like an overbooked line.
+   */
+  look?: 'dot' | 'text';
+  /** Replaces the dot. */
   icon?: ReactNode;
   children: ReactNode;
 }
 
-export function Badge({ tone = 'neutral', icon, children }: BadgeProps) {
+/** A state in words. The colour only repeats what the words say. */
+export function Badge({ tone = 'neutral', look = 'dot', icon, children }: BadgeProps) {
+  if (look === 'text') {
+    return (
+      <span className={cn('text-[0.8125rem] font-medium whitespace-nowrap', TEXT_CLASSES[tone])}>
+        {children}
+      </span>
+    );
+  }
   return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap',
-        TONE_CLASSES[tone],
-      )}
-    >
-      {icon}
+    <span className="text-secondary inline-flex items-center gap-1.5 text-[0.8125rem] font-medium whitespace-nowrap">
+      {icon ?? <span aria-hidden className={cn('size-1.5 shrink-0 rounded-full', DOT_CLASSES[tone])} />}
       {children}
     </span>
   );

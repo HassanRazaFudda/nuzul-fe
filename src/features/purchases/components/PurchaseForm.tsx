@@ -8,6 +8,7 @@ import { FormErrorSummary } from '@/components/form/FormErrorSummary';
 import { FormField } from '@/components/form/FormField';
 import { Button } from '@/components/ui/Button';
 import { buttonClass } from '@/components/ui/buttonStyles';
+import { FormSection } from '@/components/form/FormSection';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/Input';
@@ -218,10 +219,9 @@ export function PurchaseForm({
       {showSummary && <FormErrorSummary form={form} labels={labelsFor(lines.fields.length)} />}
 
       <div className="grid items-start gap-5 xl:grid-cols-[1fr_20rem]">
-        <div className="min-w-0 space-y-5">
-          <Card>
-            <CardHeader title="Hotel and stay" subtitle="Nights come from the dates" />
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
+        <Card className="min-w-0">
+          <FormSection title="Hotel and stay">
+            <div className="grid gap-4 sm:grid-cols-2">
               <FormField label="Hotel" required error={errors.hotelId?.message}>
                 {(field) => (
                   <Select
@@ -270,86 +270,77 @@ export function PurchaseForm({
                 {(field) => <Input {...field} type="date" {...form.register('checkOut')} />}
               </FormField>
             </div>
-          </Card>
+          </FormSection>
 
-          <Card>
-            <CardHeader title="Rooms and cost" />
-            <div className="space-y-4 p-5">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FormField label="Currency" required error={errors.currencyCode?.message}>
-                  {(field) => (
-                    <Select
-                      {...field}
-                      {...currencyField}
-                      onChange={(event) => {
-                        void currencyField.onChange(event);
-                        handleCurrencyChange(event.target.value);
-                      }}
-                    >
-                      {currencyOptions.map((currency) => (
-                        <option key={currency.code} value={currency.code}>
-                          {currency.code}
-                        </option>
-                      ))}
-                    </Select>
-                  )}
-                </FormField>
-                <FormField
-                  label="Rate against PKR"
-                  required
-                  error={errors.rateToPkr?.message}
-                  hint="Kept with this purchase. Later rate changes never alter it."
-                >
-                  {(field) => (
-                    <Input
-                      {...field}
-                      inputMode="decimal"
-                      readOnly={currencyCode === RATE_BASE_CURRENCY || !canSetRate}
-                      {...form.register('rateToPkr')}
-                    />
-                  )}
-                </FormField>
-              </div>
-              <div className="flex flex-wrap gap-x-6 gap-y-2">
-                <label className="text-foreground flex items-center gap-2 text-sm">
-                  <input type="checkbox" className="accent-primary size-4" {...form.register('perNight')} />
-                  Rate is per night
-                </label>
-                <label className="text-foreground flex items-center gap-2 text-sm">
-                  <input type="checkbox" className="accent-primary size-4" {...form.register('sameRate')} />
-                  Same rate for all lines
-                </label>
-              </div>
-              <RoomLinesField
-                form={form}
-                lines={lines}
-                roomTypes={roomTypes}
-                onRoomTypeChange={handleRoomTypeChange}
-              />
-            </div>
-          </Card>
-
-          <Card>
-            <CardHeader title="Meals" />
-            <div className="p-5">
-              <MealFields form={form} />
-            </div>
-          </Card>
-
-          <Card>
-            <CardHeader title="Notes" />
-            <div className="p-5">
-              <FormField label="Notes" error={errors.notes?.message}>
-                {(field) => <Textarea {...field} {...form.register('notes')} />}
+          <FormSection title="Rooms and cost">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField label="Currency" required error={errors.currencyCode?.message}>
+                {(field) => (
+                  <Select
+                    {...field}
+                    {...currencyField}
+                    onChange={(event) => {
+                      void currencyField.onChange(event);
+                      handleCurrencyChange(event.target.value);
+                    }}
+                  >
+                    {currencyOptions.map((currency) => (
+                      <option key={currency.code} value={currency.code}>
+                        {currency.code}
+                      </option>
+                    ))}
+                  </Select>
+                )}
+              </FormField>
+              <FormField
+                label="Rate against PKR"
+                required
+                error={errors.rateToPkr?.message}
+                hint="Stays with this purchase"
+              >
+                {(field) => (
+                  <Input
+                    {...field}
+                    inputMode="decimal"
+                    readOnly={currencyCode === RATE_BASE_CURRENCY || !canSetRate}
+                    {...form.register('rateToPkr')}
+                  />
+                )}
               </FormField>
             </div>
-          </Card>
-        </div>
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              <label className="text-foreground flex items-center gap-2 text-sm">
+                <input type="checkbox" className="accent-primary size-4" {...form.register('perNight')} />
+                Rate is per night
+              </label>
+              <label className="text-foreground flex items-center gap-2 text-sm">
+                <input type="checkbox" className="accent-primary size-4" {...form.register('sameRate')} />
+                Same rate for all lines
+              </label>
+            </div>
+            <RoomLinesField
+              form={form}
+              lines={lines}
+              roomTypes={roomTypes}
+              onRoomTypeChange={handleRoomTypeChange}
+            />
+          </FormSection>
 
-        <Card className="xl:sticky xl:top-5">
+          <FormSection title="Meals">
+            <MealFields form={form} />
+          </FormSection>
+
+          <FormSection>
+            <FormField label="Notes" error={errors.notes?.message}>
+              {(field) => <Textarea {...field} rows={3} {...form.register('notes')} />}
+            </FormField>
+          </FormSection>
+        </Card>
+
+        <Card className="xl:sticky xl:top-6">
           <CardHeader title="Totals" />
           <PurchaseTotals control={form.control} currencies={currencies} />
-          <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-3">
+          <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-4">
             <Link to={cancelTo} className={buttonClass('secondary')}>
               Cancel
             </Link>

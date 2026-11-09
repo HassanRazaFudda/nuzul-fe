@@ -10,7 +10,7 @@ import { formatIsoDate } from '@/lib/format/dates';
 import { salesReportQuery } from '../api/report.queries';
 import { salesParamsSchema } from '../api/report.schemas';
 import { SALES_GROUPS, type SalesGroup, type SalesRow } from '../domain/reports';
-import { asNumber, moneyFormatter } from '../components/money-format';
+import { amountFormatter, asNumber, moneyFormatter } from '../components/money-format';
 import { ReportFilters } from '../components/ReportFilters';
 import { ReportShell } from '../components/ReportShell';
 import { toSheet } from '../components/report-sheet';
@@ -35,6 +35,7 @@ export function SalesReportPage() {
     queries: [hotelOptionsQuery, currenciesQuery],
   });
   const money = moneyFormatter(currencies, params.currency);
+  const amount = amountFormatter(currencies, params.currency);
 
   const labelOf = (data: NonNullable<typeof query.data>, group: string) => {
     if (params.groupBy === 'date') return group ? formatIsoDate(group) : '';
@@ -61,7 +62,7 @@ export function SalesReportPage() {
     {
       header: 'Sales amount',
       isNumeric: true,
-      cell: (row) => money(row.amount),
+      cell: (row) => amount(row.amount),
       value: (row) => asNumber(row.amount),
     },
   ];
@@ -71,8 +72,8 @@ export function SalesReportPage() {
 
   return (
     <ReportShell
+      currency={params.currency}
       title="Sales"
-      subtitle="What was sold, by contract date"
       query={query}
       fileName={`Sales by ${params.groupBy} ${params.currency}.xlsx`}
       filters={
@@ -176,11 +177,13 @@ export function SalesReportPage() {
       {(data) => {
         const rows = rowsOf(data);
         return (
-          <Card>
+          <Card className="overflow-hidden">
             {rows.length > 0 && (
-              <p className="text-foreground border-border border-b px-5 py-3 text-sm">
-                Total sales:{' '}
-                <span className="font-semibold tabular-nums">{money(amountOf(rows).toFixed(2))}</span>
+              <p className="text-muted border-border border-b px-5 py-3 text-sm">
+                Total sales{' '}
+                <span className="text-foreground ms-1 text-base font-medium tabular-nums">
+                  {money(amountOf(rows).toFixed(2))}
+                </span>
               </p>
             )}
             <ReportTable
@@ -188,7 +191,7 @@ export function SalesReportPage() {
               columns={columns}
               rows={rows}
               rowKey={(row) => row.group || 'none'}
-              empty="No contracts match these filters."
+              empty="No contracts match these filters"
             />
           </Card>
         );

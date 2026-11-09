@@ -33,18 +33,20 @@ function roomTypeColumns(onEdit: (roomType: RoomType) => void) {
     }),
     columnHelper.display({
       id: 'actions',
-      header: 'Actions',
+      header: () => <span className="sr-only">Actions</span>,
       cell: (info) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label={`Edit ${info.row.original.name}`}
-          onClick={() => {
-            onEdit(info.row.original);
-          }}
-        >
-          Edit
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={`Edit ${info.row.original.name}`}
+            onClick={() => {
+              onEdit(info.row.original);
+            }}
+          >
+            Edit
+          </Button>
+        </div>
       ),
     }),
   ]);
@@ -68,7 +70,6 @@ export function RoomTypesPage() {
     <>
       <PageHeader
         title="Room types"
-        subtitle="Occupancy categories, and how they may convert"
         action={
           canManage && (
             <Button

@@ -3,6 +3,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { formatIsoDate } from '@/lib/format/dates';
 import { rateOn } from '@/lib/money/money';
 
 import {
@@ -36,10 +37,10 @@ export function currencyColumns({
       header: 'Currency',
       enableSorting: false,
       cell: (info) => (
-        <span className="flex items-center gap-2 font-medium">
-          {info.getValue()}
-          {info.getValue() === DEFAULT_CURRENCY && <Badge tone="brand">Default</Badge>}
-          {info.getValue() === RATE_BASE_CURRENCY && <Badge>Rate base</Badge>}
+        <span className="flex items-baseline gap-2">
+          <span className="font-mono font-medium">{info.getValue()}</span>
+          {info.getValue() === DEFAULT_CURRENCY && <span className="text-muted text-xs">Default</span>}
+          {info.getValue() === RATE_BASE_CURRENCY && <span className="text-muted text-xs">Rate base</span>}
         </span>
       ),
     }),
@@ -61,9 +62,10 @@ export function currencyColumns({
     columnHelper.display({
       id: 'since',
       header: 'Since',
-      cell: (info) => (
-        <span className="tabular-nums">{rateOn(rates, info.row.original.code, today)?.effectiveFrom}</span>
-      ),
+      cell: (info) => {
+        const since = rateOn(rates, info.row.original.code, today)?.effectiveFrom;
+        return since ? <span className="tabular-nums">{formatIsoDate(since)}</span> : null;
+      },
     }),
     columnHelper.accessor('enabled', {
       header: 'Status',
@@ -72,13 +74,13 @@ export function currencyColumns({
     }),
     columnHelper.display({
       id: 'actions',
-      header: 'Actions',
+      header: () => <span className="sr-only">Actions</span>,
       cell: (info) => {
         const currency = info.row.original;
         const isBase = currency.code === RATE_BASE_CURRENCY;
         const isLocked = isBase || currency.code === DEFAULT_CURRENCY;
         return (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex justify-end gap-1">
             {!isBase && (
               <Button
                 variant="ghost"

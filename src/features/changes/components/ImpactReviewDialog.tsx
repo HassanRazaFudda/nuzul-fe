@@ -103,7 +103,7 @@ export function ImpactReviewDialog({
           <ErrorNotice title="This overbooks">
             {isBlocked
               ? 'Some nights below end up short, and going ahead with overbooking needs a permission you do not hold. Ask someone who has it, or change the record so nothing is short.'
-              : 'Some nights below end up short. You can still go ahead; the sales on them are tagged OVERBOOKED.'}
+              : 'Some nights below end up short. You can still go ahead; the sales on them are tagged Overbooked.'}
           </ErrorNotice>
         )}
         <ImpactPreview impact={impact} names={names} months={months} />

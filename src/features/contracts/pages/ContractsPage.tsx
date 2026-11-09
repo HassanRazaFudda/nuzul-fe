@@ -34,14 +34,11 @@ const HOTEL_PARAM = 'hotel';
 const isSortField = (id: string): id is ContractSortField =>
   CONTRACT_SORT_FIELDS.some((field) => field === id);
 
-const EMPTY: Record<ContractStatus, { title: string; hint: string }> = {
-  draft: { title: 'No drafts', hint: 'Drafts appear here and never affect the ledger.' },
-  confirmed: { title: 'No confirmed contracts', hint: 'Add a contract, then confirm it.' },
-  locked: {
-    title: 'No locked contracts',
-    hint: 'Locked contracts count on the ledger and cannot be changed.',
-  },
-  cancelled: { title: 'No cancelled contracts', hint: 'Cancelled contracts stay here for history.' },
+const EMPTY: Record<ContractStatus, { title: string; hint?: string }> = {
+  draft: { title: 'No drafts' },
+  confirmed: { title: 'No confirmed contracts', hint: 'Add a contract, then confirm it' },
+  locked: { title: 'No locked contracts' },
+  cancelled: { title: 'No cancelled contracts' },
 };
 
 export function ContractsPage() {
@@ -77,7 +74,6 @@ export function ContractsPage() {
     <>
       <PageHeader
         title="Sales contracts"
-        subtitle="Rooms sold to agents"
         action={
           canManage && (
             <Link to="/contracts/new" className={buttonClass('primary')}>
@@ -111,7 +107,7 @@ export function ContractsPage() {
           onParamsChange={updateParams}
           isSortField={isSortField}
           emptyTitle={EMPTY[params.status].title}
-          emptyHint={EMPTY[params.status].hint}
+          {...(EMPTY[params.status].hint ? { emptyHint: EMPTY[params.status].hint } : {})}
           toolbar={
             <Select
               aria-label="Filter by hotel"

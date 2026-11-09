@@ -34,12 +34,11 @@ const isSortField = (id: string): id is PartnerSortField => PARTNER_SORT_FIELDS.
 interface PartnersListProps {
   kind: PartnerKind;
   title: string;
-  subtitle: string;
   noun: string;
 }
 
 /** Vendors and agents are the same screen, on the buying and the selling side. */
-export function PartnersList({ kind, title, subtitle, noun }: PartnersListProps) {
+export function PartnersList({ kind, title, noun }: PartnersListProps) {
   const can = useCan();
   const canManage = can('directory.manage');
   const { params, updateParams } = usePartnerListParams();
@@ -74,7 +73,6 @@ export function PartnersList({ kind, title, subtitle, noun }: PartnersListProps)
     <>
       <PageHeader
         title={title}
-        subtitle={subtitle}
         action={
           canManage && (
             <Button
@@ -110,11 +108,7 @@ export function PartnersList({ kind, title, subtitle, noun }: PartnersListProps)
           onParamsChange={updateParams}
           isSortField={isSortField}
           emptyTitle={params.status === 'active' ? `No active ${lowerTitle}` : `No inactive ${lowerTitle}`}
-          emptyHint={
-            params.status === 'active'
-              ? `Add a ${noun} to start.`
-              : 'Deactivating keeps history and hides the name from new records.'
-          }
+          {...(params.status === 'active' ? { emptyHint: `Add a ${noun} to start` } : {})}
         />
       </div>
       {editing && (

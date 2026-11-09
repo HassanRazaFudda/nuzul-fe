@@ -1,6 +1,6 @@
 // Public API of the purchases feature. Other features import ONLY from here.
 export { purchaseRoutes } from './routes';
-export { purchaseDetailQuery, purchaseKeys } from './api/purchase.queries';
+export { purchaseDetailQuery, purchaseKeys, purchaseListQuery } from './api/purchase.queries';
 export { asLedgerPurchase, purchasesApi } from './api/purchases.api';
 export { purchaseSchema, type Adjustment, type Purchase, type PurchaseView } from './api/purchase.schemas';
 export { purchaseChange, purchaseImpact } from './domain/purchase-change';

@@ -1,33 +1,34 @@
 import { Rows3, Search } from 'lucide-react';
-import { useState, type ReactNode, type SubmitEvent } from 'react';
+import type { ReactNode, SubmitEvent } from 'react';
 
-import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { cn } from '@/lib/cn';
 
 interface TableToolbarProps {
-  /** The committed search. Render with `key={search}` so the draft resets if the URL changes. */
-  search: string;
-  onSearch: (search: string) => void;
   label: string;
+  /** What is typed in the search box. */
+  draft: string;
+  onDraftChange: (draft: string) => void;
+  /** Enter: search at once instead of waiting for typing to pause. */
+  onSubmit: () => void;
   isCompact: boolean;
   onCompactChange: (isCompact: boolean) => void;
   children?: ReactNode;
 }
 
-/** Search box and density switch above a table. Typing stays local until submitted. */
+/** Search box and density switch above a table. */
 export function TableToolbar({
-  search,
-  onSearch,
   label,
+  draft,
+  onDraftChange,
+  onSubmit,
   isCompact,
   onCompactChange,
   children,
 }: TableToolbarProps) {
-  const [draft, setDraft] = useState(search);
-
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
-    onSearch(draft);
+    onSubmit();
   }
 
   return (
@@ -35,34 +36,37 @@ export function TableToolbar({
       <form role="search" onSubmit={handleSubmit} className="relative min-w-48 flex-1 sm:max-w-xs">
         <Search
           aria-hidden
-          className="text-faint pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2"
+          className="text-muted pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2"
         />
         <Input
           type="search"
           value={draft}
           onChange={(event) => {
-            setDraft(event.target.value);
-            // Clearing the box is a search too; no need to press Enter for it.
-            if (event.target.value === '') onSearch('');
+            onDraftChange(event.target.value);
           }}
-          placeholder="Search, then press Enter"
+          placeholder="Search"
           aria-label={`Search ${label}`}
-          className="ps-9"
+          className="h-(--control-height-sm) ps-9"
         />
       </form>
       {children}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="ms-auto"
-        icon={<Rows3 aria-hidden className="size-4" />}
+      <button
+        type="button"
         aria-pressed={isCompact}
+        aria-label="Compact rows"
+        title="Compact rows"
         onClick={() => {
           onCompactChange(!isCompact);
         }}
+        className={cn(
+          'rounded-control ms-auto p-1.5 transition-colors duration-150',
+          isCompact
+            ? 'bg-surface-muted text-foreground'
+            : 'text-muted hover:bg-surface-muted hover:text-foreground',
+        )}
       >
-        Compact
-      </Button>
+        <Rows3 aria-hidden className="size-4" />
+      </button>
     </div>
   );
 }

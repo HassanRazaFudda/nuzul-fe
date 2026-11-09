@@ -7,7 +7,7 @@ import { hotelOptionsQuery } from '@/features/hotels';
 import { vendorMarginQuery } from '../api/report.queries';
 import { reportParamsSchema } from '../api/report.schemas';
 import type { VendorMargin } from '../domain/reports';
-import { asNumber, moneyFormatter } from '../components/money-format';
+import { amountFormatter, asNumber } from '../components/money-format';
 import { ReportFilters } from '../components/ReportFilters';
 import { ReportShell } from '../components/ReportShell';
 import { toSheet } from '../components/report-sheet';
@@ -22,7 +22,7 @@ export function VendorMarginPage() {
   const [{ data: hotels }, { data: currencies }] = useSuspenseQueries({
     queries: [hotelOptionsQuery, currenciesQuery],
   });
-  const money = moneyFormatter(currencies, params.currency);
+  const amount = amountFormatter(currencies, params.currency);
 
   const columns: ReportColumn<Row>[] = [
     { header: 'Vendor', cell: (row) => row.name, value: (row) => row.name },
@@ -35,19 +35,19 @@ export function VendorMarginPage() {
     {
       header: 'Revenue',
       isNumeric: true,
-      cell: (row) => money(row.revenue),
+      cell: (row) => amount(row.revenue),
       value: (row) => asNumber(row.revenue),
     },
     {
       header: 'Cost at actual rate',
       isNumeric: true,
-      cell: (row) => (row.cost === null ? 'No vendor' : money(row.cost)),
+      cell: (row) => (row.cost === null ? 'No vendor' : amount(row.cost)),
       value: (row) => (row.cost === null ? '' : asNumber(row.cost)),
     },
     {
       header: 'Margin',
       isNumeric: true,
-      cell: (row) => (row.margin === null ? '—' : money(row.margin)),
+      cell: (row) => (row.margin === null ? '—' : amount(row.margin)),
       value: (row) => (row.margin === null ? '' : asNumber(row.margin)),
     },
   ];
@@ -62,8 +62,9 @@ export function VendorMarginPage() {
 
   return (
     <ReportShell
+      currency={params.currency}
       title="Vendor-wise margin"
-      subtitle="Vendors compared at their actual rates, through each sale's vendor allocation. The main P&L uses the weighted average instead."
+      subtitle="At each vendor's actual rate, through the sale's allocation. The P&L uses the weighted average"
       query={query}
       fileName={`Vendor margin ${params.currency}.xlsx`}
       filters={
@@ -85,7 +86,7 @@ export function VendorMarginPage() {
             columns={columns}
             rows={rowsOf(data)}
             rowKey={(row) => row.vendorId ?? 'none'}
-            empty="Nothing was sold for nights in this period."
+            empty="Nothing was sold for nights in this period"
           />
         </Card>
       )}

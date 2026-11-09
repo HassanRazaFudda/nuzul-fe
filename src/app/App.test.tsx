@@ -8,8 +8,9 @@ describe('the app shell', () => {
     renderApp('/');
 
     expect(await screen.findByRole('heading', { name: 'Overview' })).toBeInTheDocument();
-    expect(await screen.findByText('Calendar months')).toBeInTheDocument();
-    expect(screen.getByText('This is a prototype')).toBeInTheDocument();
+    expect(await screen.findByText('Rooms by hotel')).toBeInTheDocument();
+    expect(screen.getByText('Room-nights purchased')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument();
   });
 
   it('collapses the sidebar and keeps every link reachable by name', async () => {

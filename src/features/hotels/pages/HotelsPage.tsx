@@ -65,7 +65,6 @@ export function HotelsPage() {
     <>
       <PageHeader
         title="Hotels"
-        subtitle="Where rooms are bought and sold"
         action={
           canManage && (
             <Button
@@ -101,11 +100,7 @@ export function HotelsPage() {
           onParamsChange={updateParams}
           isSortField={isSortField}
           emptyTitle={params.status === 'active' ? 'No active hotels' : 'No inactive hotels'}
-          emptyHint={
-            params.status === 'active'
-              ? 'Add a hotel to start.'
-              : 'Deactivating keeps history and hides the hotel from new records.'
-          }
+          {...(params.status === 'active' ? { emptyHint: 'Add a hotel to start' } : {})}
         />
       </div>
       {editing && (

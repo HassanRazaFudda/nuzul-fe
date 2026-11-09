@@ -54,7 +54,7 @@ export function LedgerPage() {
 
   return (
     <>
-      <PageHeader title="Rooms ledger" subtitle="What is available, per hotel and room type" />
+      <PageHeader title="Rooms ledger" />
       <div className="p-5 lg:p-8">
         <DataList
           caption="Rooms ledger"
@@ -66,7 +66,7 @@ export function LedgerPage() {
           onParamsChange={updateParams}
           isSortField={isSortField}
           emptyTitle="Nothing on the ledger here"
-          emptyHint="Only confirmed purchases and sales count."
+          emptyHint="Only confirmed purchases and sales count"
           toolbar={
             <>
               <Select

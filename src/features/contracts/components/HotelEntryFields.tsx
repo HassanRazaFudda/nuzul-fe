@@ -137,7 +137,6 @@ export function HotelEntryFields({
     <Card>
       <CardHeader
         title={`Hotel ${String(index + 1)}`}
-        subtitle="Nights come from the dates"
         action={
           canRemove && (
             <Button
@@ -273,7 +272,7 @@ export function HotelEntryFields({
                 isConversionAllowed(rules, roomTypes, entry.hotelId, type.id, line.soldAsTypeId),
             );
             return (
-              <li key={field.id} className="rounded-control border-border space-y-3 border p-3">
+              <li key={field.id} className="rounded-control border-border bg-background space-y-3 border p-3">
                 <div className="grid items-start gap-3 sm:grid-cols-[1fr_1fr_1fr_1fr_auto]">
                   <FormField label="Sold as" required error={lineErrors?.soldAsTypeId?.message}>
                     {(fieldProps) => (
@@ -294,12 +293,7 @@ export function HotelEntryFields({
                       </Select>
                     )}
                   </FormField>
-                  <FormField
-                    label="Taken from"
-                    required
-                    error={lineErrors?.sourceTypeId?.message}
-                    hint="The purchased type these rooms come from"
-                  >
+                  <FormField label="Taken from" required error={lineErrors?.sourceTypeId?.message}>
                     {(fieldProps) => (
                       <Select
                         {...fieldProps}
@@ -309,7 +303,7 @@ export function HotelEntryFields({
                           handleSourceChange(lineIndex);
                         }}
                       >
-                        {sources.length === 0 && <option value="">Choose a type first</option>}
+                        {sources.length === 0 && <option value="">Sold as first</option>}
                         {sources.map((type) => (
                           <option key={type.id} value={type.id}>
                             {type.name}

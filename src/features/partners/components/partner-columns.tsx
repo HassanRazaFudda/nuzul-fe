@@ -36,11 +36,11 @@ export function partnerColumns({ onEdit, onSetActive }: PartnerColumnOptions) {
     }),
     columnHelper.display({
       id: 'actions',
-      header: 'Actions',
+      header: () => <span className="sr-only">Actions</span>,
       cell: (info) => {
         const partner = info.row.original;
         return (
-          <div className="flex gap-1">
+          <div className="flex justify-end gap-1">
             <Button
               variant="ghost"
               size="sm"

@@ -68,7 +68,7 @@ export function DataTable<TData extends object>({
         aria-busy={isFetching || undefined}
       >
         <caption className="sr-only">{caption}</caption>
-        <thead className="bg-surface-muted sticky top-0 z-10">
+        <thead className="bg-surface sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -77,13 +77,13 @@ export function DataTable<TData extends object>({
                   <th
                     key={header.id}
                     scope="col"
-                    className="border-border text-muted border-b px-4 py-2 text-start text-xs font-semibold whitespace-nowrap"
+                    className="border-border text-muted h-9 border-b px-4 text-start text-xs font-medium whitespace-nowrap"
                     aria-sort={sorted === 'asc' ? 'ascending' : sorted === 'desc' ? 'descending' : undefined}
                   >
                     {header.column.getCanSort() ? (
                       <button
                         type="button"
-                        className="hover:text-foreground inline-flex items-center gap-1"
+                        className="hover:text-foreground inline-flex items-center gap-1 transition-colors duration-150"
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         <FlexRender header={header} />
@@ -104,7 +104,7 @@ export function DataTable<TData extends object>({
           {rows.map((row) => (
             <tr
               key={row.id}
-              className="border-border hover:bg-surface-muted border-b transition-colors duration-150 last:border-b-0"
+              className="border-border hover:bg-background border-b transition-colors duration-150 last:border-b-0"
               style={{ height: isCompact ? 'var(--table-row-height-compact)' : 'var(--table-row-height)' }}
             >
               {row.getAllCells().map((cell) => (

@@ -27,7 +27,7 @@ export function HistoryCard({ entity, entityId, money }: HistoryCardProps) {
 
   return (
     <Card>
-      <CardHeader title="History" subtitle="Every version, newest first" />
+      <CardHeader title="History" />
       {error ? (
         <div className="p-4">
           <QueryErrorState error={error} onRetry={() => void refetch()} />

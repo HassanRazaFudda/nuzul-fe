@@ -2,9 +2,10 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
+import { Amount } from '@/components/ui/Amount';
+import { RECORD_LINK_CLASS } from '@/components/ui/buttonStyles';
 import { formatDay, type CalendarMonth } from '@/features/calendar';
 import { nightsBetween } from '@/lib/format/dates';
-import { formatMoney } from '@/lib/money/money';
 
 import type { PurchaseView } from '../api/purchase.schemas';
 
@@ -20,7 +21,7 @@ export function purchaseColumns({ months, moneyFormat }: PurchaseColumnOptions) 
     columnHelper.accessor('number', {
       header: 'Number',
       cell: (info) => (
-        <Link to={`/purchases/${info.row.original.id}`} className="text-primary-strong font-medium underline">
+        <Link to={`/purchases/${info.row.original.id}`} className={RECORD_LINK_CLASS}>
           {info.getValue()}
         </Link>
       ),
@@ -55,8 +56,8 @@ export function purchaseColumns({ months, moneyFormat }: PurchaseColumnOptions) 
       cell: (info) => {
         const { total } = info.row.original;
         return (
-          <span className="block text-end whitespace-nowrap tabular-nums">
-            {formatMoney(total.amount, moneyFormat(total.currencyCode))}
+          <span className="block text-end">
+            <Amount amount={total.amount} currency={moneyFormat(total.currencyCode)} />
           </span>
         );
       },

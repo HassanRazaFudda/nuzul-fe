@@ -13,7 +13,12 @@ import { saveWorkbook, type WorkbookSheet } from '@/lib/export/workbook';
 
 interface ReportShellProps<TData> {
   title: string;
-  subtitle: string;
+  /** What the report counts by, when the title alone leaves it open. */
+  subtitle?: string | undefined;
+  /** The currency every amount is in. Named once, under the title, so it prints too. */
+  currency: string;
+  /** One quiet line under the report. */
+  footnote?: string;
   query: UseQueryResult<TData>;
   filters: ReactNode;
   /** The sheets to save, from the data on screen. */
@@ -26,6 +31,8 @@ interface ReportShellProps<TData> {
 export function ReportShell<TData>({
   title,
   subtitle,
+  currency,
+  footnote,
   query,
   filters,
   sheets,
@@ -53,7 +60,7 @@ export function ReportShell<TData>({
     <>
       <PageHeader
         title={title}
-        subtitle={subtitle}
+        subtitle={[subtitle, `Amounts in ${currency}`].filter(Boolean).join(' · ')}
         action={
           <div className="flex flex-wrap gap-2 print:hidden">
             {canExport && (
@@ -75,7 +82,7 @@ export function ReportShell<TData>({
                 window.print();
               }}
             >
-              Print or save as PDF
+              Print / PDF
             </Button>
           </div>
         }
@@ -92,10 +99,7 @@ export function ReportShell<TData>({
         ) : (
           children(data)
         )}
-        <p className="text-muted text-xs">
-          Worked out from current records on every view. These accounting rules still need the client&apos;s
-          accountant to confirm them before the figures are relied on.
-        </p>
+        {footnote && <p className="text-muted text-xs">{footnote}</p>}
       </div>
     </>
   );

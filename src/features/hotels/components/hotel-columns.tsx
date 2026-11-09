@@ -17,7 +17,7 @@ interface HotelColumnOptions {
 
 export function hotelColumns({ currencies, onEdit, onSetActive }: HotelColumnOptions) {
   const rate = (hotel: Hotel, value: string | undefined) => {
-    if (!value) return <span className="text-faint block text-end">Not set</span>;
+    if (!value) return <span className="text-muted block text-end">Not set</span>;
     const currency = currencies.find((item) => item.code === hotel.rateCurrency);
     return (
       <span className="block text-end tabular-nums">
@@ -49,11 +49,11 @@ export function hotelColumns({ currencies, onEdit, onSetActive }: HotelColumnOpt
     }),
     columnHelper.display({
       id: 'actions',
-      header: 'Actions',
+      header: () => <span className="sr-only">Actions</span>,
       cell: (info) => {
         const hotel = info.row.original;
         return (
-          <div className="flex gap-1">
+          <div className="flex justify-end gap-1">
             <Button
               variant="ghost"
               size="sm"

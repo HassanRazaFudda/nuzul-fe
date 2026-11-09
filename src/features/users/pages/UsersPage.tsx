@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
@@ -47,7 +47,6 @@ export function UsersPage() {
     <>
       <PageHeader
         title="Users & permissions"
-        subtitle="Each person holds exactly the permissions ticked on their page"
         action={
           can('user.manage') && (
             <Button
@@ -63,24 +62,24 @@ export function UsersPage() {
           )
         }
       />
-      <div className="space-y-4 p-5 lg:p-8">
-        <p className="text-muted text-xs">
-          A prototype: signing in needs no password, and the real checks arrive with the backend.
-        </p>
-        <Card>
+      <div className="p-5 lg:p-8">
+        <Card className="overflow-hidden">
           <ul className="divide-border divide-y">
             {users.map((user) => (
-              <li
-                key={user.id}
-                className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 text-sm"
-              >
-                <Link to={`/users/${user.id}`} className="text-primary-strong font-medium underline">
-                  {user.name}
+              <li key={user.id}>
+                <Link
+                  to={`/users/${user.id}`}
+                  className="hover:bg-background flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3 text-sm transition-colors duration-150"
+                >
+                  <span className="text-foreground min-w-48 flex-1 font-medium">{user.name}</span>
+                  <span className="text-muted w-32 text-[0.8125rem] tabular-nums">
+                    {user.permissions.length} permissions
+                  </span>
+                  <span className="w-28">
+                    {user.active ? <Badge tone="success">Active</Badge> : <Badge>Deactivated</Badge>}
+                  </span>
+                  <ChevronRight aria-hidden className="text-faint size-4" />
                 </Link>
-                <span className="flex items-center gap-2">
-                  <span className="text-muted text-xs">{user.permissions.length} permissions</span>
-                  {user.active ? <Badge tone="success">Active</Badge> : <Badge>Deactivated</Badge>}
-                </span>
               </li>
             ))}
           </ul>

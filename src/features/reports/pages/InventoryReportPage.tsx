@@ -8,7 +8,7 @@ import { hotelOptionsQuery } from '@/features/hotels';
 import { inventoryReportQuery } from '../api/report.queries';
 import { reportParamsSchema } from '../api/report.schemas';
 import type { InventoryRow } from '../domain/reports';
-import { asNumber, moneyFormatter } from '../components/money-format';
+import { amountFormatter, asNumber, moneyFormatter } from '../components/money-format';
 import { ReportFilters } from '../components/ReportFilters';
 import { ReportShell } from '../components/ReportShell';
 import { toSheet } from '../components/report-sheet';
@@ -29,6 +29,7 @@ export function InventoryReportPage({ isExposureOnly = false }: InventoryReportP
     queries: [hotelOptionsQuery, currenciesQuery, calendarMonthsQuery],
   });
   const money = moneyFormatter(currencies, params.currency);
+  const amount = amountFormatter(currencies, params.currency);
   const day = (iso: string) => formatDay(iso, months);
   const count = (
     field: 'purchased' | 'sold' | 'unsold' | 'overbooked',
@@ -59,7 +60,7 @@ export function InventoryReportPage({ isExposureOnly = false }: InventoryReportP
     {
       header: 'Unsold cost',
       isNumeric: true,
-      cell: (row) => money(row.exposure),
+      cell: (row) => amount(row.exposure),
       value: (row) => asNumber(row.exposure),
     },
   ];
@@ -74,11 +75,12 @@ export function InventoryReportPage({ isExposureOnly = false }: InventoryReportP
 
   return (
     <ReportShell
+      currency={params.currency}
       title={isExposureOnly ? 'Unsold cost exposure' : 'Sold and unsold inventory'}
       subtitle={
         isExposureOnly
-          ? 'Purchased nights nobody bought, at the weighted average cost. A memo, not part of the P&L.'
-          : 'Room-nights per hotel, room type and night'
+          ? 'Purchased nights not sold, at the weighted average cost. Not part of the P&L'
+          : undefined
       }
       query={query}
       fileName={`${isExposureOnly ? 'Unsold exposure' : 'Inventory'} ${params.currency}.xlsx`}
@@ -97,11 +99,13 @@ export function InventoryReportPage({ isExposureOnly = false }: InventoryReportP
       {(data) => {
         const rows = rowsOf(data);
         return (
-          <Card>
+          <Card className="overflow-hidden">
             {isExposureOnly && rows.length > 0 && (
-              <p className="text-foreground border-border border-b px-5 py-3 text-sm">
-                Total unsold cost:{' '}
-                <span className="font-semibold tabular-nums">{money(exposureOf(rows).toFixed(2))}</span>
+              <p className="text-muted border-border border-b px-5 py-3 text-sm">
+                Total unsold cost{' '}
+                <span className="text-foreground ms-1 text-base font-medium tabular-nums">
+                  {money(exposureOf(rows).toFixed(2))}
+                </span>
               </p>
             )}
             <ReportTable

@@ -5,6 +5,7 @@ import { Outlet, useLocation } from 'react-router';
 import { Toaster } from '@/components/feedback/Toaster';
 import { Spinner } from '@/components/ui/Spinner';
 
+import { SampleDataNote } from './SampleDataNote';
 import { SidebarNav } from './SidebarNav';
 import { UserMenu } from './UserMenu';
 
@@ -26,18 +27,18 @@ function saveCollapsed(isCollapsed: boolean) {
   }
 }
 
-function Mark() {
+/** Junaidi's mark beside the product's name. */
+function Brand({ showName = true }: { showName?: boolean }) {
   return (
-    <div
-      aria-hidden
-      className="rounded-card bg-primary text-primary-foreground flex size-9 shrink-0 items-center justify-center font-bold"
-    >
-      N
-    </div>
+    <span className="flex items-center gap-2.5">
+      <img src="/brand/logo.png" alt="" className="size-8 shrink-0 object-contain" />
+      {showName && <span className="text-foreground text-base font-semibold">Nuzul</span>}
+    </span>
   );
 }
 
-const ICON_BUTTON = 'rounded-control p-1.5 text-muted hover:bg-background hover:text-foreground';
+const ICON_BUTTON =
+  'rounded-control p-1.5 text-muted transition-colors duration-150 hover:bg-surface-muted hover:text-foreground';
 
 export function AppLayout() {
   const { pathname } = useLocation();
@@ -81,7 +82,7 @@ export function AppLayout() {
       <aside className="border-border bg-surface sticky top-0 hidden h-dvh flex-col overflow-hidden border-e lg:flex print:hidden">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2 py-4">
-            <Mark />
+            <Brand showName={false} />
             <button
               type="button"
               onClick={toggleCollapsed}
@@ -89,16 +90,12 @@ export function AppLayout() {
               title="Expand sidebar"
               className={ICON_BUTTON}
             >
-              <PanelLeftOpen aria-hidden className="size-5" />
+              <PanelLeftOpen aria-hidden className="size-[1.125rem]" />
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-3 px-5 py-5">
-            <Mark />
-            <div className="min-w-0 flex-1">
-              <p className="text-foreground text-sm leading-tight font-bold">Nuzul</p>
-              <p className="text-muted text-xs leading-tight">Hotel contracts</p>
-            </div>
+          <div className="flex h-16 items-center justify-between gap-3 ps-5 pe-3">
+            <Brand />
             <button
               type="button"
               onClick={toggleCollapsed}
@@ -106,16 +103,17 @@ export function AppLayout() {
               title="Collapse sidebar"
               className={ICON_BUTTON}
             >
-              <PanelLeftClose aria-hidden className="size-5" />
+              <PanelLeftClose aria-hidden className="size-[1.125rem]" />
             </button>
           </div>
         )}
         <SidebarNav isRail={isCollapsed} />
+        {!isCollapsed && <SampleDataNote />}
         <UserMenu isRail={isCollapsed} />
       </aside>
 
       {/* Mobile top bar */}
-      <div className="border-border bg-surface flex items-center gap-3 border-b px-4 py-3 lg:hidden print:hidden">
+      <div className="border-border bg-surface flex h-14 items-center gap-3 border-b px-4 lg:hidden print:hidden">
         <button
           type="button"
           onClick={() => {
@@ -124,9 +122,9 @@ export function AppLayout() {
           aria-label="Open menu"
           className="text-foreground"
         >
-          <Menu aria-hidden className="size-6" />
+          <Menu aria-hidden className="size-5" />
         </button>
-        <span className="text-primary font-bold">Nuzul</span>
+        <Brand />
       </div>
 
       {/* Mobile drawer */}
@@ -139,16 +137,14 @@ export function AppLayout() {
             className="bg-scrim absolute inset-0 size-full"
           />
           <aside className="bg-surface shadow-overlay absolute inset-y-0 start-0 flex w-(--sidebar-width) max-w-[85vw] flex-col">
-            <div className="flex items-center justify-between px-5 py-4">
-              <div className="flex items-center gap-3">
-                <Mark />
-                <p className="text-foreground text-sm font-bold">Nuzul</p>
-              </div>
-              <button type="button" onClick={closeDrawer} aria-label="Close menu" className="text-muted">
+            <div className="flex h-14 items-center justify-between ps-5 pe-3">
+              <Brand />
+              <button type="button" onClick={closeDrawer} aria-label="Close menu" className={ICON_BUTTON}>
                 <X aria-hidden className="size-5" />
               </button>
             </div>
             <SidebarNav isRail={false} onNavigate={closeDrawer} />
+            <SampleDataNote />
             <UserMenu isRail={false} />
           </aside>
         </div>
@@ -156,7 +152,7 @@ export function AppLayout() {
 
       <main id="main" ref={mainRef} tabIndex={-1} className="min-w-0">
         <ViewTransition key={pathname} default="none" enter="page-in" exit="page-out">
-          <div>
+          <div className="mx-auto max-w-[100rem] pb-12">
             <Suspense fallback={<Spinner />}>
               <Outlet />
             </Suspense>

@@ -8,7 +8,7 @@ import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader } from '@/components/ui/Card';
-import { Stat } from '@/components/ui/Stat';
+import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { calendarMonthsQuery } from '@/features/calendar';
 import { getErrorMessage } from '@/lib/api/api-error';
 
@@ -47,10 +47,11 @@ export function PoolPage() {
     <>
       <PageHeader
         title={poolName}
-        subtitle="Worked out from current records on every view"
+        status={
+          figures && <InventoryStateTag state={figures.state} rooms={Math.abs(figures.lowestAvailable)} />
+        }
         action={
-          <div className="flex flex-wrap items-center gap-2">
-            {figures && <InventoryStateTag state={figures.state} rooms={Math.abs(figures.lowestAvailable)} />}
+          <>
             {ledger && (
               <Button
                 variant="secondary"
@@ -61,7 +62,7 @@ export function PoolPage() {
                 Export to Excel
               </Button>
             )}
-          </div>
+          </>
         }
       />
       <div className="space-y-5 p-5 lg:p-8">
@@ -73,12 +74,12 @@ export function PoolPage() {
           <Card>
             <EmptyState
               title="Nothing on this pool"
-              hint="Only confirmed purchases and sales count. Confirm a purchase of this room type at this hotel."
+              hint="Confirm a purchase of this room type at this hotel to start it"
             />
           </Card>
         ) : (
           <>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <SummaryStrip>
               <Stat
                 label="Worst shortage"
                 value={figures.shortage}
@@ -87,22 +88,22 @@ export function PoolPage() {
               />
               <Stat label="Room-nights purchased" value={roomNights(ledger, 'purchased')} />
               <Stat label="Room-nights sold" value={roomNights(ledger, 'sold')} />
-            </div>
+            </SummaryStrip>
 
-            <Card>
-              <CardHeader title="Night by night" subtitle="This decides whether a night is overbooked" />
+            <Card className="overflow-hidden">
+              <CardHeader title="Night by night" />
               <NightGrid nights={ledger.nights} months={months} />
             </Card>
 
             {ledger.need.length > 0 && (
               <Card>
-                <CardHeader title="Rooms to buy" subtitle="Buying these clears the shortage" />
+                <CardHeader title="Rooms to buy" />
                 <BuyList hotelId={hotelId} roomTypeId={roomTypeId} need={ledger.need} months={months} />
               </Card>
             )}
 
-            <Card>
-              <CardHeader title="Result" subtitle="A summary by date range. The night grid above decides." />
+            <Card className="overflow-hidden">
+              <CardHeader title="Result by date range" />
               {resultHidesShortage(ledger) && (
                 <div className="p-4">
                   <ErrorNotice title="This summary hides a shortage">
@@ -116,7 +117,7 @@ export function PoolPage() {
         )}
 
         <Card>
-          <CardHeader title="What feeds this pool" />
+          <CardHeader title="What feeds this pool" subtitle="Confirmed records only" />
           <PoolSources pool={pool} months={months} />
         </Card>
       </div>

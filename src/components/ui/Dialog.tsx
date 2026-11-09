@@ -54,22 +54,22 @@ export function Dialog({ open, onClose, title, children, footer, size = 'md' }: 
         size === 'lg' ? 'max-w-3xl' : 'max-w-xl',
       )}
     >
-      <header className="border-border flex items-center justify-between gap-3 border-b px-5 py-3.5">
-        <h2 id={titleId} className="text-sm font-semibold">
+      <header className="flex items-center justify-between gap-3 px-5 pt-4 pb-2">
+        <h2 id={titleId} className="text-[0.9375rem] font-semibold">
           {title}
         </h2>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="rounded-control text-muted hover:bg-background hover:text-foreground p-1"
+          className="rounded-control text-muted hover:bg-surface-muted hover:text-foreground p-1 transition-colors duration-150"
         >
           <X aria-hidden className="size-4" />
         </button>
       </header>
-      <div className="text-muted max-h-[70vh] overflow-y-auto px-5 py-4 text-sm">{children}</div>
+      <div className="text-secondary max-h-[70vh] overflow-y-auto px-5 pt-1 pb-5 text-sm">{children}</div>
       {footer && (
-        <footer className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-3">
+        <footer className="border-border bg-background flex flex-wrap justify-end gap-2 rounded-b-[inherit] border-t px-5 py-3">
           {footer}
         </footer>
       )}

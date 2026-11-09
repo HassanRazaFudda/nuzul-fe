@@ -122,12 +122,7 @@ function ContractFormScreen({ contract }: { contract: ContractView | null }) {
 
   return (
     <>
-      <PageHeader
-        title={contract ? `Edit ${contract.number}` : 'Add contract'}
-        subtitle={
-          isConfirmed ? 'You will see what this changes before it is saved' : 'Drafts never affect the ledger'
-        }
-      />
+      <PageHeader title={contract ? `Edit ${contract.number}` : 'Add contract'} />
       <ContractForm
         contract={contract}
         agents={agents}

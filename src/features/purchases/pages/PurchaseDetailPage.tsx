@@ -5,12 +5,12 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { toast } from '@/components/feedback/toast';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { buttonClass } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import { Stat } from '@/components/ui/Stat';
+import { Detail } from '@/components/ui/Detail';
+import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { calendarMonthsQuery, formatDay } from '@/features/calendar';
 import { HistoryCard, ImpactReviewDialog, type Impact } from '@/features/changes';
 import { currenciesQuery } from '@/features/currencies';
@@ -20,7 +20,7 @@ import { roomTypesQuery } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
 import { useCan } from '@/lib/auth/session';
 import { formatIsoDate, nightsBetween } from '@/lib/format/dates';
-import { formatMoney } from '@/lib/money/money';
+import { formatAmount, formatMoney } from '@/lib/money/money';
 
 import {
   adjustmentsQuery,
@@ -156,14 +156,14 @@ export function PurchaseDetailPage() {
       <PageHeader
         title={number}
         subtitle={`${purchase.hotelName} from ${purchase.vendorName}`}
+        status={<PurchaseStatusBadge status={status} />}
         action={
-          <div className="flex flex-wrap items-center gap-2">
-            <PurchaseStatusBadge status={status} />
+          <>
             {status === 'draft' && (
               <>
                 {can('purchase.delete') && (
                   <Button
-                    variant="ghost"
+                    variant="danger-ghost"
                     onClick={() => {
                       setPending('delete');
                     }}
@@ -190,7 +190,7 @@ export function PurchaseDetailPage() {
             {status === 'confirmed' && (
               <>
                 {can('purchase.delete') && (
-                  <Button variant="ghost" onClick={() => void startReview('cancel')}>
+                  <Button variant="danger-ghost" onClick={() => void startReview('cancel')}>
                     Cancel purchase
                   </Button>
                 )}
@@ -211,7 +211,7 @@ export function PurchaseDetailPage() {
                   </Link>
                 )}
                 {can('purchase.edit') && (
-                  <Link to={`/purchases/${id}/edit`} className={buttonClass('secondary')}>
+                  <Link to={`/purchases/${id}/edit`} className={buttonClass('primary')}>
                     Edit
                   </Link>
                 )}
@@ -233,7 +233,7 @@ export function PurchaseDetailPage() {
                 Restore
               </Button>
             )}
-          </div>
+          </>
         }
       />
       <div className="space-y-5 p-5 lg:p-8">
@@ -241,7 +241,7 @@ export function PurchaseDetailPage() {
           <ErrorNotice title="This could not be done">{getErrorMessage(actionError)}</ErrorNotice>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <SummaryStrip>
           <Stat label="Nights" value={nights} hint={`${String(roomTotal)} rooms`} />
           <Stat label="Room cost" value={formatMoney(purchase.roomCost.amount, format)} />
           <Stat label="Meal cost" value={formatMoney(purchase.mealCost.amount, format)} />
@@ -250,69 +250,77 @@ export function PurchaseDetailPage() {
             value={formatMoney(purchase.total.amount, format)}
             hint={formatMoney(purchase.total.amountPkr, PKR_FORMAT)}
           />
-        </div>
+        </SummaryStrip>
 
         <Card>
           <CardHeader title="Stay" />
-          <dl className="grid gap-x-6 gap-y-3 p-5 text-sm sm:grid-cols-2">
-            <div>
-              <dt className="text-muted text-xs">Check-in</dt>
-              <dd className="text-foreground">{dayLabel(purchase.checkIn)}</dd>
-            </div>
-            <div>
-              <dt className="text-muted text-xs">Check-out</dt>
-              <dd className="text-foreground">{dayLabel(purchase.checkOut)}</dd>
-            </div>
-            <div>
-              <dt className="text-muted text-xs">Rate against PKR</dt>
-              <dd className="text-foreground tabular-nums">
-                1 {currencyCode} = {purchase.rateToPkr} PKR
-              </dd>
-            </div>
-            <div>
-              <dt className="text-muted text-xs">Rate is</dt>
-              <dd className="text-foreground">{purchase.perNight ? 'Per night' : 'For the whole stay'}</dd>
-            </div>
+          <dl className="grid gap-x-6 gap-y-4 p-5 sm:grid-cols-2 xl:grid-cols-4">
+            <Detail label="Check-in">{dayLabel(purchase.checkIn)}</Detail>
+            <Detail label="Check-out">{dayLabel(purchase.checkOut)}</Detail>
+            <Detail label="Rate">
+              {purchase.perNight ? 'Per night' : 'For the whole stay'}
+              <span className="text-muted tabular-nums">
+                {' · '}1 {currencyCode} = {purchase.rateToPkr} PKR
+              </span>
+            </Detail>
+            <Detail label="Meals">
+              {meal.pricing === 'none' && 'None'}
+              {meal.pricing === 'included' && 'Included in the room rate'}
+              {meal.pricing === 'separate' && (
+                <span className="tabular-nums">
+                  {formatMoney(meal.rate, format)}, {MEAL_BASIS_LABELS[meal.basis].toLowerCase()}
+                  <span className="text-muted block text-[0.8125rem]">
+                    {CHARGE_BASIS_LABELS[meal.chargeBasis]}
+                    {purchase.mealMaximum !== null &&
+                      ` · at most ${formatMoney(purchase.mealMaximum, format)}, not in the total`}
+                  </span>
+                </span>
+              )}
+            </Detail>
             {purchase.notes && (
-              <div className="sm:col-span-2">
-                <dt className="text-muted text-xs">Notes</dt>
-                <dd className="text-foreground whitespace-pre-line">{purchase.notes}</dd>
-              </div>
+              <Detail label="Notes" className="sm:col-span-2 xl:col-span-4">
+                <span className="whitespace-pre-line">{purchase.notes}</span>
+              </Detail>
             )}
           </dl>
         </Card>
 
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader title="Room lines" />
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="mt-2 w-full text-sm">
               <caption className="sr-only">Room lines</caption>
               <thead>
-                <tr className="text-muted text-xs">
-                  <th scope="col" className="px-5 py-2 text-start font-semibold">
+                <tr className="text-muted border-border border-b text-xs">
+                  <th scope="col" className="px-5 py-2 text-start font-medium">
                     Room type
                   </th>
-                  <th scope="col" className="px-5 py-2 text-end font-semibold">
+                  <th scope="col" className="px-5 py-2 text-end font-medium">
                     Rooms
                   </th>
-                  <th scope="col" className="px-5 py-2 text-end font-semibold">
-                    Cost rate
+                  <th scope="col" className="px-5 py-2 text-end font-medium">
+                    Cost rate ({currencyCode})
                   </th>
-                  <th scope="col" className="px-5 py-2 text-end font-semibold">
-                    Cost
+                  <th scope="col" className="px-5 py-2 text-end font-medium">
+                    Cost ({currencyCode})
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {purchase.lines.map((line) => (
-                  <tr key={line.roomTypeId} className="border-border text-foreground border-t">
-                    <td className="px-5 py-2">
+                  <tr
+                    key={line.roomTypeId}
+                    className="border-border text-foreground border-b last:border-b-0"
+                  >
+                    <td className="px-5 py-2.5">
                       {roomTypes.find((type) => type.id === line.roomTypeId)?.name ?? line.roomTypeId}
                     </td>
-                    <td className="px-5 py-2 text-end tabular-nums">{line.rooms}</td>
-                    <td className="px-5 py-2 text-end tabular-nums">{formatMoney(line.rate, format)}</td>
-                    <td className="px-5 py-2 text-end tabular-nums">
-                      {formatMoney(line.cost.amount, format)}
+                    <td className="px-5 py-2.5 text-end tabular-nums">{line.rooms}</td>
+                    <td className="px-5 py-2.5 text-end tabular-nums">
+                      {formatAmount(line.rate, format.decimals)}
+                    </td>
+                    <td className="px-5 py-2.5 text-end tabular-nums">
+                      {formatAmount(line.cost.amount, format.decimals)}
                     </td>
                   </tr>
                 ))}
@@ -321,40 +329,9 @@ export function PurchaseDetailPage() {
           </div>
         </Card>
 
-        <Card>
-          <CardHeader title="Meals" />
-          <div className="text-foreground p-5 text-sm">
-            {meal.pricing === 'none' && 'No meals on this purchase.'}
-            {meal.pricing === 'included' && <Badge tone="brand">Includes meal</Badge>}
-            {meal.pricing === 'separate' && (
-              <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
-                <div>
-                  <dt className="text-muted text-xs">Meal rate</dt>
-                  <dd className="tabular-nums">
-                    {formatMoney(meal.rate, format)}, {MEAL_BASIS_LABELS[meal.basis].toLowerCase()}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-muted text-xs">Charge basis</dt>
-                  <dd>{CHARGE_BASIS_LABELS[meal.chargeBasis]}</dd>
-                </div>
-                {purchase.mealMaximum !== null && (
-                  <div>
-                    <dt className="text-muted text-xs">Meal, at most (not in the total)</dt>
-                    <dd className="tabular-nums">{formatMoney(purchase.mealMaximum, format)}</dd>
-                  </div>
-                )}
-              </dl>
-            )}
-          </div>
-        </Card>
-
         {purchase.termination && (
           <Card>
-            <CardHeader
-              title="Terminated"
-              subtitle="Rooms count on the ledger only before the effective date"
-            />
+            <CardHeader title="Terminated" />
             <dl className="grid gap-x-6 gap-y-3 p-5 text-sm sm:grid-cols-2">
               <div>
                 <dt className="text-muted text-xs">Termination date</dt>

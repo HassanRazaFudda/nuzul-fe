@@ -16,7 +16,7 @@ describe('CalendarPage', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(await screen.findByText('Safar')).toBeInTheDocument();
-    expect(await screen.findByText('2027-07-31')).toBeInTheDocument();
+    expect(await screen.findByText('31 Jul 2027')).toBeInTheDocument();
     expect(screen.queryByText('The months do not line up')).not.toBeInTheDocument();
   });
 

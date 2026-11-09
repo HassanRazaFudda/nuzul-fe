@@ -211,10 +211,7 @@ export function TerminatePurchasePage() {
         {showSummary && <FormErrorSummary form={form} labels={{ ...LABELS, ...decisionLabels }} />}
 
         <Card>
-          <CardHeader
-            title="1. Dates and money"
-            subtitle="Nights from the first released night leave the ledger"
-          />
+          <CardHeader title="1. Dates and money" />
           <div className="grid gap-4 p-5 sm:grid-cols-2">
             <FormField label="Termination date" required error={errors.terminationDate?.message}>
               {(field) => <Input {...field} type="date" {...form.register('terminationDate')} />}
@@ -223,7 +220,11 @@ export function TerminatePurchasePage() {
               label="First released night"
               required
               error={errors.effectiveDate?.message}
-              hint={effectiveDate ? formatDay(effectiveDate, months) : undefined}
+              hint={
+                effectiveDate
+                  ? `${formatDay(effectiveDate, months)}: this night and later leave the ledger`
+                  : 'This night and later leave the ledger'
+              }
             >
               {(field) => <Input {...field} type="date" {...form.register('effectiveDate')} />}
             </FormField>
@@ -240,9 +241,9 @@ export function TerminatePurchasePage() {
                 <FormField label={label} error={errors[amountField]?.message} hint="Optional">
                   {(field) => <Input {...field} inputMode="decimal" {...form.register(amountField)} />}
                 </FormField>
-                <FormField label={`${label} currency`}>
+                <FormField label="Currency">
                   {(field) => (
-                    <Select {...field} {...form.register(currencyField)}>
+                    <Select {...field} aria-label={`${label} currency`} {...form.register(currencyField)}>
                       {currencyOptions.map((currency) => (
                         <option key={currency.code} value={currency.code}>
                           {currency.code}
@@ -257,16 +258,13 @@ export function TerminatePurchasePage() {
         </Card>
 
         <Card>
-          <CardHeader
-            title="2. Sales losing their rooms"
-            subtitle="Every line needs a decision. Nothing is removed without one."
-          />
+          <CardHeader title="2. Sales losing their rooms" />
           {!isEffectiveUsable ? (
             <p className="text-muted px-5 py-4 text-sm">
-              Choose the first released night to see the affected sales.
+              Choose the first released night to see the affected sales
             </p>
           ) : affected.length === 0 ? (
-            <p className="text-muted px-5 py-4 text-sm">No sale uses this purchase from that night on.</p>
+            <p className="text-muted px-5 py-4 text-sm">No sale uses this purchase from that night on</p>
           ) : (
             <ul className="divide-border divide-y">
               {affected.map((line) => (
@@ -296,12 +294,12 @@ export function TerminatePurchasePage() {
         </Card>
 
         <Card>
-          <CardHeader title="3. Review" subtitle="The ledger before and after, with the decisions above" />
+          <CardHeader title="3. Review" />
           <div className="text-muted p-5 text-sm">
             {impact ? (
               <ImpactPreview impact={impact} names={names} months={months} />
             ) : (
-              'Choose the first released night to see the effect.'
+              'Choose the first released night to see the effect'
             )}
           </div>
           <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-3">
@@ -330,7 +328,7 @@ export function TerminatePurchasePage() {
       >
         {worsens &&
           (canOverride
-            ? 'Some nights end up short. The sales on them are tagged OVERBOOKED. '
+            ? 'Some nights end up short. The sales on them are tagged Overbooked. '
             : 'Some nights end up short, and going ahead needs a permission you do not hold. Change the decisions so nothing is short. ')}
         The purchase stays on record as Terminated, and this cannot be undone.
       </ConfirmDialog>

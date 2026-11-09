@@ -238,7 +238,7 @@ describe('a saved purchase', () => {
     });
     renderApp('/purchases/purchase-1');
 
-    expect(await screen.findByText('1 SAR = 70 PKR')).toBeInTheDocument();
+    expect(await screen.findByText(/1 SAR = 70 PKR/)).toBeInTheDocument();
     expect(screen.getByText('PKR 41,300,000.00')).toBeInTheDocument();
   });
 

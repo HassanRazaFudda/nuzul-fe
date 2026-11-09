@@ -43,7 +43,7 @@ export function MealFields({ form }: { form: UseFormReturn<PurchaseFormValues> }
           <FormField
             label="Charge basis"
             className="sm:col-span-2"
-            hint="With guests sold, the meal has no cost until sales are placed."
+            hint="With guests sold, the meal costs nothing until sales are placed"
           >
             {(field) => (
               <Select {...field} {...form.register('chargeBasis')}>

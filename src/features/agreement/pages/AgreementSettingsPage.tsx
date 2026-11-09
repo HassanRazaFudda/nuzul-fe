@@ -136,7 +136,6 @@ export function AgreementSettingsPage() {
     <>
       <PageHeader
         title="Agreement"
-        subtitle="The fixed text of the Hotel Accommodation Agreement. Each contract fills in its own details."
         action={
           <Link to="/contracts/contract-1/print" className={buttonClass('secondary')}>
             Preview on a sample contract
@@ -156,7 +155,7 @@ export function AgreementSettingsPage() {
 
         <fieldset disabled={!canManage} className="space-y-5">
           <Card>
-            <CardHeader title="Company" subtitle="Letterhead, first party and footer" />
+            <CardHeader title="Company" />
             <div className="grid gap-4 p-5 sm:grid-cols-2">
               <TextField form={form} name="companyName" label="Company name" />
               <TextField form={form} name="glNumber" label="G.L. No." />
@@ -199,7 +198,7 @@ export function AgreementSettingsPage() {
           <Card>
             <CardHeader
               title="2. Terms of payment"
-              subtitle="Put ** on both sides of words to print them bold"
+              subtitle="**Words between double asterisks** print bold"
             />
             <ul className="space-y-3 p-5">
               {payment.fields.map((field, index) => (
@@ -240,7 +239,7 @@ export function AgreementSettingsPage() {
           <Card>
             <CardHeader
               title="3. Terms & conditions"
-              subtitle="One bullet per line. Put ** on both sides of words to print them bold"
+              subtitle="One bullet per line. **Words between double asterisks** print bold"
             />
             <ul className="space-y-4 p-5">
               {sections.fields.map((field, index) => (

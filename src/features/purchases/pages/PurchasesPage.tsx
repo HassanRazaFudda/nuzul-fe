@@ -35,18 +35,12 @@ const HOTEL_PARAM = 'hotel';
 const isSortField = (id: string): id is PurchaseSortField =>
   PURCHASE_SORT_FIELDS.some((field) => field === id);
 
-const EMPTY: Record<PurchaseStatus, { title: string; hint: string }> = {
-  draft: { title: 'No drafts', hint: 'Drafts appear here and never affect the ledger.' },
-  confirmed: { title: 'No confirmed purchases', hint: 'Add a purchase, then confirm it.' },
-  locked: {
-    title: 'No locked purchases',
-    hint: 'Locked purchases count on the ledger and cannot be changed.',
-  },
-  cancelled: { title: 'No cancelled purchases', hint: 'Cancelled purchases stay here for history.' },
-  terminated: {
-    title: 'No terminated purchases',
-    hint: 'A terminated purchase counts on the ledger only before its effective date.',
-  },
+const EMPTY: Record<PurchaseStatus, { title: string; hint?: string }> = {
+  draft: { title: 'No drafts' },
+  confirmed: { title: 'No confirmed purchases', hint: 'Add a purchase, then confirm it' },
+  locked: { title: 'No locked purchases' },
+  cancelled: { title: 'No cancelled purchases' },
+  terminated: { title: 'No terminated purchases' },
 };
 
 export function PurchasesPage() {
@@ -83,7 +77,6 @@ export function PurchasesPage() {
     <>
       <PageHeader
         title="Purchases"
-        subtitle="Room blocks bought from vendors"
         action={
           canManage && (
             <Link to="/purchases/new" className={buttonClass('primary')}>
@@ -118,7 +111,7 @@ export function PurchasesPage() {
           onParamsChange={updateParams}
           isSortField={isSortField}
           emptyTitle={EMPTY[params.status].title}
-          emptyHint={EMPTY[params.status].hint}
+          {...(EMPTY[params.status].hint ? { emptyHint: EMPTY[params.status].hint } : {})}
           toolbar={
             <Select
               aria-label="Filter by hotel"

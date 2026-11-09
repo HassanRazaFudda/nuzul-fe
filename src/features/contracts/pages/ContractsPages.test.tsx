@@ -37,7 +37,7 @@ describe('contracts list', () => {
     const { user, router } = renderApp('/contracts');
     const row = (await screen.findByRole('link', { name: 'CON-0002' })).closest('tr');
 
-    expect(within(row ?? document.body).getByText('OVERBOOKED')).toBeInTheDocument();
+    expect(within(row ?? document.body).getByText('Overbooked')).toBeInTheDocument();
 
     await user.click(screen.getByRole('tab', { name: /^Draft/ }));
 
@@ -116,7 +116,7 @@ describe('adding a contract', () => {
 
     await screen.findByRole('heading', { name: 'CON-0005' });
     expect((await stored('CON-0005'))?.mealIncome.amount).toBe('0.00');
-    expect(screen.getByText('No meals at this hotel')).toBeInTheDocument();
+    expect(screen.getByText(/no meals here/)).toBeInTheDocument();
   });
 
   it('holds several hotels, and adds them into the grand total', async () => {
@@ -272,7 +272,7 @@ describe('confirming', () => {
     await waitFor(async () => {
       expect((await stored('CON-0005'))?.status).toBe('confirmed');
     });
-    expect((await screen.findAllByText('OVERBOOKED')).length).toBeGreaterThan(0);
+    expect((await screen.findAllByText('Overbooked')).length).toBeGreaterThan(0);
   });
 
   it('turns rooms another sale took meanwhile into Unallocated, with a message', async () => {
@@ -311,7 +311,7 @@ describe('confirming', () => {
   it('clears the OVERBOOKED tag once the missing rooms are bought', async () => {
     const purchase = await mockDb.get('purchases', 'purchase-1', purchaseSchema);
     const { router } = renderApp('/contracts/contract-2');
-    expect((await screen.findAllByText('OVERBOOKED')).length).toBeGreaterThan(0);
+    expect((await screen.findAllByText('Overbooked')).length).toBeGreaterThan(0);
 
     await mockDb.put('purchases', {
       ...purchase,
@@ -323,7 +323,7 @@ describe('confirming', () => {
     await router.navigate('/contracts/contract-2');
 
     await waitFor(() => {
-      expect(screen.queryByText('OVERBOOKED')).not.toBeInTheDocument();
+      expect(screen.queryByText('Overbooked')).not.toBeInTheDocument();
     });
     // The bought rooms have no sale on them yet, so the unallocated rooms now need a vendor.
     expect((await screen.findAllByText('Needs vendor')).length).toBeGreaterThan(0);

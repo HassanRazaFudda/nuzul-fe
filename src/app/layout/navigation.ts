@@ -9,7 +9,6 @@ import {
   Handshake,
   History,
   LayoutDashboard,
-  Palette,
   Scale,
   ScrollText,
   ShoppingCart,
@@ -88,7 +87,7 @@ export const NAVIGATION: NavGroup[] = [
     ],
   },
   {
-    label: 'System',
+    label: 'Setup',
     items: [
       { path: 'room-types', label: 'Room types', icon: DoorOpen },
       { path: 'calendar', label: 'Calendar', icon: CalendarDays },
@@ -99,6 +98,11 @@ export const NAVIGATION: NavGroup[] = [
         icon: ScrollText,
         permissions: ['settings.manage'],
       },
+    ],
+  },
+  {
+    label: 'Admin',
+    items: [
       {
         path: 'users',
         label: 'Users & permissions',
@@ -111,7 +115,6 @@ export const NAVIGATION: NavGroup[] = [
         icon: History,
         permissions: ['audit.view'],
       },
-      { path: 'design', label: 'Design system', icon: Palette },
     ],
   },
 ];

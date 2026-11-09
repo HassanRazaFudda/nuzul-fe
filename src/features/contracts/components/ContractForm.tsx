@@ -265,7 +265,7 @@ export function ContractForm({
                 label="Rate against PKR"
                 required
                 error={errors.rateToPkr?.message}
-                hint="Kept with this contract. Later rate changes never alter it."
+                hint="Stays with this contract"
               >
                 {(field) => (
                   <Input
@@ -335,17 +335,14 @@ export function ContractForm({
             Add hotel
           </Button>
 
-          <Card>
-            <CardHeader title="Notes" />
-            <div className="p-5">
-              <FormField label="Notes" error={errors.notes?.message}>
-                {(field) => <Textarea {...field} {...form.register('notes')} />}
-              </FormField>
-            </div>
+          <Card className="p-5">
+            <FormField label="Notes" error={errors.notes?.message}>
+              {(field) => <Textarea {...field} rows={3} {...form.register('notes')} />}
+            </FormField>
           </Card>
         </div>
 
-        <div className="space-y-5 xl:sticky xl:top-5">
+        <div className="space-y-5 xl:sticky xl:top-6">
           {preview.shortages.length > 0 && (
             <ErrorNotice title="This would overbook">
               <OverbookingList
@@ -364,7 +361,7 @@ export function ContractForm({
               roomTypes={roomTypes}
               hotelName={hotelName}
             />
-            <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-3">
+            <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-4">
               <Link to={cancelTo} className={buttonClass('secondary')}>
                 Cancel
               </Link>

@@ -121,6 +121,34 @@ export function resultHidesShortage(ledger: LedgerOutput): boolean {
   return worstShortage(ledger) > 0 && !ledger.result.some((row) => row.available < 0);
 }
 
+/** One night across every pool: rooms purchased, sold, and sold with no room behind them. */
+export interface SeasonNight {
+  day: number;
+  purchased: number;
+  sold: number;
+  overbooked: number;
+}
+
+/**
+ * Every night of the season, summed over the pools. A shortage is counted per pool, so a
+ * spare Triple never hides a short Double.
+ */
+export function seasonNights(ledgers: readonly LedgerOutput[]): SeasonNight[] {
+  const byDay = new Map<number, SeasonNight>();
+  for (const ledger of ledgers) {
+    for (const row of ledger.nights) {
+      for (let day = row.from; day < row.to; day += 1) {
+        const night = byDay.get(day) ?? { day, purchased: 0, sold: 0, overbooked: 0 };
+        night.purchased += row.purchased;
+        night.sold += row.sold;
+        night.overbooked += Math.max(0, row.sold - row.purchased);
+        byDay.set(day, night);
+      }
+    }
+  }
+  return [...byDay.values()].sort((a, b) => a.day - b.day);
+}
+
 /** Room-nights across the grid, for the pool's summary. */
 export function roomNights(ledger: LedgerOutput, field: 'purchased' | 'sold'): number {
   return ledger.nights.reduce((total, night) => total + night[field] * (night.to - night.from), 0);

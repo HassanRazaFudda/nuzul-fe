@@ -12,6 +12,7 @@ import type { ServerColumnDef } from './data-table-features';
 import { DataTable } from './DataTable';
 import { Pagination } from './Pagination';
 import { TableToolbar } from './TableToolbar';
+import { useSearchDraft } from './useSearchDraft';
 import { useTableDensity } from './useTableDensity';
 
 interface DataListProps<TData extends object, TSort extends string> {
@@ -45,6 +46,9 @@ export function DataList<TData extends object, TSort extends string>({
   toolbar,
 }: DataListProps<TData, TSort>) {
   const { isCompact, setCompact } = useTableDensity();
+  const searchBox = useSearchDraft(params.search, (search) => {
+    onParamsChange({ search });
+  });
   const { data, error, isPending, isFetching, isPlaceholderData, refetch } = query;
 
   function renderBody() {
@@ -59,15 +63,8 @@ export function DataList<TData extends object, TSort extends string>({
     const noMatch = (
       <EmptyState
         title={`Nothing matches “${params.search}”`}
-        hint="Try a different word, or clear the search."
         action={
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              onParamsChange({ search: '' });
-            }}
-          >
+          <Button variant="secondary" size="sm" onClick={searchBox.clear}>
             Clear search
           </Button>
         }
@@ -117,12 +114,10 @@ export function DataList<TData extends object, TSort extends string>({
   return (
     <Card>
       <TableToolbar
-        key={params.search}
         label={caption}
-        search={params.search}
-        onSearch={(search) => {
-          onParamsChange({ search });
-        }}
+        draft={searchBox.draft}
+        onDraftChange={searchBox.change}
+        onSubmit={searchBox.submit}
         isCompact={isCompact}
         onCompactChange={setCompact}
       >

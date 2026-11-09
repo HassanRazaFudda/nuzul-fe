@@ -85,11 +85,18 @@ export function weightedAverage(items: { cost: DecimalLike; roomNights: number }
   return dec(sum(items.map((item) => item.cost))).dividedBy(roomNights);
 }
 
-/** "SAR 1,234.50" for display. */
-export function formatMoney(amount: DecimalLike, currency: Pick<Currency, 'symbol' | 'decimals'>): string {
-  const fixed = roundTo(amount, currency.decimals);
+/** "1,234.50", for a column whose header already names the currency. */
+export function formatAmount(amount: DecimalLike, decimals: number): string {
+  const fixed = roundTo(amount, decimals);
   const negative = fixed.startsWith('-');
   const [whole = '0', fraction] = (negative ? fixed.slice(1) : fixed).split('.');
   const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return `${negative ? '-' : ''}${currency.symbol} ${grouped}${fraction ? `.${fraction}` : ''}`;
+  return `${negative ? '-' : ''}${grouped}${fraction ? `.${fraction}` : ''}`;
+}
+
+/** "SAR 1,234.50" for display. */
+export function formatMoney(amount: DecimalLike, currency: Pick<Currency, 'symbol' | 'decimals'>): string {
+  const amountText = formatAmount(amount, currency.decimals);
+  const negative = amountText.startsWith('-');
+  return `${negative ? '-' : ''}${currency.symbol} ${negative ? amountText.slice(1) : amountText}`;
 }

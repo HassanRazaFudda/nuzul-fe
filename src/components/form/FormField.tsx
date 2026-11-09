@@ -27,10 +27,10 @@ export function FormField({ label, error, hint, required = false, className, chi
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <label htmlFor={id} className="text-foreground text-sm font-medium">
+      <label htmlFor={id} className="text-foreground text-[0.8125rem] font-medium">
         {label}
         {required && (
-          <span aria-hidden className="text-danger-strong">
+          <span aria-hidden className="text-muted">
             {' '}
             *
           </span>

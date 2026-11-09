@@ -2,6 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
+import { LINK_CLASS } from '@/components/ui/buttonStyles';
 import { formatDay, type CalendarMonth } from '@/features/calendar';
 
 import type { PoolSummary } from '../api/ledger.schemas';
@@ -27,7 +28,7 @@ export function poolColumns(months: CalendarMonth[]) {
           <Link
             to={`/inventory/${hotelId}/${roomTypeId}`}
             aria-label={`${hotelName} ${roomTypeName}`}
-            className="text-primary-strong font-medium underline"
+            className={LINK_CLASS}
           >
             {info.getValue()}
           </Link>
@@ -63,11 +64,6 @@ export function poolColumns(months: CalendarMonth[]) {
         const { state, lowestAvailable } = info.row.original;
         return <InventoryStateTag state={state} rooms={Math.abs(lowestAvailable)} />;
       },
-    }),
-    columnHelper.accessor('needsBuying', {
-      enableSorting: false,
-      header: 'Rooms to buy',
-      cell: (info) => (info.getValue() ? 'Yes' : 'No'),
     }),
   ]);
 }

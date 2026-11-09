@@ -16,7 +16,7 @@ interface TabBarProps<TValue extends string> {
 /** A row of tabs. The owner keeps which one is active, usually in the URL. */
 export function TabBar<TValue extends string>({ label, items, value, onChange }: TabBarProps<TValue>) {
   return (
-    <div role="tablist" aria-label={label} className="flex gap-1 overflow-x-auto overflow-y-hidden border-b">
+    <div role="tablist" aria-label={label} className="flex gap-6 overflow-x-auto overflow-y-hidden border-b">
       {items.map((item) => {
         const isSelected = item.value === value;
         return (
@@ -27,15 +27,15 @@ export function TabBar<TValue extends string>({ label, items, value, onChange }:
             aria-selected={isSelected}
             onClick={() => onChange(item.value)}
             className={cn(
-              '-mb-px border-b-2 px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors duration-150',
+              '-mb-px border-b-2 px-1 pt-1 pb-2.5 text-sm whitespace-nowrap transition-colors duration-150',
               isSelected
-                ? 'border-primary text-primary-strong'
+                ? 'border-accent text-foreground font-medium'
                 : 'text-muted hover:text-foreground border-transparent',
             )}
           >
             {item.label}
             {item.count !== undefined && (
-              <span className="text-muted ms-1.5 text-xs tabular-nums">{item.count}</span>
+              <span className="text-muted ms-1.5 font-mono text-xs">{item.count}</span>
             )}
           </button>
         );

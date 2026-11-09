@@ -37,7 +37,7 @@ function CompanyName({ name }: { name: string }) {
         lengthAdjust="spacingAndGlyphs"
         fontFamily="Impact, Haettenschweiler, 'Arial Narrow Bold', 'Arial Narrow', sans-serif"
         fontSize="10.4"
-        fill="#e31e24"
+        fill="#9f0b1f"
       >
         {name.split(/(&)/).map((part, index) =>
           part === '&' ? (
@@ -62,7 +62,7 @@ function Sheet({ settings, children }: { settings: AgreementSettings; children: 
         aria-hidden
         className="pointer-events-none absolute top-1/2 left-[calc(50%+5mm)] w-[114mm] -translate-x-1/2 -translate-y-1/2 opacity-[0.28]"
       />
-      <header className="relative mx-[18mm] mt-[10.5mm] flex h-[23mm] items-start border-b border-[#e31e24]">
+      <header className="relative mx-[18mm] mt-[10.5mm] flex h-[23mm] items-start border-b border-[#9f0b1f]">
         <img
           src="/brand/logo.png"
           alt="Junaidi Air Travels"

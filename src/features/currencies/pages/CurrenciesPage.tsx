@@ -83,7 +83,6 @@ export function CurrenciesPage() {
     <>
       <PageHeader
         title="Currencies"
-        subtitle="Rates against PKR. Saved records keep the rate they were saved with."
         action={
           canManage && (
             <Button

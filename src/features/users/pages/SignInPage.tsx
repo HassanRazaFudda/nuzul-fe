@@ -18,14 +18,12 @@ export function SignInPage() {
   return (
     <main className="bg-background flex min-h-dvh items-center justify-center p-5">
       <title>Sign in · Nuzul</title>
-      <Card className="w-full max-w-md">
-        <div className="space-y-4 p-6">
+      <Card className="w-full max-w-sm">
+        <div className="space-y-5 p-6">
           <div>
-            <h1 className="text-foreground text-lg font-bold">Sign in as</h1>
-            <p className="text-muted text-sm">
-              A prototype: there is no password yet, and nothing here is secure. Choose a user to see the
-              system with their permissions.
-            </p>
+            <img src="/brand/logo.png" alt="" className="mb-4 size-10 object-contain" />
+            <h1 className="text-foreground text-xl font-semibold">Sign in to Nuzul</h1>
+            <p className="text-muted mt-1 text-sm">A prototype with no passwords. Choose who to be</p>
           </div>
           {signIn.error && (
             <ErrorNotice title="Could not sign in">{getErrorMessage(signIn.error)}</ErrorNotice>
@@ -35,8 +33,8 @@ export function SignInPage() {
               <li key={user.id}>
                 <Button
                   variant="secondary"
-                  className="w-full justify-between"
-                  icon={<LogIn aria-hidden className="size-4" />}
+                  className="w-full justify-start"
+                  icon={<LogIn aria-hidden className="text-muted size-4" />}
                   isLoading={signIn.isPending && signIn.variables === user.id}
                   onClick={() => {
                     signIn.mutate(user.id, {
@@ -44,8 +42,10 @@ export function SignInPage() {
                     });
                   }}
                 >
-                  {user.name}
-                  <span className="text-muted text-xs">{user.permissions.length} permissions</span>
+                  <span className="flex-1 text-start">{user.name}</span>
+                  <span className="text-muted text-xs font-normal">
+                    {user.permissions.length} permissions
+                  </span>
                 </Button>
               </li>
             ))}

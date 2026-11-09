@@ -4,9 +4,9 @@ import { mockDb } from '@/mock-api/db';
 import { assertCan } from '@/mock-api/session';
 import { pageOf } from '@/mock-api/list-query';
 
-import { buildPools, poolFigures, poolLedger, type Pool } from '../domain/pools';
+import { buildPools, poolFigures, poolLedger, roomNights, seasonNights, type Pool } from '../domain/pools';
 import { loadLedgerSources } from './ledger-sources.api';
-import type { PoolDetail, PoolListParams, PoolSummary } from './ledger.schemas';
+import type { PoolDetail, PoolListParams, PoolSummary, SeasonOverview } from './ledger.schemas';
 
 async function namesLookup() {
   const [hotels, roomTypes] = await Promise.all([
@@ -32,6 +32,8 @@ async function poolSummaries(): Promise<PoolSummary[]> {
     if (!figures) return [];
     return {
       ...figures,
+      roomNightsPurchased: roomNights(ledger, 'purchased'),
+      roomNightsSold: roomNights(ledger, 'sold'),
       id: `${pool.hotelId}/${pool.roomTypeId}`,
       hotelId: pool.hotelId,
       roomTypeId: pool.roomTypeId,
@@ -58,6 +60,21 @@ export const ledgerApi = {
         },
       },
     );
+  },
+
+  /** Every pool at once, short ones first, and the season's nights summed over them. */
+  season: async (): Promise<SeasonOverview> => {
+    await assertCan('inventory.view');
+    const [all, pools] = await Promise.all([poolSummaries(), currentPools()]);
+    return {
+      pools: all.toSorted(
+        (a, b) =>
+          a.lowestAvailable - b.lowestAvailable ||
+          a.hotelName.localeCompare(b.hotelName) ||
+          a.roomTypeName.localeCompare(b.roomTypeName),
+      ),
+      nights: seasonNights(pools.flatMap((pool) => poolLedger(pool) ?? [])),
+    };
   },
 
   overbookedCount: async () => {

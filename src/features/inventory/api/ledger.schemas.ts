@@ -1,7 +1,7 @@
 import type { ListParams } from '@/lib/api/pagination';
 
 import type { LedgerOutput } from '../domain/ledger-engine';
-import type { Pool, PoolFigures } from '../domain/pools';
+import type { Pool, PoolFigures, SeasonNight } from '../domain/pools';
 
 export const POOL_SORT_FIELDS = ['state', 'hotel', 'roomType'] as const;
 export type PoolSortField = (typeof POOL_SORT_FIELDS)[number];
@@ -20,7 +20,14 @@ export type PoolSummary = PoolFigures & {
   roomTypeId: string;
   hotelName: string;
   roomTypeName: string;
+  roomNightsPurchased: number;
+  roomNightsSold: number;
 };
+
+export interface SeasonOverview {
+  pools: PoolSummary[];
+  nights: SeasonNight[];
+}
 
 export interface PoolDetail {
   hotelId: string;

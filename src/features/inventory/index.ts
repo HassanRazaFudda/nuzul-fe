@@ -1,6 +1,8 @@
 // Public API of the inventory feature. Other features import ONLY from here.
 export { ledgerRoutes } from './routes';
-export { ledgerKeys, ledgerSourcesQuery, overbookedPoolsQuery } from './api/ledger.queries';
+export { ledgerKeys, ledgerSourcesQuery, overbookedPoolsQuery, seasonPoolsQuery } from './api/ledger.queries';
+export type { PoolSummary, SeasonOverview } from './api/ledger.schemas';
+export type { SeasonNight } from './domain/pools';
 export { contractRecordSchema, loadLedgerSources } from './api/ledger-sources.api';
 export {
   allocationProblems,

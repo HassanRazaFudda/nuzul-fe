@@ -1,16 +1,16 @@
 import { useQueryClient, useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
+import { Printer } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { toast } from '@/components/feedback/toast';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { buttonClass } from '@/components/ui/buttonStyles';
+import { buttonClass, RECORD_LINK_CLASS } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import { Stat } from '@/components/ui/Stat';
+import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { calendarMonthsQuery, formatDay } from '@/features/calendar';
 import { HistoryCard, ImpactReviewDialog, type Impact } from '@/features/changes';
 import { currenciesQuery } from '@/features/currencies';
@@ -171,18 +171,27 @@ export function ContractDetailPage() {
       <PageHeader
         title={number}
         subtitle={`${contract.agentName}, ${formatIsoDate(contract.date)}`}
-        action={
-          <div className="flex flex-wrap items-center gap-2">
-            <ContractTags tags={contract.tags} />
+        status={
+          <>
             <ContractStatusBadge status={status} />
-            <Link to={`/contracts/${id}/print`} className={buttonClass('ghost')}>
+            <ContractTags tags={contract.tags} />
+          </>
+        }
+        action={
+          <>
+            <Link
+              to={`/contracts/${id}/print`}
+              className={buttonClass('ghost')}
+              aria-label={`Print ${number}`}
+            >
+              <Printer aria-hidden className="size-4" />
               Print
             </Link>
             {status === 'draft' && (
               <>
                 {can('contract.delete') && (
                   <Button
-                    variant="ghost"
+                    variant="danger-ghost"
                     onClick={() => {
                       setPending('delete');
                     }}
@@ -201,7 +210,7 @@ export function ContractDetailPage() {
             {status === 'confirmed' && (
               <>
                 {can('contract.delete') && (
-                  <Button variant="ghost" onClick={() => void startReview('cancel')}>
+                  <Button variant="danger-ghost" onClick={() => void startReview('cancel')}>
                     Cancel contract
                   </Button>
                 )}
@@ -217,7 +226,7 @@ export function ContractDetailPage() {
                   </Button>
                 )}
                 {can('contract.edit') && (
-                  <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary')}>
+                  <Link to={`/contracts/${id}/edit`} className={buttonClass('primary')}>
                     Edit
                   </Link>
                 )}
@@ -239,7 +248,7 @@ export function ContractDetailPage() {
                 Restore
               </Button>
             )}
-          </div>
+          </>
         }
       />
       <div className="space-y-5 p-5 lg:p-8">
@@ -253,7 +262,7 @@ export function ContractDetailPage() {
           </ErrorNotice>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <SummaryStrip>
           <Stat label="Rooms" value={formatMoney(contract.roomAmount.amount, format)} />
           <Stat
             label="Meals"
@@ -269,25 +278,20 @@ export function ContractDetailPage() {
             value={formatMoney(contract.total.amount, format)}
             hint={`${formatMoney(contract.total.amountPkr, PKR_FORMAT)} at 1 ${currencyCode} = ${contract.rateToPkr} PKR`}
           />
-        </div>
+        </SummaryStrip>
 
         {contract.hotels.map((entry, index) => (
           <Card key={`${entry.hotelId}-${String(index)}`}>
             <CardHeader
               title={entry.hotelName}
-              subtitle={`${range(entry.checkIn, entry.checkOut)}, ${String(nightsBetween(entry.checkIn, entry.checkOut))} nights. Rate is ${entry.perNight ? 'per night' : 'for the whole stay'}.`}
+              subtitle={`${range(entry.checkIn, entry.checkOut)} · ${String(nightsBetween(entry.checkIn, entry.checkOut))} nights · rate ${entry.perNight ? 'per night' : 'for the whole stay'}${entry.noMeals && mealPlan.kind !== 'none' ? ' · no meals here' : ''}`}
               action={
-                <span className="text-foreground text-sm font-semibold tabular-nums">
+                <span className="text-foreground text-[0.9375rem] font-semibold tabular-nums">
                   {formatMoney(entry.total.amount, format)}
                 </span>
               }
             />
-            {entry.noMeals && mealPlan.kind !== 'none' && (
-              <p className="px-5 pt-3">
-                <Badge>No meals at this hotel</Badge>
-              </p>
-            )}
-            <ul className="divide-border divide-y">
+            <ul className="divide-border mt-3 divide-y border-t">
               {entry.lines.map((line, lineIndex) => {
                 const unallocated = unallocatedBlocks(entry, line.rooms, line.allocations);
                 return (
@@ -320,10 +324,7 @@ export function ContractDetailPage() {
                       {line.allocations.map((allocation) => (
                         <li key={`${allocation.purchaseId}-${allocation.checkIn}`}>
                           {allocation.vendorName},{' '}
-                          <Link
-                            to={`/purchases/${allocation.purchaseId}`}
-                            className="text-primary-strong underline"
-                          >
+                          <Link to={`/purchases/${allocation.purchaseId}`} className={RECORD_LINK_CLASS}>
                             {allocation.number}
                           </Link>
                           : {allocation.rooms} rooms, {range(allocation.checkIn, allocation.checkOut)}
@@ -346,7 +347,7 @@ export function ContractDetailPage() {
         {contract.notes && (
           <Card>
             <CardHeader title="Notes" />
-            <p className="text-foreground p-5 text-sm whitespace-pre-line">{contract.notes}</p>
+            <p className="text-foreground px-5 pt-1 pb-5 text-sm whitespace-pre-line">{contract.notes}</p>
           </Card>
         )}
 

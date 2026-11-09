@@ -14,7 +14,7 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { Stat } from '@/components/ui/Stat';
+import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { TabBar } from '@/components/ui/TabBar';
 import {
   computeLedger,
@@ -68,15 +68,15 @@ const COLUMNS = columnHelper.columns([
 ]);
 
 const SWATCHES = [
-  ['primary', 'bg-primary'],
-  ['primary-subtle', 'bg-primary-subtle'],
-  ['foreground', 'bg-foreground'],
+  ['primary (ink)', 'bg-primary'],
+  ['accent (Junaidi red)', 'bg-accent'],
+  ['secondary', 'bg-secondary'],
   ['muted', 'bg-muted'],
   ['border', 'bg-border'],
+  ['surface-muted', 'bg-surface-muted'],
   ['background', 'bg-background'],
-  ['success', 'bg-success-strong'],
-  ['warning', 'bg-warning-strong'],
-  ['danger', 'bg-danger'],
+  ['success', 'bg-success'],
+  ['warning', 'bg-warning'],
 ] as const;
 
 type StateView = 'data' | 'empty' | 'loading' | 'error';
@@ -96,12 +96,14 @@ export function DesignSystemPage() {
     <>
       <PageHeader
         title="Design system"
-        subtitle="The building blocks every screen uses"
         action={<Button icon={<Plus aria-hidden className="size-4" />}>Primary action</Button>}
       />
       <div className="space-y-5 p-5 lg:p-8">
         <Card>
-          <CardHeader title="Colour tokens" subtitle="From the quotation app's theme" />
+          <CardHeader
+            title="Colour tokens"
+            subtitle="Ink acts, red asks for a look, green and amber carry state"
+          />
           <div className="grid grid-cols-3 gap-4 p-5 sm:grid-cols-5 lg:grid-cols-9">
             {SWATCHES.map(([name, className]) => (
               <div key={name}>
@@ -117,7 +119,7 @@ export function DesignSystemPage() {
           <div className="flex flex-wrap items-center gap-2 p-5">
             <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
-            <Button variant="soft">Soft</Button>
+            <Button variant="danger-ghost">Danger ghost</Button>
             <Button variant="ghost">Ghost</Button>
             <Button
               variant="danger"
@@ -156,7 +158,7 @@ export function DesignSystemPage() {
           </Card>
 
           <Card>
-            <CardHeader title="Inventory states" subtitle="Icon and words, never colour alone" />
+            <CardHeader title="Inventory states" subtitle="Words first, never colour alone" />
             <div className="flex flex-wrap items-center gap-2 p-5">
               <InventoryStateTag state="available" rooms={89} />
               <InventoryStateTag state="full" />
@@ -165,18 +167,15 @@ export function DesignSystemPage() {
                 Cost: <UnknownCost />
               </span>
             </div>
-            <div className="grid gap-3 px-5 pb-5 sm:grid-cols-2">
-              <Stat label="Profit on known portion" value={formatMoney('500', SAR)} hint="Partial" />
+            <SummaryStrip className="mx-5 mb-5">
+              <Stat label="Profit, known portion" value={formatMoney('500', SAR)} hint="Partial" />
               <Stat label="Unknown cost" value="2 rooms" tone="danger" hint="Revenue SAR 300.00" />
-            </div>
+            </SummaryStrip>
           </Card>
         </div>
 
         <Card>
-          <CardHeader
-            title="Data table"
-            subtitle="SRS Case 1 through the real ledger engine, and its states"
-          />
+          <CardHeader title="Data table" subtitle="SRS Case 1 through the real ledger engine" />
           <div className="space-y-4 p-5">
             <TabBar
               label="Table states"

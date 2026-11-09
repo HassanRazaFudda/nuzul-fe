@@ -32,8 +32,8 @@ export function ReportFilters({
   children,
 }: ReportFiltersProps) {
   return (
-    <fieldset className="rounded-card border-border bg-surface grid gap-3 border p-4 sm:grid-cols-2 lg:grid-cols-4 print:hidden">
-      <legend className="text-muted px-1 text-xs font-semibold">Filters</legend>
+    <fieldset className="rounded-card border-border bg-surface shadow-raised grid gap-3 border p-4 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6 print:hidden">
+      <legend className="sr-only">Filters</legend>
       <FormField label={`${periodLabel} from`}>
         {(field) => (
           <Input
@@ -46,7 +46,7 @@ export function ReportFilters({
           />
         )}
       </FormField>
-      <FormField label="Until (not included)">
+      <FormField label="Before">
         {(field) => (
           <Input
             {...field}

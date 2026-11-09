@@ -63,7 +63,6 @@ export function CalendarPage() {
     <>
       <PageHeader
         title="Calendar"
-        subtitle="Months, day counts and their English dates"
         action={
           canManage && (
             <Button
@@ -95,12 +94,10 @@ export function CalendarPage() {
             getRowId={(month) => month.id}
             sort={undefined}
             onSortChange={() => undefined}
-            emptyState={<EmptyState title="No months yet" hint="Add the months your bookings fall in." />}
+            emptyState={<EmptyState title="No months yet" hint="Add the months your bookings fall in" />}
           />
         </Card>
-        <p className="text-muted text-xs">
-          The sample months are illustrative. Enter the dates announced for each month.
-        </p>
+        <p className="text-muted text-xs">Sample months. Enter the dates announced for each month</p>
       </div>
       {editing && (
         <MonthForm

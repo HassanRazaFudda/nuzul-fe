@@ -29,7 +29,7 @@ describe('profit & loss', () => {
     });
     renderApp(`/profit-loss${MAY}`);
 
-    expect(await screen.findByText('Every sold room-night has a purchase behind it')).toBeInTheDocument();
+    expect(await screen.findByText('Every sold room-night has a purchase')).toBeInTheDocument();
   });
 
   it('keeps its filters in the URL, and changes currency', async () => {
@@ -39,7 +39,8 @@ describe('profit & loss', () => {
     await user.selectOptions(screen.getByLabelText('Currency'), 'PKR');
 
     expect(router.state.location.search).toBe(`${MAY}&currency=PKR`);
-    const headline = (await screen.findByText('Profit on known portion')).parentElement;
+    const summary = await screen.findByRole('region', { name: 'Summary' });
+    const headline = within(summary).getByText('Profit, known portion').parentElement;
     await waitFor(() => {
       expect(within(headline ?? document.body).getByText(/^PKR /)).toBeInTheDocument();
     });

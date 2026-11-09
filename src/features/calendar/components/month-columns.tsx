@@ -2,7 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
 import { Button } from '@/components/ui/Button';
-import { dayNumber, isoDate } from '@/lib/format/dates';
+import { dayNumber, formatIsoDate, isoDate } from '@/lib/format/dates';
 
 import type { CalendarMonth } from '../domain/calendar';
 
@@ -36,21 +36,21 @@ export function monthColumns({ onEdit, onRemove }: MonthColumnOptions) {
     columnHelper.accessor('startDate', {
       header: 'Starts',
       enableSorting: false,
-      cell: (info) => <span className="tabular-nums">{info.getValue()}</span>,
+      cell: (info) => <span className="tabular-nums">{formatIsoDate(info.getValue())}</span>,
     }),
     columnHelper.display({
       id: 'end',
       header: 'Ends',
-      cell: (info) => <span className="tabular-nums">{endDate(info.row.original)}</span>,
+      cell: (info) => <span className="tabular-nums">{formatIsoDate(endDate(info.row.original))}</span>,
     }),
     columnHelper.display({
       id: 'actions',
-      header: 'Actions',
+      header: () => <span className="sr-only">Actions</span>,
       cell: (info) => {
         const month = info.row.original;
         const name = `${month.name} ${month.cycle}`;
         return (
-          <div className="flex gap-1">
+          <div className="flex justify-end gap-1">
             <Button
               variant="ghost"
               size="sm"

@@ -8,6 +8,7 @@ import {
   poolLedger,
   resultHidesShortage,
   roomNights,
+  seasonNights,
   type PoolPurchaseInput,
   type PoolSaleInput,
 } from './pools';
@@ -142,5 +143,25 @@ describe('poolFigures states', () => {
     expect(stateOf(4)).toBe('available');
     expect(stateOf(5)).toBe('full');
     expect(stateOf(6)).toBe('overbooked');
+  });
+});
+
+describe('season nights', () => {
+  it('sums every pool per night, and counts a shortage per pool', () => {
+    const pools = buildPools(
+      [
+        purchase('p1', 0, 2, [
+          { roomTypeId: 'double', rooms: 10 },
+          { roomTypeId: 'triple', rooms: 10 },
+        ]),
+      ],
+      [sale('s1', 0, 2, 12, 'double'), sale('s2', 1, 2, 4, 'triple')],
+    );
+    const ledgers = pools.flatMap((pool) => poolLedger(pool) ?? []);
+
+    expect(seasonNights(ledgers)).toEqual([
+      { day: START, purchased: 20, sold: 12, overbooked: 2 },
+      { day: START + 1, purchased: 20, sold: 16, overbooked: 2 },
+    ]);
   });
 });

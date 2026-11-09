@@ -2,8 +2,10 @@ import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
 import { Link } from 'react-router';
 
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
+import { LINK_CLASS } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
-import { Stat } from '@/components/ui/Stat';
+import { Detail } from '@/components/ui/Detail';
+import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { currenciesQuery } from '@/features/currencies';
 import { hotelOptionsQuery } from '@/features/hotels';
 import { UnknownCost } from '@/features/inventory';
@@ -11,7 +13,7 @@ import { UnknownCost } from '@/features/inventory';
 import { profitAndLossQuery } from '../api/report.queries';
 import { reportParamsSchema } from '../api/report.schemas';
 import type { Totals } from '../domain/reports';
-import { asNumber, moneyFormatter } from '../components/money-format';
+import { amountFormatter, asNumber, moneyFormatter } from '../components/money-format';
 import { ReportFilters } from '../components/ReportFilters';
 import { ReportShell } from '../components/ReportShell';
 import { toSheet } from '../components/report-sheet';
@@ -20,11 +22,11 @@ import { useReportParams } from '../components/useReportParams';
 
 type Row = Totals & { label: string };
 
-function columnsFor(money: (amount: string) => string): ReportColumn<Row>[] {
+function columnsFor(amount: (value: string) => string): ReportColumn<Row>[] {
   const figure = (header: string, field: keyof Totals, isMoney = true): ReportColumn<Row> => ({
     header,
     isNumeric: true,
-    cell: (row) => (isMoney ? money(row[field]) : row[field]),
+    cell: (row) => (isMoney ? amount(row[field]) : row[field]),
     value: (row) => asNumber(row[field]),
   });
   return [
@@ -42,11 +44,13 @@ function columnsFor(money: (amount: string) => string): ReportColumn<Row>[] {
       isNumeric: true,
       cell: (row) =>
         Number(row.unknownRoomNights) > 0 ? (
-          <span className="inline-flex items-center gap-1">
-            {row.unknownRoomNights} room-nights, {money(row.unknownRevenue)} <UnknownCost />
+          <span className="inline-flex flex-col items-end">
+            <UnknownCost />
+            <span>{amount(row.unknownRevenue)}</span>
+            <span className="text-muted text-xs">{row.unknownRoomNights} room-nights</span>
           </span>
         ) : (
-          '—'
+          <span className="text-faint">—</span>
         ),
       value: (row) => asNumber(row.unknownRevenue),
     },
@@ -60,7 +64,7 @@ export function ProfitLossPage() {
     queries: [hotelOptionsQuery, currenciesQuery],
   });
   const money = moneyFormatter(currencies, params.currency);
-  const columns = columnsFor(money);
+  const columns = columnsFor(amountFormatter(currencies, params.currency));
   const search = new URLSearchParams(
     Object.entries({
       from: params.from,
@@ -72,8 +76,10 @@ export function ProfitLossPage() {
 
   return (
     <ReportShell
+      currency={params.currency}
       title="Profit & loss"
-      subtitle="By stay night: revenue and cost matched on the same night, at the weighted average cost"
+      subtitle="By stay night, at the weighted average cost"
+      footnote="Accounting rules pending review by the client's accountant"
       query={query}
       fileName={`Profit and loss ${params.currency}.xlsx`}
       filters={
@@ -124,16 +130,16 @@ export function ProfitLossPage() {
         }));
         return (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <SummaryStrip>
               <Stat
-                label="Profit on known portion"
+                label="Profit, known portion"
                 value={money(total.profitKnown)}
                 hint={
                   data.isPartial
-                    ? `Partial: ${total.unknownRoomNights} room-nights (revenue ${money(total.unknownRevenue)}) have no purchase`
-                    : 'Every sold room-night has a purchase behind it'
+                    ? `Partial: ${total.unknownRoomNights} room-nights have no purchase`
+                    : 'Every sold room-night has a purchase'
                 }
-                {...(data.isPartial ? { tone: 'danger' as const } : {})}
+                {...(total.profitKnown.startsWith('-') ? { tone: 'danger' as const } : {})}
               />
               <Stat
                 label="Room margin"
@@ -144,9 +150,9 @@ export function ProfitLossPage() {
               <Stat
                 label="Termination adjustments"
                 value={money(data.adjustments)}
-                hint="Penalties paid less refunds received, dated in the period"
+                hint="Penalties less refunds"
               />
-            </div>
+            </SummaryStrip>
 
             {Number(total.mealMissingRoomNights) > 0 && (
               <ErrorNotice title="Meal cost missing">
@@ -157,29 +163,25 @@ export function ProfitLossPage() {
 
             <Card>
               <CardHeader title="Memo" subtitle="Not part of the profit above" />
-              <dl className="grid gap-x-6 gap-y-2 p-5 text-sm sm:grid-cols-2">
-                <div>
-                  <dt className="text-muted text-xs">Unsold exposure</dt>
-                  <dd className="text-foreground tabular-nums">
-                    {money(data.exposure)}{' '}
-                    <Link
-                      to={`/reports/inventory${search ? `?${search}` : ''}`}
-                      className="text-primary-strong text-xs underline print:hidden"
-                    >
-                      See unsold rooms
-                    </Link>
-                  </dd>
-                </div>
+              <dl className="grid gap-x-6 gap-y-3 px-5 pt-3 pb-5 sm:grid-cols-2">
+                <Detail label="Unsold exposure">
+                  <span className="tabular-nums">{money(data.exposure)}</span>{' '}
+                  <Link
+                    to={`/reports/inventory${search ? `?${search}` : ''}`}
+                    className={`${LINK_CLASS} ms-2 text-[0.8125rem] print:hidden`}
+                  >
+                    Unsold rooms
+                  </Link>
+                </Detail>
                 {data.exchangeDifference !== null && (
-                  <div>
-                    <dt className="text-muted text-xs">Exchange difference (not realised)</dt>
-                    <dd className="text-foreground tabular-nums">{money(data.exchangeDifference)}</dd>
-                  </div>
+                  <Detail label="Exchange difference (not realised)">
+                    <span className="tabular-nums">{money(data.exchangeDifference)}</span>
+                  </Detail>
                 )}
               </dl>
             </Card>
 
-            <Card>
+            <Card className="overflow-hidden">
               <CardHeader title="By hotel" />
               <ReportTable
                 caption="Profit and loss by hotel"
@@ -187,17 +189,17 @@ export function ProfitLossPage() {
                 rows={hotelRows}
                 rowKey={(row) => row.label}
                 footer={{ ...total, label: 'Total' }}
-                empty="Nothing was sold for nights in this period."
+                empty="Nothing was sold for nights in this period"
               />
             </Card>
-            <Card>
+            <Card className="overflow-hidden">
               <CardHeader title="By hotel and room type" subtitle="Room type as purchased" />
               <ReportTable
                 caption="Profit and loss by hotel and room type"
                 columns={columns}
                 rows={poolRows}
                 rowKey={(row) => row.label}
-                empty="Nothing was sold for nights in this period."
+                empty="Nothing was sold for nights in this period"
               />
             </Card>
           </>

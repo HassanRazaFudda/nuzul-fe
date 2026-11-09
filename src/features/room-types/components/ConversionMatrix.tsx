@@ -62,7 +62,7 @@ export function ConversionMatrix() {
     <Card>
       <CardHeader
         title="Room conversion"
-        subtitle="Which purchased rooms may be sold as a smaller type. Off unless switched on."
+        subtitle="Purchased rooms that may be sold as a smaller type"
         action={
           <Select
             aria-label="Applies to"
@@ -82,7 +82,7 @@ export function ConversionMatrix() {
         }
       />
       {pairs.length === 0 ? (
-        <EmptyState title="Nothing to convert" hint="Conversion needs room types of different sizes." />
+        <EmptyState title="Nothing to convert" hint="Conversion needs room types of different sizes" />
       ) : (
         <ul className="divide-border divide-y">
           {pairs.map((pair) => {
@@ -134,8 +134,7 @@ export function ConversionMatrix() {
         </ul>
       )}
       <p className="border-border text-muted border-t px-5 py-3 text-xs">
-        Allowing a conversion adds no rooms: a converted sale still draws from the purchased type&apos;s real
-        balance, and is costed at that type. Only downward conversions are offered, by guests per room.
+        A converted sale still draws on, and is costed at, the purchased type. It adds no rooms.
       </p>
     </Card>
   );

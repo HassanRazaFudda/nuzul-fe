@@ -36,7 +36,7 @@ export function AddCity({ cities, onAdded }: AddCityProps) {
         onClick={() => {
           setDraft('');
         }}
-        className="text-primary-strong mt-1 text-xs underline"
+        className="text-secondary hover:text-foreground mt-1 self-start text-xs underline underline-offset-2"
       >
         Add a city
       </button>

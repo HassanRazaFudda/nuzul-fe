@@ -72,7 +72,7 @@ export function UserPage() {
         <Card>
           <CardHeader
             title="Permissions"
-            subtitle="A template only fills in the ticks below; nothing stays linked to it"
+            subtitle="A template fills in the ticks once; nothing stays linked"
             action={
               canAssign && (
                 <div className="flex flex-wrap items-center gap-2">
