@@ -1,1 +1,6 @@
-[{ "id": "current", "userId": "user-admin" }]
+[
+  {
+    "id": "current",
+    "userId": "user-admin"
+  }
+]

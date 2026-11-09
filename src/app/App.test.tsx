@@ -4,13 +4,12 @@ import { describe, expect, it } from 'vitest';
 import { renderApp } from '@/test/render';
 
 describe('the app shell', () => {
-  it('opens on the overview, with figures from the sample data', async () => {
+  it('opens on the overview, with its season figures', async () => {
     renderApp('/');
 
     expect(await screen.findByRole('heading', { name: 'Overview' })).toBeInTheDocument();
     expect(await screen.findByText('Rooms by hotel')).toBeInTheDocument();
     expect(screen.getByText('Room-nights purchased')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument();
   });
 
   it('collapses the sidebar and keeps every link reachable by name', async () => {

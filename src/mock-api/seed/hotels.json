@@ -1,5 +1,119 @@
 [
-  { "id": "hotel-artal", "name": "Artal International", "city": "Madinah", "active": true },
-  { "id": "hotel-swissotel", "name": "Swissotel Al Maqam", "city": "Makkah", "active": true },
-  { "id": "hotel-dar-al-eiman", "name": "Dar Al Eiman Royal", "city": "Makkah", "active": true }
+  {
+    "id": "hotel-anjum",
+    "name": "Anjum Hotel Makkah",
+    "city": "Makkah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "1300",
+    "extraBedRate": "200"
+  },
+  {
+    "id": "hotel-anwar-movenpick",
+    "name": "Anwar Al Madinah Movenpick",
+    "city": "Madinah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "480",
+    "extraBedRate": "80"
+  },
+  {
+    "id": "hotel-artal",
+    "name": "Artal International",
+    "city": "Madinah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "520",
+    "extraBedRate": "90"
+  },
+  {
+    "id": "hotel-dar-al-eiman",
+    "name": "Dar Al Eiman Royal",
+    "city": "Makkah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "1150",
+    "extraBedRate": "180"
+  },
+  {
+    "id": "hotel-dar-al-taqwa",
+    "name": "Dar Al Taqwa",
+    "city": "Madinah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "640",
+    "extraBedRate": "100"
+  },
+  {
+    "id": "hotel-elaf-ajyad",
+    "name": "Elaf Ajyad",
+    "city": "Makkah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "900",
+    "extraBedRate": "150"
+  },
+  {
+    "id": "hotel-hilton-suites",
+    "name": "Hilton Suites Makkah",
+    "city": "Makkah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "2300",
+    "extraBedRate": "300"
+  },
+  {
+    "id": "hotel-kiswah",
+    "name": "Al Kiswah Towers",
+    "city": "Makkah",
+    "active": false,
+    "rateCurrency": "SAR",
+    "doubleRate": "520",
+    "extraBedRate": "100"
+  },
+  {
+    "id": "hotel-meridien-madinah",
+    "name": "Le Meridien Madinah",
+    "city": "Madinah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "560",
+    "extraBedRate": "90"
+  },
+  {
+    "id": "hotel-meridien-towers",
+    "name": "Le Meridien Towers Makkah",
+    "city": "Makkah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "560",
+    "extraBedRate": "110"
+  },
+  {
+    "id": "hotel-pullman-madinah",
+    "name": "Pullman Zamzam Madinah",
+    "city": "Madinah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "700",
+    "extraBedRate": "110"
+  },
+  {
+    "id": "hotel-pullman-makkah",
+    "name": "Pullman Zamzam Makkah",
+    "city": "Makkah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "1500",
+    "extraBedRate": "220"
+  },
+  {
+    "id": "hotel-swissotel",
+    "name": "Swissotel Al Maqam",
+    "city": "Makkah",
+    "active": true,
+    "rateCurrency": "SAR",
+    "doubleRate": "1600",
+    "extraBedRate": "250"
+  }
 ]

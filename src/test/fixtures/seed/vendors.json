@@ -1,0 +1,4 @@
+[
+  { "id": "vendor-a", "name": "Sample Vendor A", "active": true },
+  { "id": "vendor-b", "name": "Sample Vendor B", "active": true }
+]

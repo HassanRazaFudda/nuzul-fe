@@ -7,6 +7,7 @@ export { ACTION_LABELS, ENTITY_LABELS } from './api/revision-labels';
 export {
   REVISION_ACTIONS,
   REVISION_ENTITIES,
+  revisionSchema,
   type Revision,
   type RevisionAction,
   type RevisionEntity,

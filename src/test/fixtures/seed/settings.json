@@ -1,0 +1,59 @@
+[
+  {
+    "id": "agreement",
+    "companyName": "JUNAIDI AIR TRAVELS & TOURS (PVT) LTD.",
+    "glNumber": "2357",
+    "ceoName": "Hafiz Muhammad Sarwar Soharwardi",
+    "ceoTitle": "Chief Executive Officer",
+    "signatory": "Junaidi Air Travels & Tours (Pvt.) Ltd.",
+    "address": "Suite # 7 & 8, Mona Square, Near Kanzul Iman Masjid, Jahangir Road, Karachi.",
+    "phone": "(92-21) 34130180-88",
+    "email": "contact@junaiditravels.com",
+    "seasonWord": "HAJJ",
+    "recital": "WHEREAS, the First Party agrees to sell, and the Second Party agrees to purchase, hotel accommodation packages under the terms and conditions set forth below:",
+    "roomTypeShortNames": {
+      "double": "DBL",
+      "triple": "TRPL",
+      "quad": "QUAD",
+      "quint": "QUINT"
+    },
+    "paymentTerms": [
+      {
+        "lead": "Advance Payment",
+        "text": "A deposit equal to **30% of the Total Invoice** must be paid upon execution of this Agreement."
+      },
+      {
+        "lead": "Remaining Balance",
+        "text": "The balance **70%** must be settled via the **E-Hajj portal**."
+      },
+      {
+        "lead": "Security Deposit",
+        "text": "A refundable security deposit of **10,000 SAR** will be collected at the time of check-in."
+      }
+    ],
+    "termsSections": [
+      {
+        "heading": "Check-in / Check-out Timings",
+        "bullets": [
+          "Standard Check-in time is after **18:00 (6:00 PM)**.",
+          "Standard Check-out time is before **12:00 (12:00 PM)**.",
+          "Unapproved late check-out will result in deductions from the **10,000 SAR security deposit**."
+        ]
+      },
+      {
+        "heading": "Bedding & Room Configurations",
+        "bullets": [
+          "Standard Triple and Quad rooms do not exist naturally in these properties. Extra beds will be provided in twin/double bedrooms as per hotel policy.",
+          "The First Party assumes no responsibility or liability for standard bed dimensions or setup for extra bedding provided by hotel management."
+        ]
+      },
+      {
+        "heading": "Special Requests & Room Allocations",
+        "bullets": [
+          "All special requests—including, early check-in, late check-out, king-size beds, connected rooms, adjacent rooms, same-floor placement, Ka’aba/Haram views, or renovated floor assignments—are strictly subject to hotel availability upon arrival."
+        ]
+      }
+    ],
+    "witness": "IN WITNESS WHEREOF, the parties hereto have executed this Agreement on the date first above written."
+  }
+]

@@ -2,368 +2,675 @@
   {
     "id": "contract-1",
     "number": "CON-0001",
-    "agentId": "agent-a",
-    "date": "2026-11-01",
-    "status": "confirmed",
-    "version": 2,
+    "agentId": "agent-al-hijaz",
+    "date": "2026-08-18",
+    "status": "locked",
+    "version": 3,
     "currencyCode": "SAR",
-    "rateToPkr": "70",
-    "mealPlan": {
-      "kind": "perNightPerPerson",
-      "rate": "75"
-    },
-    "notes": "",
-    "hotels": [
-      {
-        "hotelId": "hotel-artal",
-        "checkIn": "2027-05-08",
-        "checkOut": "2027-05-18",
-        "perNight": true,
-        "rateType": "occupancy",
-        "doubleRate": "600",
-        "extraBedRate": "100",
-        "flatRate": "",
-        "noMeals": false,
-        "lines": [
-          {
-            "soldAsTypeId": "double",
-            "sourceTypeId": "double",
-            "rooms": 15,
-            "personsPerRoom": 2,
-            "rate": "600",
-            "allocations": [
-              {
-                "purchaseId": "purchase-1",
-                "checkIn": "2027-05-08",
-                "checkOut": "2027-05-18",
-                "rooms": 15
-              }
-            ],
-            "roomAmount": {
-              "amount": "90000.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "6300000.00"
-            },
-            "mealIncome": {
-              "amount": "22500.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "1575000.00"
-            }
-          },
-          {
-            "soldAsTypeId": "triple",
-            "sourceTypeId": "triple",
-            "rooms": 60,
-            "personsPerRoom": 3,
-            "rate": "700",
-            "allocations": [
-              {
-                "purchaseId": "purchase-1",
-                "checkIn": "2027-05-08",
-                "checkOut": "2027-05-18",
-                "rooms": 60
-              }
-            ],
-            "roomAmount": {
-              "amount": "420000.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "29400000.00"
-            },
-            "mealIncome": {
-              "amount": "135000.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "9450000.00"
-            }
-          }
-        ],
-        "roomAmount": {
-          "amount": "510000.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "35700000.00"
-        },
-        "mealIncome": {
-          "amount": "157500.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "11025000.00"
-        },
-        "total": {
-          "amount": "667500.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "46725000.00"
-        }
-      }
-    ],
-    "roomAmount": {
-      "amount": "510000.00",
-      "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "35700000.00"
-    },
-    "mealIncome": {
-      "amount": "157500.00",
-      "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "11025000.00"
-    },
-    "total": {
-      "amount": "667500.00",
-      "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "46725000.00"
-    }
-  },
-  {
-    "id": "contract-2",
-    "number": "CON-0002",
-    "agentId": "agent-b",
-    "date": "2026-11-02",
-    "status": "confirmed",
-    "version": 2,
-    "currencyCode": "SAR",
-    "rateToPkr": "70",
-    "mealPlan": {
-      "kind": "none"
-    },
-    "notes": "",
-    "hotels": [
-      {
-        "hotelId": "hotel-artal",
-        "checkIn": "2027-05-08",
-        "checkOut": "2027-05-12",
-        "perNight": true,
-        "rateType": "flat",
-        "doubleRate": "",
-        "extraBedRate": "",
-        "flatRate": "650",
-        "noMeals": false,
-        "lines": [
-          {
-            "soldAsTypeId": "double",
-            "sourceTypeId": "double",
-            "rooms": 10,
-            "personsPerRoom": 2,
-            "rate": "650",
-            "allocations": [
-              {
-                "purchaseId": "purchase-1",
-                "checkIn": "2027-05-08",
-                "checkOut": "2027-05-12",
-                "rooms": 10
-              }
-            ],
-            "roomAmount": {
-              "amount": "26000.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "1820000.00"
-            },
-            "mealIncome": {
-              "amount": "0.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "0.00"
-            }
-          }
-        ],
-        "roomAmount": {
-          "amount": "26000.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "1820000.00"
-        },
-        "mealIncome": {
-          "amount": "0.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "0.00"
-        },
-        "total": {
-          "amount": "26000.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "1820000.00"
-        }
-      },
-      {
-        "hotelId": "hotel-artal",
-        "checkIn": "2027-05-12",
-        "checkOut": "2027-05-18",
-        "perNight": true,
-        "rateType": "flat",
-        "doubleRate": "",
-        "extraBedRate": "",
-        "flatRate": "650",
-        "noMeals": false,
-        "lines": [
-          {
-            "soldAsTypeId": "double",
-            "sourceTypeId": "double",
-            "rooms": 30,
-            "personsPerRoom": 2,
-            "rate": "650",
-            "allocations": [
-              {
-                "purchaseId": "purchase-1",
-                "checkIn": "2027-05-12",
-                "checkOut": "2027-05-18",
-                "rooms": 25
-              }
-            ],
-            "roomAmount": {
-              "amount": "117000.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "8190000.00"
-            },
-            "mealIncome": {
-              "amount": "0.00",
-              "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "0.00"
-            }
-          }
-        ],
-        "roomAmount": {
-          "amount": "117000.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "8190000.00"
-        },
-        "mealIncome": {
-          "amount": "0.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "0.00"
-        },
-        "total": {
-          "amount": "117000.00",
-          "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "8190000.00"
-        }
-      }
-    ],
-    "roomAmount": {
-      "amount": "143000.00",
-      "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "10010000.00"
-    },
-    "mealIncome": {
-      "amount": "0.00",
-      "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "0.00"
-    },
-    "total": {
-      "amount": "143000.00",
-      "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "10010000.00"
-    }
-  },
-  {
-    "id": "contract-3",
-    "number": "CON-0003",
-    "agentId": "agent-b",
-    "date": "2026-11-03",
-    "status": "draft",
-    "version": 1,
-    "currencyCode": "USD",
-    "rateToPkr": "280",
+    "rateToPkr": "75.05",
     "mealPlan": {
       "kind": "halfboard",
-      "rate": "20"
+      "rate": "95"
     },
     "notes": "",
     "hotels": [
       {
-        "hotelId": "hotel-swissotel",
-        "checkIn": "2027-05-10",
-        "checkOut": "2027-05-15",
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-04-29",
+        "checkOut": "2027-05-21",
         "perNight": true,
         "rateType": "occupancy",
-        "doubleRate": "100",
-        "extraBedRate": "20",
+        "doubleRate": "610",
+        "extraBedRate": "120",
         "flatRate": "",
         "noMeals": false,
         "lines": [
           {
             "soldAsTypeId": "quad",
             "sourceTypeId": "quad",
-            "rooms": 2,
+            "rooms": 19,
             "personsPerRoom": 4,
-            "rate": "140",
-            "allocations": [],
+            "rate": "850",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-04-29",
+                "checkOut": "2027-05-21",
+                "rooms": 19
+              }
+            ],
             "roomAmount": {
-              "amount": "1400.00",
-              "currencyCode": "USD",
-              "rateToPkr": "280",
-              "amountPkr": "392000.00"
+              "amount": "355300.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "26665265.00"
             },
             "mealIncome": {
-              "amount": "800.00",
-              "currencyCode": "USD",
-              "rateToPkr": "280",
-              "amountPkr": "224000.00"
+              "amount": "158840.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "11920942.00"
             }
           }
         ],
         "roomAmount": {
-          "amount": "1400.00",
-          "currencyCode": "USD",
-          "rateToPkr": "280",
-          "amountPkr": "392000.00"
+          "amount": "355300.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "26665265.00"
         },
         "mealIncome": {
-          "amount": "800.00",
-          "currencyCode": "USD",
-          "rateToPkr": "280",
-          "amountPkr": "224000.00"
+          "amount": "158840.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "11920942.00"
         },
         "total": {
-          "amount": "2200.00",
-          "currencyCode": "USD",
-          "rateToPkr": "280",
-          "amountPkr": "616000.00"
+          "amount": "514140.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "38586207.00"
         }
       }
     ],
     "roomAmount": {
-      "amount": "1400.00",
-      "currencyCode": "USD",
-      "rateToPkr": "280",
-      "amountPkr": "392000.00"
+      "amount": "355300.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "26665265.00"
     },
     "mealIncome": {
-      "amount": "800.00",
-      "currencyCode": "USD",
-      "rateToPkr": "280",
-      "amountPkr": "224000.00"
+      "amount": "158840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "11920942.00"
     },
     "total": {
-      "amount": "2200.00",
-      "currencyCode": "USD",
-      "rateToPkr": "280",
-      "amountPkr": "616000.00"
+      "amount": "514140.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "38586207.00"
+    }
+  },
+  {
+    "id": "contract-2",
+    "number": "CON-0002",
+    "agentId": "agent-khyber",
+    "date": "2026-08-20",
+    "status": "locked",
+    "version": 3,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-23",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "580",
+        "extraBedRate": "110",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 13,
+            "personsPerRoom": 5,
+            "rate": "910",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-23",
+                "rooms": 13
+              }
+            ],
+            "roomAmount": {
+              "amount": "272090.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "20420354.50"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "272090.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "20420354.50"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "272090.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "20420354.50"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "272090.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "20420354.50"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "272090.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "20420354.50"
+    }
+  },
+  {
+    "id": "contract-3",
+    "number": "CON-0003",
+    "agentId": "agent-green-crescent",
+    "date": "2026-08-22",
+    "status": "locked",
+    "version": 3,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "perNightPerPerson",
+      "rate": "65"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-dar-al-eiman",
+        "checkIn": "2027-05-03",
+        "checkOut": "2027-05-19",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1160",
+        "extraBedRate": "180",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 17,
+            "personsPerRoom": 4,
+            "rate": "1520",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-05-03",
+                "checkOut": "2027-05-19",
+                "rooms": 17
+              }
+            ],
+            "roomAmount": {
+              "amount": "413440.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "31028672.00"
+            },
+            "mealIncome": {
+              "amount": "70720.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "5307536.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "413440.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "31028672.00"
+        },
+        "mealIncome": {
+          "amount": "70720.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "5307536.00"
+        },
+        "total": {
+          "amount": "484160.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "36336208.00"
+        }
+      },
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-05-29",
+        "checkOut": "2027-06-05",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "520",
+        "extraBedRate": "90",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 19,
+            "personsPerRoom": 4,
+            "rate": "700",
+            "allocations": [
+              {
+                "purchaseId": "purchase-11",
+                "checkIn": "2027-05-29",
+                "checkOut": "2027-06-05",
+                "rooms": 19
+              }
+            ],
+            "roomAmount": {
+              "amount": "93100.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "6987155.00"
+            },
+            "mealIncome": {
+              "amount": "34580.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "2595229.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "93100.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "6987155.00"
+        },
+        "mealIncome": {
+          "amount": "34580.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "2595229.00"
+        },
+        "total": {
+          "amount": "127680.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "9582384.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "506540.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "38015827.00"
+    },
+    "mealIncome": {
+      "amount": "105300.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "7902765.00"
+    },
+    "total": {
+      "amount": "611840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "45918592.00"
     }
   },
   {
     "id": "contract-4",
     "number": "CON-0004",
-    "agentId": "agent-a",
-    "date": "2026-10-20",
-    "status": "cancelled",
+    "agentId": "agent-baba-farid",
+    "date": "2026-08-24",
+    "status": "locked",
     "version": 3,
     "currencyCode": "SAR",
-    "rateToPkr": "70",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-elaf-ajyad",
+        "checkIn": "2027-05-07",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "980",
+        "extraBedRate": "160",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 20,
+            "personsPerRoom": 4,
+            "rate": "1300",
+            "allocations": [
+              {
+                "purchaseId": "purchase-9",
+                "checkIn": "2027-05-07",
+                "checkOut": "2027-05-21",
+                "rooms": 20
+              }
+            ],
+            "roomAmount": {
+              "amount": "364000.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "27318200.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "364000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "27318200.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "364000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "27318200.00"
+        }
+      },
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-05-30",
+        "checkOut": "2027-06-07",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "570",
+        "extraBedRate": "100",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 11,
+            "personsPerRoom": 4,
+            "rate": "770",
+            "allocations": [
+              {
+                "purchaseId": "purchase-11",
+                "checkIn": "2027-05-30",
+                "checkOut": "2027-06-07",
+                "rooms": 11
+              }
+            ],
+            "roomAmount": {
+              "amount": "67760.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "5085388.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "67760.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "5085388.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "67760.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "5085388.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "431760.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "32403588.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "431760.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "32403588.00"
+    }
+  },
+  {
+    "id": "contract-5",
+    "number": "CON-0005",
+    "agentId": "agent-noor-haramain",
+    "date": "2026-08-26",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-05-01",
+        "checkOut": "2027-05-23",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "570",
+        "extraBedRate": "110",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 18,
+            "personsPerRoom": 4,
+            "rate": "790",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-05-01",
+                "checkOut": "2027-05-23",
+                "rooms": 18
+              }
+            ],
+            "roomAmount": {
+              "amount": "312840.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "23478642.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 11,
+            "personsPerRoom": 5,
+            "rate": "900",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-05-01",
+                "checkOut": "2027-05-23",
+                "rooms": 11
+              }
+            ],
+            "roomAmount": {
+              "amount": "217800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "16345890.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "530640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "39824532.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "530640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "39824532.00"
+        }
+      },
+      {
+        "hotelId": "hotel-anwar-movenpick",
+        "checkIn": "2027-05-29",
+        "checkOut": "2027-06-06",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "490",
+        "extraBedRate": "80",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 19,
+            "personsPerRoom": 3,
+            "rate": "570",
+            "allocations": [
+              {
+                "purchaseId": "purchase-10",
+                "checkIn": "2027-05-29",
+                "checkOut": "2027-06-06",
+                "rooms": 19
+              }
+            ],
+            "roomAmount": {
+              "amount": "86640.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "6502332.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "86640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "6502332.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "86640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "6502332.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "617280.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "46326864.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "617280.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "46326864.00"
+    }
+  },
+  {
+    "id": "contract-6",
+    "number": "CON-0006",
+    "agentId": "agent-al-makkah",
+    "date": "2026-08-27",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
     "mealPlan": {
       "kind": "none"
     },
@@ -372,72 +679,4372 @@
       {
         "hotelId": "hotel-dar-al-eiman",
         "checkIn": "2027-05-01",
-        "checkOut": "2027-05-05",
-        "perNight": false,
-        "rateType": "flat",
-        "doubleRate": "",
-        "extraBedRate": "",
-        "flatRate": "1000",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1170",
+        "extraBedRate": "180",
+        "flatRate": "",
         "noMeals": false,
         "lines": [
           {
-            "soldAsTypeId": "double",
-            "sourceTypeId": "double",
-            "rooms": 1,
-            "personsPerRoom": 2,
-            "rate": "1000",
-            "allocations": [],
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 6,
+            "personsPerRoom": 5,
+            "rate": "1710",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-05-01",
+                "checkOut": "2027-05-20",
+                "rooms": 6
+              }
+            ],
             "roomAmount": {
-              "amount": "1000.00",
+              "amount": "194940.00",
               "currencyCode": "SAR",
-              "rateToPkr": "70",
-              "amountPkr": "70000.00"
+              "rateToPkr": "75.05",
+              "amountPkr": "14630247.00"
             },
             "mealIncome": {
               "amount": "0.00",
               "currencyCode": "SAR",
-              "rateToPkr": "70",
+              "rateToPkr": "75.05",
               "amountPkr": "0.00"
             }
           }
         ],
         "roomAmount": {
-          "amount": "1000.00",
+          "amount": "194940.00",
           "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "70000.00"
+          "rateToPkr": "75.05",
+          "amountPkr": "14630247.00"
         },
         "mealIncome": {
           "amount": "0.00",
           "currencyCode": "SAR",
-          "rateToPkr": "70",
+          "rateToPkr": "75.05",
           "amountPkr": "0.00"
         },
         "total": {
-          "amount": "1000.00",
+          "amount": "194940.00",
           "currencyCode": "SAR",
-          "rateToPkr": "70",
-          "amountPkr": "70000.00"
+          "rateToPkr": "75.05",
+          "amountPkr": "14630247.00"
         }
       }
     ],
     "roomAmount": {
-      "amount": "1000.00",
+      "amount": "194940.00",
       "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "70000.00"
+      "rateToPkr": "75.05",
+      "amountPkr": "14630247.00"
     },
     "mealIncome": {
       "amount": "0.00",
       "currencyCode": "SAR",
-      "rateToPkr": "70",
+      "rateToPkr": "75.05",
       "amountPkr": "0.00"
     },
     "total": {
-      "amount": "1000.00",
+      "amount": "194940.00",
       "currencyCode": "SAR",
-      "rateToPkr": "70",
-      "amountPkr": "70000.00"
+      "rateToPkr": "75.05",
+      "amountPkr": "14630247.00"
     }
+  },
+  {
+    "id": "contract-7",
+    "number": "CON-0007",
+    "agentId": "agent-karwan-madina",
+    "date": "2026-08-29",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-04-20",
+        "checkOut": "2027-04-29",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "540",
+        "extraBedRate": "90",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "double",
+            "sourceTypeId": "double",
+            "rooms": 14,
+            "personsPerRoom": 2,
+            "rate": "540",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-20",
+                "checkOut": "2027-04-29",
+                "rooms": 14
+              }
+            ],
+            "roomAmount": {
+              "amount": "68040.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "5106402.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "68040.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "5106402.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "68040.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "5106402.00"
+        }
+      },
+      {
+        "hotelId": "hotel-anjum",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-19",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1350",
+        "extraBedRate": "210",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 8,
+            "personsPerRoom": 3,
+            "rate": "1560",
+            "allocations": [
+              {
+                "purchaseId": "purchase-6",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-19",
+                "rooms": 8
+              }
+            ],
+            "roomAmount": {
+              "amount": "212160.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "15922608.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "212160.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "15922608.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "212160.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "15922608.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "280200.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "21029010.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "280200.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "21029010.00"
+    }
+  },
+  {
+    "id": "contract-8",
+    "number": "CON-0008",
+    "agentId": "agent-quetta",
+    "date": "2026-08-31",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-04-22",
+        "checkOut": "2027-04-30",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "570",
+        "extraBedRate": "100",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "double",
+            "sourceTypeId": "double",
+            "rooms": 6,
+            "personsPerRoom": 2,
+            "rate": "570",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-22",
+                "checkOut": "2027-04-30",
+                "rooms": 6
+              }
+            ],
+            "roomAmount": {
+              "amount": "27360.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "2053368.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 13,
+            "personsPerRoom": 3,
+            "rate": "670",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-22",
+                "checkOut": "2027-04-30",
+                "rooms": 13
+              }
+            ],
+            "roomAmount": {
+              "amount": "69680.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "5229484.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "97040.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "7282852.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "97040.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "7282852.00"
+        }
+      },
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "610",
+        "extraBedRate": "120",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 10,
+            "personsPerRoom": 5,
+            "rate": "970",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-22",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "213400.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "16015670.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "213400.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "16015670.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "213400.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "16015670.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "310440.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "23298522.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "310440.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "23298522.00"
+    }
+  },
+  {
+    "id": "contract-9",
+    "number": "CON-0009",
+    "agentId": "agent-sialkot",
+    "date": "2026-09-02",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "fullboard",
+      "rate": "140"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-04-23",
+        "checkOut": "2027-05-01",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "530",
+        "extraBedRate": "90",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 19,
+            "personsPerRoom": 3,
+            "rate": "620",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-23",
+                "checkOut": "2027-05-01",
+                "rooms": 19
+              }
+            ],
+            "roomAmount": {
+              "amount": "94240.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "7072712.00"
+            },
+            "mealIncome": {
+              "amount": "63840.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "4791192.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "94240.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "7072712.00"
+        },
+        "mealIncome": {
+          "amount": "63840.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "4791192.00"
+        },
+        "total": {
+          "amount": "158080.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "11863904.00"
+        }
+      },
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1640",
+        "extraBedRate": "260",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 6,
+            "personsPerRoom": 3,
+            "rate": "1900",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-20",
+                "rooms": 6
+              }
+            ],
+            "roomAmount": {
+              "amount": "205200.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "15400260.00"
+            },
+            "mealIncome": {
+              "amount": "45360.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "3404268.00"
+            }
+          },
+          {
+            "soldAsTypeId": "double",
+            "sourceTypeId": "double",
+            "rooms": 20,
+            "personsPerRoom": 2,
+            "rate": "1640",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-20",
+                "rooms": 20
+              }
+            ],
+            "roomAmount": {
+              "amount": "590400.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "44309520.00"
+            },
+            "mealIncome": {
+              "amount": "100800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "7565040.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "795600.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "59709780.00"
+        },
+        "mealIncome": {
+          "amount": "146160.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "10969308.00"
+        },
+        "total": {
+          "amount": "941760.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "70679088.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "889840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "66782492.00"
+    },
+    "mealIncome": {
+      "amount": "210000.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "15760500.00"
+    },
+    "total": {
+      "amount": "1099840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "82542992.00"
+    }
+  },
+  {
+    "id": "contract-10",
+    "number": "CON-0010",
+    "agentId": "agent-rehmat",
+    "date": "2026-09-04",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "PKR",
+    "rateToPkr": "1",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-04-20",
+        "checkOut": "2027-05-01",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "43000",
+        "extraBedRate": "7500",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 8,
+            "personsPerRoom": 3,
+            "rate": "50500",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-20",
+                "checkOut": "2027-05-01",
+                "rooms": 8
+              }
+            ],
+            "roomAmount": {
+              "amount": "4444000",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "4444000.00"
+            },
+            "mealIncome": {
+              "amount": "0",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 18,
+            "personsPerRoom": 4,
+            "rate": "58000",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-20",
+                "checkOut": "2027-05-01",
+                "rooms": 18
+              }
+            ],
+            "roomAmount": {
+              "amount": "11484000",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "11484000.00"
+            },
+            "mealIncome": {
+              "amount": "0",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "15928000",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "15928000.00"
+        },
+        "mealIncome": {
+          "amount": "0",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "15928000",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "15928000.00"
+        }
+      },
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-05-01",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "132000",
+        "extraBedRate": "20400",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 14,
+            "personsPerRoom": 4,
+            "rate": "172800",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-05-01",
+                "checkOut": "2027-05-21",
+                "rooms": 14
+              }
+            ],
+            "roomAmount": {
+              "amount": "48384000",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "48384000.00"
+            },
+            "mealIncome": {
+              "amount": "0",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "48384000",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "48384000.00"
+        },
+        "mealIncome": {
+          "amount": "0",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "48384000",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "48384000.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "64312000",
+      "currencyCode": "PKR",
+      "rateToPkr": "1",
+      "amountPkr": "64312000.00"
+    },
+    "mealIncome": {
+      "amount": "0",
+      "currencyCode": "PKR",
+      "rateToPkr": "1",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "64312000",
+      "currencyCode": "PKR",
+      "rateToPkr": "1",
+      "amountPkr": "64312000.00"
+    }
+  },
+  {
+    "id": "contract-11",
+    "number": "CON-0011",
+    "agentId": "agent-al-hijaz",
+    "date": "2026-09-06",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "halfboard",
+      "rate": "95"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-anjum",
+        "checkIn": "2027-05-04",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1360",
+        "extraBedRate": "210",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 19,
+            "personsPerRoom": 4,
+            "rate": "1780",
+            "allocations": [
+              {
+                "purchaseId": "purchase-6",
+                "checkIn": "2027-05-04",
+                "checkOut": "2027-05-20",
+                "rooms": 19
+              }
+            ],
+            "roomAmount": {
+              "amount": "541120.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "40611056.00"
+            },
+            "mealIncome": {
+              "amount": "115520.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "8669776.00"
+            }
+          },
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 15,
+            "personsPerRoom": 3,
+            "rate": "1570",
+            "allocations": [
+              {
+                "purchaseId": "purchase-6",
+                "checkIn": "2027-05-04",
+                "checkOut": "2027-05-20",
+                "rooms": 15
+              }
+            ],
+            "roomAmount": {
+              "amount": "376800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "28278840.00"
+            },
+            "mealIncome": {
+              "amount": "68400.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "5133420.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "917920.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "68889896.00"
+        },
+        "mealIncome": {
+          "amount": "183920.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "13803196.00"
+        },
+        "total": {
+          "amount": "1101840.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "82693092.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "917920.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "68889896.00"
+    },
+    "mealIncome": {
+      "amount": "183920.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "13803196.00"
+    },
+    "total": {
+      "amount": "1101840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "82693092.00"
+    }
+  },
+  {
+    "id": "contract-12",
+    "number": "CON-0012",
+    "agentId": "agent-khyber",
+    "date": "2026-09-08",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-madinah",
+        "checkIn": "2027-04-25",
+        "checkOut": "2027-05-01",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "710",
+        "extraBedRate": "110",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 8,
+            "personsPerRoom": 4,
+            "rate": "930",
+            "allocations": [
+              {
+                "purchaseId": "purchase-7",
+                "checkIn": "2027-04-25",
+                "checkOut": "2027-05-01",
+                "rooms": 8
+              }
+            ],
+            "roomAmount": {
+              "amount": "44640.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "3350232.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "44640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3350232.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "44640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3350232.00"
+        }
+      },
+      {
+        "hotelId": "hotel-elaf-ajyad",
+        "checkIn": "2027-05-04",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "920",
+        "extraBedRate": "150",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 17,
+            "personsPerRoom": 4,
+            "rate": "1220",
+            "allocations": [
+              {
+                "purchaseId": "purchase-9",
+                "checkIn": "2027-05-04",
+                "checkOut": "2027-05-22",
+                "rooms": 17
+              }
+            ],
+            "roomAmount": {
+              "amount": "373320.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "28017666.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "373320.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "28017666.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "373320.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "28017666.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "417960.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "31367898.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "417960.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "31367898.00"
+    }
+  },
+  {
+    "id": "contract-13",
+    "number": "CON-0013",
+    "agentId": "agent-green-crescent",
+    "date": "2026-09-10",
+    "status": "cancelled",
+    "version": 3,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-05-01",
+        "checkOut": "2027-05-23",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "580",
+        "extraBedRate": "110",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 6,
+            "personsPerRoom": 5,
+            "rate": "910",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-05-01",
+                "checkOut": "2027-05-23",
+                "rooms": 6
+              }
+            ],
+            "roomAmount": {
+              "amount": "120120.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "9015006.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 13,
+            "personsPerRoom": 4,
+            "rate": "800",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-05-01",
+                "checkOut": "2027-05-23",
+                "rooms": 13
+              }
+            ],
+            "roomAmount": {
+              "amount": "228800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "17171440.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "348920.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "26186446.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "348920.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "26186446.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "348920.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "26186446.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "348920.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "26186446.00"
+    }
+  },
+  {
+    "id": "contract-14",
+    "number": "CON-0014",
+    "agentId": "agent-baba-farid",
+    "date": "2026-09-11",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-madinah",
+        "checkIn": "2027-04-24",
+        "checkOut": "2027-05-02",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "740",
+        "extraBedRate": "120",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 16,
+            "personsPerRoom": 4,
+            "rate": "980",
+            "allocations": [
+              {
+                "purchaseId": "purchase-7",
+                "checkIn": "2027-04-24",
+                "checkOut": "2027-05-02",
+                "rooms": 16
+              }
+            ],
+            "roomAmount": {
+              "amount": "125440.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "9414272.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "125440.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "9414272.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "125440.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "9414272.00"
+        }
+      },
+      {
+        "hotelId": "hotel-anjum",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1380",
+        "extraBedRate": "210",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 7,
+            "personsPerRoom": 3,
+            "rate": "1590",
+            "allocations": [
+              {
+                "purchaseId": "purchase-6",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-20",
+                "rooms": 7
+              }
+            ],
+            "roomAmount": {
+              "amount": "200340.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "15035517.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "200340.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "15035517.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "200340.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "15035517.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "325780.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "24449789.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "325780.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "24449789.00"
+    }
+  },
+  {
+    "id": "contract-15",
+    "number": "CON-0015",
+    "agentId": "agent-noor-haramain",
+    "date": "2026-09-13",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "fullboard",
+      "rate": "140"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-dar-al-eiman",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-19",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1190",
+        "extraBedRate": "190",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "1570",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-19",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "266900.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "20030845.00"
+            },
+            "mealIncome": {
+              "amount": "95200.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "7144760.00"
+            }
+          },
+          {
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 12,
+            "personsPerRoom": 5,
+            "rate": "1760",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-19",
+                "rooms": 12
+              }
+            ],
+            "roomAmount": {
+              "amount": "359040.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "26945952.00"
+            },
+            "mealIncome": {
+              "amount": "142800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "10717140.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "625940.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "46976797.00"
+        },
+        "mealIncome": {
+          "amount": "238000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "17861900.00"
+        },
+        "total": {
+          "amount": "863940.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "64838697.00"
+        }
+      },
+      {
+        "hotelId": "hotel-anwar-movenpick",
+        "checkIn": "2027-05-29",
+        "checkOut": "2027-06-07",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "500",
+        "extraBedRate": "80",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "660",
+            "allocations": [
+              {
+                "purchaseId": "purchase-10",
+                "checkIn": "2027-05-29",
+                "checkOut": "2027-06-07",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "59400.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "4457970.00"
+            },
+            "mealIncome": {
+              "amount": "50400.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "3782520.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "59400.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "4457970.00"
+        },
+        "mealIncome": {
+          "amount": "50400.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3782520.00"
+        },
+        "total": {
+          "amount": "109800.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "8240490.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "685340.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "51434767.00"
+    },
+    "mealIncome": {
+      "amount": "288400.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "21644420.00"
+    },
+    "total": {
+      "amount": "973740.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "73079187.00"
+    }
+  },
+  {
+    "id": "contract-16",
+    "number": "CON-0016",
+    "agentId": "agent-al-makkah",
+    "date": "2026-09-15",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-04-29",
+        "checkOut": "2027-05-23",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "630",
+        "extraBedRate": "120",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "870",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-04-29",
+                "checkOut": "2027-05-23",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "208800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "15670440.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "208800.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "15670440.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "208800.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "15670440.00"
+        }
+      },
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-05-29",
+        "checkOut": "2027-06-04",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "580",
+        "extraBedRate": "100",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "780",
+            "allocations": [
+              {
+                "purchaseId": "purchase-11",
+                "checkIn": "2027-05-29",
+                "checkOut": "2027-06-04",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "46800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "3512340.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "46800.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3512340.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "46800.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3512340.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "255600.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "19182780.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "255600.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "19182780.00"
+    }
+  },
+  {
+    "id": "contract-17",
+    "number": "CON-0017",
+    "agentId": "agent-karwan-madina",
+    "date": "2026-09-17",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-04-29",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "600",
+        "extraBedRate": "120",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 19,
+            "personsPerRoom": 4,
+            "rate": "840",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-04-29",
+                "checkOut": "2027-05-22",
+                "rooms": 19
+              }
+            ],
+            "roomAmount": {
+              "amount": "367080.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "27549354.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "367080.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "27549354.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "367080.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "27549354.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "367080.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "27549354.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "367080.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "27549354.00"
+    }
+  },
+  {
+    "id": "contract-18",
+    "number": "CON-0018",
+    "agentId": "agent-quetta",
+    "date": "2026-09-19",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "perNightPerPerson",
+      "rate": "65"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1730",
+        "extraBedRate": "270",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 10,
+            "personsPerRoom": 3,
+            "rate": "2000",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-22",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "440000.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "33022000.00"
+            },
+            "mealIncome": {
+              "amount": "42900.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "3219645.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "440000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "33022000.00"
+        },
+        "mealIncome": {
+          "amount": "42900.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3219645.00"
+        },
+        "total": {
+          "amount": "482900.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "36241645.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "440000.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "33022000.00"
+    },
+    "mealIncome": {
+      "amount": "42900.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "3219645.00"
+    },
+    "total": {
+      "amount": "482900.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "36241645.00"
+    }
+  },
+  {
+    "id": "contract-19",
+    "number": "CON-0019",
+    "agentId": "agent-sialkot",
+    "date": "2026-09-21",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "halfboard",
+      "rate": "95"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-madinah",
+        "checkIn": "2027-04-23",
+        "checkOut": "2027-04-30",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "750",
+        "extraBedRate": "120",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 16,
+            "personsPerRoom": 4,
+            "rate": "990",
+            "allocations": [
+              {
+                "purchaseId": "purchase-7",
+                "checkIn": "2027-04-23",
+                "checkOut": "2027-04-30",
+                "rooms": 16
+              }
+            ],
+            "roomAmount": {
+              "amount": "110880.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "8321544.00"
+            },
+            "mealIncome": {
+              "amount": "42560.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "3194128.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "110880.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "8321544.00"
+        },
+        "mealIncome": {
+          "amount": "42560.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3194128.00"
+        },
+        "total": {
+          "amount": "153440.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "11515672.00"
+        }
+      },
+      {
+        "hotelId": "hotel-dar-al-eiman",
+        "checkIn": "2027-05-03",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1240",
+        "extraBedRate": "190",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 19,
+            "personsPerRoom": 4,
+            "rate": "1620",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-05-03",
+                "checkOut": "2027-05-20",
+                "rooms": 19
+              }
+            ],
+            "roomAmount": {
+              "amount": "523260.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "39270663.00"
+            },
+            "mealIncome": {
+              "amount": "122740.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "9211637.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "523260.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "39270663.00"
+        },
+        "mealIncome": {
+          "amount": "122740.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "9211637.00"
+        },
+        "total": {
+          "amount": "646000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "48482300.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "634140.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "47592207.00"
+    },
+    "mealIncome": {
+      "amount": "165300.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "12405765.00"
+    },
+    "total": {
+      "amount": "799440.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "59997972.00"
+    }
+  },
+  {
+    "id": "contract-20",
+    "number": "CON-0020",
+    "agentId": "agent-rehmat",
+    "date": "2026-09-23",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "perNightPerPerson",
+      "rate": "65"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-elaf-ajyad",
+        "checkIn": "2027-05-06",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "950",
+        "extraBedRate": "160",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 13,
+            "personsPerRoom": 4,
+            "rate": "1270",
+            "allocations": [
+              {
+                "purchaseId": "purchase-9",
+                "checkIn": "2027-05-06",
+                "checkOut": "2027-05-21",
+                "rooms": 13
+              }
+            ],
+            "roomAmount": {
+              "amount": "247650.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "18586132.50"
+            },
+            "mealIncome": {
+              "amount": "50700.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "3805035.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "247650.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "18586132.50"
+        },
+        "mealIncome": {
+          "amount": "50700.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "3805035.00"
+        },
+        "total": {
+          "amount": "298350.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "22391167.50"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "247650.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "18586132.50"
+    },
+    "mealIncome": {
+      "amount": "50700.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "3805035.00"
+    },
+    "total": {
+      "amount": "298350.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "22391167.50"
+    }
+  },
+  {
+    "id": "contract-21",
+    "number": "CON-0021",
+    "agentId": "agent-al-hijaz",
+    "date": "2026-09-25",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "perNightPerPerson",
+      "rate": "65"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-dar-al-eiman",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-19",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1230",
+        "extraBedRate": "190",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 13,
+            "personsPerRoom": 5,
+            "rate": "1800",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-19",
+                "rooms": 13
+              }
+            ],
+            "roomAmount": {
+              "amount": "444600.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "33367230.00"
+            },
+            "mealIncome": {
+              "amount": "80275.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "6024638.75"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "444600.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "33367230.00"
+        },
+        "mealIncome": {
+          "amount": "80275.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "6024638.75"
+        },
+        "total": {
+          "amount": "524875.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "39391868.75"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "444600.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "33367230.00"
+    },
+    "mealIncome": {
+      "amount": "80275.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "6024638.75"
+    },
+    "total": {
+      "amount": "524875.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "39391868.75"
+    }
+  },
+  {
+    "id": "contract-22",
+    "number": "CON-0022",
+    "agentId": "agent-khyber",
+    "date": "2026-09-27",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "PKR",
+    "rateToPkr": "1",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-05-01",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "134200",
+        "extraBedRate": "21100",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "double",
+            "sourceTypeId": "double",
+            "rooms": 8,
+            "personsPerRoom": 2,
+            "rate": "134200",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-05-01",
+                "checkOut": "2027-05-20",
+                "rooms": 8
+              }
+            ],
+            "roomAmount": {
+              "amount": "20398400",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "20398400.00"
+            },
+            "mealIncome": {
+              "amount": "0",
+              "currencyCode": "PKR",
+              "rateToPkr": "1",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "20398400",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "20398400.00"
+        },
+        "mealIncome": {
+          "amount": "0",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "20398400",
+          "currencyCode": "PKR",
+          "rateToPkr": "1",
+          "amountPkr": "20398400.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "20398400",
+      "currencyCode": "PKR",
+      "rateToPkr": "1",
+      "amountPkr": "20398400.00"
+    },
+    "mealIncome": {
+      "amount": "0",
+      "currencyCode": "PKR",
+      "rateToPkr": "1",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "20398400",
+      "currencyCode": "PKR",
+      "rateToPkr": "1",
+      "amountPkr": "20398400.00"
+    }
+  },
+  {
+    "id": "contract-23",
+    "number": "CON-0023",
+    "agentId": "agent-green-crescent",
+    "date": "2026-09-28",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-04-22",
+        "checkOut": "2027-04-29",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "540",
+        "extraBedRate": "90",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 12,
+            "personsPerRoom": 4,
+            "rate": "720",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-22",
+                "checkOut": "2027-04-29",
+                "rooms": 12
+              }
+            ],
+            "roomAmount": {
+              "amount": "60480.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "4539024.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "60480.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "4539024.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "60480.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "4539024.00"
+        }
+      },
+      {
+        "hotelId": "hotel-pullman-makkah",
+        "checkIn": "2027-05-05",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1550",
+        "extraBedRate": "230",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 11,
+            "personsPerRoom": 3,
+            "rate": "1780",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-05",
+                "checkOut": "2027-05-22",
+                "rooms": 11
+              }
+            ],
+            "roomAmount": {
+              "amount": "332860.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "24981143.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 16,
+            "personsPerRoom": 4,
+            "rate": "2010",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-05",
+                "checkOut": "2027-05-22",
+                "rooms": 16
+              }
+            ],
+            "roomAmount": {
+              "amount": "546720.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "41031336.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "879580.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "66012479.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "879580.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "66012479.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "940060.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "70551503.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "940060.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "70551503.00"
+    }
+  },
+  {
+    "id": "contract-24",
+    "number": "CON-0024",
+    "agentId": "agent-baba-farid",
+    "date": "2026-09-30",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-dar-al-eiman",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1180",
+        "extraBedRate": "180",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quint",
+            "sourceTypeId": "quint",
+            "rooms": 9,
+            "personsPerRoom": 5,
+            "rate": "1720",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-21",
+                "rooms": 9
+              }
+            ],
+            "roomAmount": {
+              "amount": "294120.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "22073706.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.05",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "294120.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "22073706.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "294120.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.05",
+          "amountPkr": "22073706.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "294120.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "22073706.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "294120.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.05",
+      "amountPkr": "22073706.00"
+    }
+  },
+  {
+    "id": "contract-25",
+    "number": "CON-0025",
+    "agentId": "agent-noor-haramain",
+    "date": "2026-10-02",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "fullboard",
+      "rate": "140"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1720",
+        "extraBedRate": "270",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 17,
+            "personsPerRoom": 3,
+            "rate": "1990",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-21",
+                "rooms": 17
+              }
+            ],
+            "roomAmount": {
+              "amount": "710430.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "53566422.00"
+            },
+            "mealIncome": {
+              "amount": "149940.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "11305476.00"
+            }
+          },
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "2260",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-21",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "474600.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "35784840.00"
+            },
+            "mealIncome": {
+              "amount": "117600.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "8867040.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "1185030.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "89351262.00"
+        },
+        "mealIncome": {
+          "amount": "267540.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "20172516.00"
+        },
+        "total": {
+          "amount": "1452570.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "109523778.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "1185030.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "89351262.00"
+    },
+    "mealIncome": {
+      "amount": "267540.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "20172516.00"
+    },
+    "total": {
+      "amount": "1452570.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "109523778.00"
+    }
+  },
+  {
+    "id": "contract-26",
+    "number": "CON-0026",
+    "agentId": "agent-al-makkah",
+    "date": "2026-10-04",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "fullboard",
+      "rate": "140"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "600",
+        "extraBedRate": "120",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 6,
+            "personsPerRoom": 4,
+            "rate": "840",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-22",
+                "rooms": 6
+              }
+            ],
+            "roomAmount": {
+              "amount": "110880.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "8360352.00"
+            },
+            "mealIncome": {
+              "amount": "73920.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "5573568.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "110880.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "8360352.00"
+        },
+        "mealIncome": {
+          "amount": "73920.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "5573568.00"
+        },
+        "total": {
+          "amount": "184800.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "13933920.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "110880.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "8360352.00"
+    },
+    "mealIncome": {
+      "amount": "73920.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "5573568.00"
+    },
+    "total": {
+      "amount": "184800.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "13933920.00"
+    }
+  },
+  {
+    "id": "contract-27",
+    "number": "CON-0027",
+    "agentId": "agent-karwan-madina",
+    "date": "2026-10-06",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-artal",
+        "checkIn": "2027-04-21",
+        "checkOut": "2027-05-02",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "540",
+        "extraBedRate": "90",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "720",
+            "allocations": [
+              {
+                "purchaseId": "purchase-1",
+                "checkIn": "2027-04-21",
+                "checkOut": "2027-05-02",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "79200.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "5971680.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "79200.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "5971680.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "79200.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "5971680.00"
+        }
+      },
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-05-03",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1660",
+        "extraBedRate": "260",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 7,
+            "personsPerRoom": 3,
+            "rate": "1920",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-05-03",
+                "checkOut": "2027-05-20",
+                "rooms": 7
+              }
+            ],
+            "roomAmount": {
+              "amount": "228480.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "17227392.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "228480.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "17227392.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "228480.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "17227392.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "307680.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "23199072.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "307680.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "23199072.00"
+    }
+  },
+  {
+    "id": "contract-28",
+    "number": "CON-0028",
+    "agentId": "agent-quetta",
+    "date": "2026-10-08",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "fullboard",
+      "rate": "140"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-dar-al-eiman",
+        "checkIn": "2027-05-03",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1210",
+        "extraBedRate": "190",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 14,
+            "personsPerRoom": 4,
+            "rate": "1590",
+            "allocations": [
+              {
+                "purchaseId": "purchase-4",
+                "checkIn": "2027-05-03",
+                "checkOut": "2027-05-20",
+                "rooms": 14
+              }
+            ],
+            "roomAmount": {
+              "amount": "378420.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "28532868.00"
+            },
+            "mealIncome": {
+              "amount": "133280.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "10049312.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "378420.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "28532868.00"
+        },
+        "mealIncome": {
+          "amount": "133280.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "10049312.00"
+        },
+        "total": {
+          "amount": "511700.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "38582180.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "378420.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "28532868.00"
+    },
+    "mealIncome": {
+      "amount": "133280.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "10049312.00"
+    },
+    "total": {
+      "amount": "511700.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "38582180.00"
+    }
+  },
+  {
+    "id": "contract-29",
+    "number": "CON-0029",
+    "agentId": "agent-sialkot",
+    "date": "2026-10-10",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-makkah",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1560",
+        "extraBedRate": "230",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 13,
+            "personsPerRoom": 4,
+            "rate": "2020",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-20",
+                "rooms": 13
+              }
+            ],
+            "roomAmount": {
+              "amount": "472680.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "35640072.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 16,
+            "personsPerRoom": 3,
+            "rate": "1790",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-20",
+                "rooms": 16
+              }
+            ],
+            "roomAmount": {
+              "amount": "515520.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "38870208.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "988200.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "74510280.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "988200.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "74510280.00"
+        }
+      },
+      {
+        "hotelId": "hotel-anwar-movenpick",
+        "checkIn": "2027-05-27",
+        "checkOut": "2027-06-07",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "500",
+        "extraBedRate": "80",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "660",
+            "allocations": [
+              {
+                "purchaseId": "purchase-10",
+                "checkIn": "2027-05-27",
+                "checkOut": "2027-06-07",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "72600.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "5474040.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 8,
+            "personsPerRoom": 3,
+            "rate": "580",
+            "allocations": [
+              {
+                "purchaseId": "purchase-10",
+                "checkIn": "2027-05-27",
+                "checkOut": "2027-06-07",
+                "rooms": 8
+              }
+            ],
+            "roomAmount": {
+              "amount": "51040.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "3848416.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "123640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "9322456.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "123640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "9322456.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "1111840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "83832736.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "1111840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "83832736.00"
+    }
+  },
+  {
+    "id": "contract-30",
+    "number": "CON-0030",
+    "agentId": "agent-rehmat",
+    "date": "2026-10-12",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "perNightPerPerson",
+      "rate": "65"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-anjum",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-19",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1340",
+        "extraBedRate": "210",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 9,
+            "personsPerRoom": 4,
+            "rate": "1760",
+            "allocations": [
+              {
+                "purchaseId": "purchase-6",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-19",
+                "rooms": 9
+              }
+            ],
+            "roomAmount": {
+              "amount": "269280.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "20303712.00"
+            },
+            "mealIncome": {
+              "amount": "39780.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "2999412.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "269280.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "20303712.00"
+        },
+        "mealIncome": {
+          "amount": "39780.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "2999412.00"
+        },
+        "total": {
+          "amount": "309060.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "23303124.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "269280.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "20303712.00"
+    },
+    "mealIncome": {
+      "amount": "39780.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "2999412.00"
+    },
+    "total": {
+      "amount": "309060.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "23303124.00"
+    }
+  },
+  {
+    "id": "contract-31",
+    "number": "CON-0031",
+    "agentId": "agent-al-hijaz",
+    "date": "2026-10-14",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-makkah",
+        "checkIn": "2027-05-05",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1650",
+        "extraBedRate": "240",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 6,
+            "personsPerRoom": 4,
+            "rate": "2130",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-05",
+                "checkOut": "2027-05-22",
+                "rooms": 6
+              }
+            ],
+            "roomAmount": {
+              "amount": "217260.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "16381404.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 3,
+            "personsPerRoom": 3,
+            "rate": "1890",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-05",
+                "checkOut": "2027-05-22",
+                "rooms": 3
+              }
+            ],
+            "roomAmount": {
+              "amount": "96390.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "7267806.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "313650.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "23649210.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "313650.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "23649210.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "313650.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "23649210.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "313650.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "23649210.00"
+    }
+  },
+  {
+    "id": "contract-32",
+    "number": "CON-0032",
+    "agentId": "agent-khyber",
+    "date": "2026-10-15",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-makkah",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1640",
+        "extraBedRate": "240",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 7,
+            "personsPerRoom": 4,
+            "rate": "2120",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-21",
+                "rooms": 7
+              }
+            ],
+            "roomAmount": {
+              "amount": "281960.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "21259784.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "281960.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "21259784.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "281960.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "21259784.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "281960.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "21259784.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "281960.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "21259784.00"
+    }
+  },
+  {
+    "id": "contract-33",
+    "number": "CON-0033",
+    "agentId": "agent-green-crescent",
+    "date": "2026-10-17",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "perNightPerPerson",
+      "rate": "65"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-makkah",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-22",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1610",
+        "extraBedRate": "240",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 6,
+            "personsPerRoom": 4,
+            "rate": "2090",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-22",
+                "rooms": 6
+              }
+            ],
+            "roomAmount": {
+              "amount": "250800.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "18910320.00"
+            },
+            "mealIncome": {
+              "amount": "31200.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "2352480.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "250800.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "18910320.00"
+        },
+        "mealIncome": {
+          "amount": "31200.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "2352480.00"
+        },
+        "total": {
+          "amount": "282000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "21262800.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "250800.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "18910320.00"
+    },
+    "mealIncome": {
+      "amount": "31200.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "2352480.00"
+    },
+    "total": {
+      "amount": "282000.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "21262800.00"
+    }
+  },
+  {
+    "id": "contract-34",
+    "number": "CON-0034",
+    "agentId": "agent-baba-farid",
+    "date": "2026-10-19",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "halfboard",
+      "rate": "95"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1730",
+        "extraBedRate": "270",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 10,
+            "personsPerRoom": 4,
+            "rate": "2270",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-20",
+                "rooms": 10
+              }
+            ],
+            "roomAmount": {
+              "amount": "454000.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "34231600.00"
+            },
+            "mealIncome": {
+              "amount": "76000.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "5730400.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "454000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "34231600.00"
+        },
+        "mealIncome": {
+          "amount": "76000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "5730400.00"
+        },
+        "total": {
+          "amount": "530000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "39962000.00"
+        }
+      },
+      {
+        "hotelId": "hotel-anwar-movenpick",
+        "checkIn": "2027-05-29",
+        "checkOut": "2027-06-06",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "520",
+        "extraBedRate": "90",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 3,
+            "personsPerRoom": 3,
+            "rate": "610",
+            "allocations": [
+              {
+                "purchaseId": "purchase-10",
+                "checkIn": "2027-05-29",
+                "checkOut": "2027-06-06",
+                "rooms": 3
+              }
+            ],
+            "roomAmount": {
+              "amount": "14640.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "1103856.00"
+            },
+            "mealIncome": {
+              "amount": "6840.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "515736.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "14640.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "1103856.00"
+        },
+        "mealIncome": {
+          "amount": "6840.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "515736.00"
+        },
+        "total": {
+          "amount": "21480.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "1619592.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "468640.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "35335456.00"
+    },
+    "mealIncome": {
+      "amount": "82840.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "6246136.00"
+    },
+    "total": {
+      "amount": "551480.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "41581592.00"
+    }
+  },
+  {
+    "id": "contract-35",
+    "number": "CON-0035",
+    "agentId": "agent-noor-haramain",
+    "date": "2026-10-21",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "perNightPerPerson",
+      "rate": "65"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-anjum",
+        "checkIn": "2027-05-03",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1350",
+        "extraBedRate": "210",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 12,
+            "personsPerRoom": 4,
+            "rate": "1770",
+            "allocations": [
+              {
+                "purchaseId": "purchase-6",
+                "checkIn": "2027-05-03",
+                "checkOut": "2027-05-20",
+                "rooms": 12
+              }
+            ],
+            "roomAmount": {
+              "amount": "361080.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "27225432.00"
+            },
+            "mealIncome": {
+              "amount": "53040.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "3999216.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "361080.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "27225432.00"
+        },
+        "mealIncome": {
+          "amount": "53040.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "3999216.00"
+        },
+        "total": {
+          "amount": "414120.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "31224648.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "361080.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "27225432.00"
+    },
+    "mealIncome": {
+      "amount": "53040.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "3999216.00"
+    },
+    "total": {
+      "amount": "414120.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "31224648.00"
+    }
+  },
+  {
+    "id": "contract-36",
+    "number": "CON-0036",
+    "agentId": "agent-al-makkah",
+    "date": "2026-10-23",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-towers",
+        "checkIn": "2027-04-30",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "620",
+        "extraBedRate": "120",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 15,
+            "personsPerRoom": 4,
+            "rate": "860",
+            "allocations": [
+              {
+                "purchaseId": "purchase-8",
+                "checkIn": "2027-04-30",
+                "checkOut": "2027-05-21",
+                "rooms": 15
+              }
+            ],
+            "roomAmount": {
+              "amount": "270900.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "20425860.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "270900.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "20425860.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "270900.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "20425860.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "270900.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "20425860.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "270900.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "20425860.00"
+    }
+  },
+  {
+    "id": "contract-37",
+    "number": "CON-0037",
+    "agentId": "agent-karwan-madina",
+    "date": "2026-10-25",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "halfboard",
+      "rate": "95"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-swissotel",
+        "checkIn": "2027-05-03",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1680",
+        "extraBedRate": "260",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 15,
+            "personsPerRoom": 4,
+            "rate": "2200",
+            "allocations": [
+              {
+                "purchaseId": "purchase-2",
+                "checkIn": "2027-05-03",
+                "checkOut": "2027-05-21",
+                "rooms": 15
+              }
+            ],
+            "roomAmount": {
+              "amount": "594000.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "44787600.00"
+            },
+            "mealIncome": {
+              "amount": "102600.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "7736040.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "594000.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "44787600.00"
+        },
+        "mealIncome": {
+          "amount": "102600.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "7736040.00"
+        },
+        "total": {
+          "amount": "696600.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "52523640.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "594000.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "44787600.00"
+    },
+    "mealIncome": {
+      "amount": "102600.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "7736040.00"
+    },
+    "total": {
+      "amount": "696600.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "52523640.00"
+    }
+  },
+  {
+    "id": "contract-38",
+    "number": "CON-0038",
+    "agentId": "agent-quetta",
+    "date": "2026-10-27",
+    "status": "confirmed",
+    "version": 2,
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "halfboard",
+      "rate": "95"
+    },
+    "notes": "Agent needs 6 more quads at Pullman. Buying from Al Haram Rooms",
+    "hotels": [
+      {
+        "hotelId": "hotel-pullman-makkah",
+        "checkIn": "2027-05-02",
+        "checkOut": "2027-05-21",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "1650",
+        "extraBedRate": "240",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 18,
+            "personsPerRoom": 4,
+            "rate": "2130",
+            "allocations": [
+              {
+                "purchaseId": "purchase-3",
+                "checkIn": "2027-05-02",
+                "checkOut": "2027-05-21",
+                "rooms": 12
+              }
+            ],
+            "roomAmount": {
+              "amount": "728460.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "54925884.00"
+            },
+            "mealIncome": {
+              "amount": "129960.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "9798984.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "728460.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "54925884.00"
+        },
+        "mealIncome": {
+          "amount": "129960.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "9798984.00"
+        },
+        "total": {
+          "amount": "858420.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "64724868.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "728460.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "54925884.00"
+    },
+    "mealIncome": {
+      "amount": "129960.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "9798984.00"
+    },
+    "total": {
+      "amount": "858420.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "64724868.00"
+    }
+  },
+  {
+    "agentId": "agent-baba-farid",
+    "date": "2026-11-07",
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "",
+    "hotels": [
+      {
+        "hotelId": "hotel-anwar-movenpick",
+        "checkIn": "2027-05-29",
+        "checkOut": "2027-06-05",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "520",
+        "extraBedRate": "90",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "quad",
+            "sourceTypeId": "quad",
+            "rooms": 8,
+            "personsPerRoom": 4,
+            "allocations": [
+              {
+                "purchaseId": "purchase-10",
+                "checkIn": "2027-05-29",
+                "checkOut": "2027-06-05",
+                "rooms": 8
+              }
+            ],
+            "rate": "700",
+            "roomAmount": {
+              "amount": "39200.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "2955680.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "39200.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "2955680.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "39200.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "2955680.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "39200.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "2955680.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "39200.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "2955680.00"
+    },
+    "id": "contract-39",
+    "number": "CON-0039",
+    "status": "draft",
+    "version": 1
+  },
+  {
+    "agentId": "agent-green-crescent",
+    "date": "2026-11-03",
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "Waiting for the purchase to be confirmed",
+    "hotels": [
+      {
+        "hotelId": "hotel-hilton-suites",
+        "checkIn": "2027-05-08",
+        "checkOut": "2027-05-20",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "2440",
+        "extraBedRate": "320",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 10,
+            "personsPerRoom": 3,
+            "allocations": [],
+            "rate": "2760",
+            "roomAmount": {
+              "amount": "331200.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "24972480.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          },
+          {
+            "soldAsTypeId": "double",
+            "sourceTypeId": "double",
+            "rooms": 6,
+            "personsPerRoom": 2,
+            "allocations": [],
+            "rate": "2440",
+            "roomAmount": {
+              "amount": "175680.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "13246272.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "506880.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "38218752.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "506880.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "38218752.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "506880.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "38218752.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "506880.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "38218752.00"
+    },
+    "id": "contract-40",
+    "number": "CON-0040",
+    "status": "draft",
+    "version": 1
+  },
+  {
+    "agentId": "agent-sialkot",
+    "date": "2026-11-05",
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "mealPlan": {
+      "kind": "none"
+    },
+    "notes": "Waiting for the purchase to be confirmed",
+    "hotels": [
+      {
+        "hotelId": "hotel-meridien-madinah",
+        "checkIn": "2027-05-29",
+        "checkOut": "2027-06-05",
+        "perNight": true,
+        "rateType": "occupancy",
+        "doubleRate": "620",
+        "extraBedRate": "100",
+        "flatRate": "",
+        "noMeals": false,
+        "lines": [
+          {
+            "soldAsTypeId": "triple",
+            "sourceTypeId": "triple",
+            "rooms": 12,
+            "personsPerRoom": 3,
+            "allocations": [],
+            "rate": "720",
+            "roomAmount": {
+              "amount": "60480.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "4560192.00"
+            },
+            "mealIncome": {
+              "amount": "0.00",
+              "currencyCode": "SAR",
+              "rateToPkr": "75.4",
+              "amountPkr": "0.00"
+            }
+          }
+        ],
+        "roomAmount": {
+          "amount": "60480.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "4560192.00"
+        },
+        "mealIncome": {
+          "amount": "0.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "0.00"
+        },
+        "total": {
+          "amount": "60480.00",
+          "currencyCode": "SAR",
+          "rateToPkr": "75.4",
+          "amountPkr": "4560192.00"
+        }
+      }
+    ],
+    "roomAmount": {
+      "amount": "60480.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "4560192.00"
+    },
+    "mealIncome": {
+      "amount": "0.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "0.00"
+    },
+    "total": {
+      "amount": "60480.00",
+      "currencyCode": "SAR",
+      "rateToPkr": "75.4",
+      "amountPkr": "4560192.00"
+    },
+    "id": "contract-41",
+    "number": "CON-0041",
+    "status": "draft",
+    "version": 1
   }
 ]

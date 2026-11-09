@@ -3,3 +3,4 @@ coverage
 pnpm-lock.yaml
 .claude
 src/mock-api/seed
+src/test/fixtures/seed/*.json

@@ -97,7 +97,7 @@ export function CalendarPage() {
             emptyState={<EmptyState title="No months yet" hint="Add the months your bookings fall in" />}
           />
         </Card>
-        <p className="text-muted text-xs">Sample months. Enter the dates announced for each month</p>
+        <p className="text-muted text-xs">Enter the dates announced for each month</p>
       </div>
       {editing && (
         <MonthForm

@@ -138,7 +138,7 @@ export function AgreementSettingsPage() {
         title="Agreement"
         action={
           <Link to="/contracts/contract-1/print" className={buttonClass('secondary')}>
-            Preview on a sample contract
+            Preview on CON-0001
           </Link>
         }
       />

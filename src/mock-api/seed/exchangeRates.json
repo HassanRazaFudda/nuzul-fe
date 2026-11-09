@@ -1,5 +1,44 @@
 [
-  { "id": "rate-sar-1", "currencyCode": "SAR", "rateToPkr": "70", "effectiveFrom": "2026-01-01" },
-  { "id": "rate-usd-1", "currencyCode": "USD", "rateToPkr": "280", "effectiveFrom": "2026-01-01" },
-  { "id": "rate-pkr-1", "currencyCode": "PKR", "rateToPkr": "1", "effectiveFrom": "2026-01-01" }
+  {
+    "id": "rate-pkr-1",
+    "currencyCode": "PKR",
+    "rateToPkr": "1",
+    "effectiveFrom": "2026-01-01"
+  },
+  {
+    "id": "rate-sar-1",
+    "currencyCode": "SAR",
+    "rateToPkr": "74.6",
+    "effectiveFrom": "2026-01-01"
+  },
+  {
+    "id": "rate-sar-3",
+    "currencyCode": "SAR",
+    "rateToPkr": "75.05",
+    "effectiveFrom": "2026-08-01"
+  },
+  {
+    "id": "rate-sar-5",
+    "currencyCode": "SAR",
+    "rateToPkr": "75.4",
+    "effectiveFrom": "2026-10-01"
+  },
+  {
+    "id": "rate-usd-2",
+    "currencyCode": "USD",
+    "rateToPkr": "279.9",
+    "effectiveFrom": "2026-01-01"
+  },
+  {
+    "id": "rate-usd-4",
+    "currencyCode": "USD",
+    "rateToPkr": "281.45",
+    "effectiveFrom": "2026-08-01"
+  },
+  {
+    "id": "rate-usd-6",
+    "currencyCode": "USD",
+    "rateToPkr": "282.75",
+    "effectiveFrom": "2026-10-01"
+  }
 ]

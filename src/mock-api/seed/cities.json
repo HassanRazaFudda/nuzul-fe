@@ -1,5 +1,14 @@
 [
-  { "id": "makkah", "name": "Makkah" },
-  { "id": "madinah", "name": "Madinah" },
-  { "id": "jeddah", "name": "Jeddah" }
+  {
+    "id": "jeddah",
+    "name": "Jeddah"
+  },
+  {
+    "id": "madinah",
+    "name": "Madinah"
+  },
+  {
+    "id": "makkah",
+    "name": "Makkah"
+  }
 ]

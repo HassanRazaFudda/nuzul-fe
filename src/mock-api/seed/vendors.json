@@ -1,4 +1,65 @@
 [
-  { "id": "vendor-a", "name": "Sample Vendor A", "active": true },
-  { "id": "vendor-b", "name": "Sample Vendor B", "active": true }
+  {
+    "id": "vendor-ajyad",
+    "name": "Ajyad Booking",
+    "company": "Ajyad Booking Co.",
+    "contactPerson": "Mohammed Bakr",
+    "phone": "+966 12 536 9081",
+    "address": "Al Aziziyah, Makkah",
+    "active": true
+  },
+  {
+    "id": "vendor-al-haram",
+    "name": "Al Haram Rooms",
+    "company": "Al Haram Rooms Est.",
+    "contactPerson": "Saeed Al-Harbi",
+    "phone": "+966 12 548 2210",
+    "address": "Ajyad Street, Makkah",
+    "active": true
+  },
+  {
+    "id": "vendor-al-noor",
+    "name": "Al Noor Hospitality",
+    "company": "Al Noor Hospitality Services",
+    "contactPerson": "Yasir Qadri",
+    "phone": "+966 12 544 6732",
+    "address": "Misfalah, Makkah",
+    "active": true
+  },
+  {
+    "id": "vendor-gulf-rooms",
+    "name": "Gulf Rooms Wholesale",
+    "company": "Gulf Rooms Wholesale LLC",
+    "contactPerson": "Tariq Hamdan",
+    "phone": "+966 12 663 0948",
+    "address": "Al Rawdah District, Jeddah",
+    "active": true
+  },
+  {
+    "id": "vendor-rawdah",
+    "name": "Rawdah Travel Supplies",
+    "company": "Rawdah Travel Supplies",
+    "contactPerson": "Nasser Al-Otaibi",
+    "phone": "+966 14 826 3301",
+    "address": "Quba Road, Madinah",
+    "active": false
+  },
+  {
+    "id": "vendor-taiba",
+    "name": "Taiba Hotel Suppliers",
+    "company": "Taiba Hotel Suppliers Est.",
+    "contactPerson": "Khalid Al-Juhani",
+    "phone": "+966 14 823 1175",
+    "address": "King Faisal Road, Madinah",
+    "active": true
+  },
+  {
+    "id": "vendor-zamzam",
+    "name": "Zamzam Accommodation",
+    "company": "Zamzam Accommodation Co.",
+    "contactPerson": "Abdulrahman Al-Ghamdi",
+    "phone": "+966 12 571 4400",
+    "address": "Ibrahim Al Khalil Road, Makkah",
+    "active": true
+  }
 ]

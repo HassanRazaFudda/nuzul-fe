@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": "rule-quint-quad",
+    "hotelId": null,
+    "sourceTypeId": "quint",
+    "soldAsTypeId": "quad",
+    "allowed": true
+  }
+]

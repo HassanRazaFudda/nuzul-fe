@@ -5,7 +5,6 @@ import { Outlet, useLocation } from 'react-router';
 import { Toaster } from '@/components/feedback/Toaster';
 import { Spinner } from '@/components/ui/Spinner';
 
-import { SampleDataNote } from './SampleDataNote';
 import { SidebarNav } from './SidebarNav';
 import { UserMenu } from './UserMenu';
 
@@ -108,7 +107,6 @@ export function AppLayout() {
           </div>
         )}
         <SidebarNav isRail={isCollapsed} />
-        {!isCollapsed && <SampleDataNote />}
         <UserMenu isRail={isCollapsed} />
       </aside>
 
@@ -144,7 +142,6 @@ export function AppLayout() {
               </button>
             </div>
             <SidebarNav isRail={false} onNavigate={closeDrawer} />
-            <SampleDataNote />
             <UserMenu isRail={false} />
           </aside>
         </div>

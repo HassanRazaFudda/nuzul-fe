@@ -191,7 +191,7 @@ export function DesignSystemPage() {
             <Card>
               {stateView === 'data' && (
                 <DataTable
-                  caption="Sample ledger"
+                  caption="Example ledger"
                   columns={COLUMNS}
                   data={sortedNights(sort)}
                   getRowId={(row) => `${row.from}-${row.to}`}

@@ -1,4 +1,101 @@
 [
-  { "id": "agent-a", "name": "Sample Agent A", "active": true },
-  { "id": "agent-b", "name": "Sample Agent B", "active": true }
+  {
+    "id": "agent-al-hijaz",
+    "name": "Al Hijaz Travels",
+    "company": "Al Hijaz Travels (Pvt.) Ltd.",
+    "contactPerson": "Muhammad Asif",
+    "phone": "+92 42 3571 2240",
+    "address": "Davis Road, Lahore",
+    "active": true
+  },
+  {
+    "id": "agent-al-makkah",
+    "name": "Al Makkah Travel Services",
+    "company": "Al Makkah Travel Services",
+    "contactPerson": "Rana Shahid",
+    "phone": "+92 41 262 7701",
+    "address": "Kotwali Road, Faisalabad",
+    "active": true
+  },
+  {
+    "id": "agent-baba-farid",
+    "name": "Baba Farid Hajj Group",
+    "company": "Baba Farid Hajj Group",
+    "contactPerson": "Ghulam Farid",
+    "phone": "+92 61 451 2093",
+    "address": "Nishtar Road, Multan",
+    "active": true
+  },
+  {
+    "id": "agent-green-crescent",
+    "name": "Green Crescent Travels",
+    "company": "Green Crescent Travels (Pvt.) Ltd.",
+    "contactPerson": "Nadia Hussain",
+    "phone": "+92 51 287 4465",
+    "address": "Blue Area, Islamabad",
+    "active": true
+  },
+  {
+    "id": "agent-karwan-madina",
+    "name": "Karwan-e-Madina Tours",
+    "company": "Karwan-e-Madina Tours & Travels",
+    "contactPerson": "Sohail Akhtar",
+    "phone": "+92 21 3241 8876",
+    "address": "Tariq Road, Karachi",
+    "active": true
+  },
+  {
+    "id": "agent-khyber",
+    "name": "Khyber Hajj Services",
+    "company": "Khyber Hajj & Ziarat Services",
+    "contactPerson": "Irfan Khan",
+    "phone": "+92 91 521 6604",
+    "address": "Saddar Road, Peshawar",
+    "active": true
+  },
+  {
+    "id": "agent-noor-haramain",
+    "name": "Noor-ul-Haramain Travels",
+    "company": "Noor-ul-Haramain Travels",
+    "contactPerson": "Qazi Waseem",
+    "phone": "+92 22 278 3349",
+    "address": "Saddar, Hyderabad",
+    "active": true
+  },
+  {
+    "id": "agent-quetta",
+    "name": "Quetta Pilgrim Tours",
+    "company": "Quetta Pilgrim Tours",
+    "contactPerson": "Habibullah Kakar",
+    "phone": "+92 81 283 0127",
+    "address": "Jinnah Road, Quetta",
+    "active": true
+  },
+  {
+    "id": "agent-rehmat",
+    "name": "Rehmat Hajj & Umrah",
+    "company": "Rehmat Hajj & Umrah Services",
+    "contactPerson": "Abdul Rehman",
+    "phone": "+92 51 557 3310",
+    "address": "Murree Road, Rawalpindi",
+    "active": true
+  },
+  {
+    "id": "agent-shaheen",
+    "name": "Shaheen Travels",
+    "company": "Shaheen Travels",
+    "contactPerson": "Asad Shaheen",
+    "phone": "+92 21 3567 4410",
+    "address": "Gulshan-e-Iqbal, Karachi",
+    "active": false
+  },
+  {
+    "id": "agent-sialkot",
+    "name": "Sialkot Hajj Group",
+    "company": "Sialkot Hajj Group",
+    "contactPerson": "Zahid Mehmood",
+    "phone": "+92 52 459 1182",
+    "address": "Paris Road, Sialkot",
+    "active": true
+  }
 ]

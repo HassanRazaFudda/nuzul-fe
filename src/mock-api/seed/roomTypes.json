@@ -1,5 +1,22 @@
 [
-  { "id": "double", "name": "Double", "capacity": 2 },
-  { "id": "triple", "name": "Triple", "capacity": 3 },
-  { "id": "quad", "name": "Quad", "capacity": 4 }
+  {
+    "id": "double",
+    "name": "Double",
+    "capacity": 2
+  },
+  {
+    "id": "quad",
+    "name": "Quad",
+    "capacity": 4
+  },
+  {
+    "id": "quint",
+    "name": "Quint",
+    "capacity": 5
+  },
+  {
+    "id": "triple",
+    "name": "Triple",
+    "capacity": 3
+  }
 ]

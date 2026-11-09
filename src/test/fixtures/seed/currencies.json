@@ -1,0 +1,5 @@
+[
+  { "id": "SAR", "code": "SAR", "symbol": "SAR", "decimals": 2, "enabled": true },
+  { "id": "PKR", "code": "PKR", "symbol": "PKR", "decimals": 0, "enabled": true },
+  { "id": "USD", "code": "USD", "symbol": "USD", "decimals": 2, "enabled": true }
+]

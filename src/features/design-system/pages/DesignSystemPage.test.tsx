@@ -6,7 +6,7 @@ import { renderApp } from '@/test/render';
 describe('DesignSystemPage', () => {
   it('sorts the table both ways, with the state read from the night grid', async () => {
     const { user } = renderApp('/design');
-    const table = await screen.findByRole('table', { name: 'Sample ledger' });
+    const table = await screen.findByRole('table', { name: 'Example ledger' });
     const sortButton = within(table).getByRole('button', { name: 'Available' });
     const firstRow = () => within(within(table).getAllByRole('row')[1] ?? table);
 

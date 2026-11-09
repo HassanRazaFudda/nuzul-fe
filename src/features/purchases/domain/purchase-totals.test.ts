@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { nightsBetween } from '@/lib/format/dates';
 import { moneyLine } from '@/lib/money/money';
-import seed from '@/mock-api/seed/purchases.json';
+import seed from '@/test/fixtures/seed/purchases.json';
 
 import { purchaseSchema } from '../api/purchase.schemas';
 import { purchaseTotals, referenceRate, type Meal } from './purchase-totals';

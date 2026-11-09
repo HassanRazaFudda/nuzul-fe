@@ -1,4 +1,10 @@
 [
-  { "id": "purchase", "value": 3 },
-  { "id": "contract", "value": 4 }
+  {
+    "id": "contract",
+    "value": 41
+  },
+  {
+    "id": "purchase",
+    "value": 13
+  }
 ]

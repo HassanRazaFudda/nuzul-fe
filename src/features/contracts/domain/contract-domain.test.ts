@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { poolLedger, buildPools } from '@/features/inventory';
 import { moneyLine } from '@/lib/money/money';
-import seed from '@/mock-api/seed/contracts.json';
+import seed from '@/test/fixtures/seed/contracts.json';
 
 import { contractSchema } from '../api/contract.schemas';
 import {

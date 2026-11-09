@@ -9,55 +9,23 @@ import type { z } from 'zod';
 
 import { ApiError } from '@/lib/api/api-error';
 
-import adjustments from './seed/adjustments.json';
-import agents from './seed/agents.json';
-import calendarMonths from './seed/calendarMonths.json';
-import cities from './seed/cities.json';
-import contracts from './seed/contracts.json';
-import conversionRules from './seed/conversionRules.json';
-import counters from './seed/counters.json';
-import currencies from './seed/currencies.json';
-import exchangeRates from './seed/exchangeRates.json';
-import hotels from './seed/hotels.json';
-import purchases from './seed/purchases.json';
-import revisions from './seed/revisions.json';
-import roomTypes from './seed/roomTypes.json';
-import session from './seed/session.json';
-import settings from './seed/settings.json';
-import users from './seed/users.json';
-import vendors from './seed/vendors.json';
+import { SEED } from '@/mock-api/seed';
 
 /** Records are validated by each feature's schema, so here they are only known to have an id. */
 export interface StoredRecord {
   id: string;
 }
 
-const SEED = {
-  hotels,
-  cities,
-  vendors,
-  agents,
-  roomTypes,
-  conversionRules,
-  calendarMonths,
-  currencies,
-  exchangeRates,
-  purchases,
-  counters,
-  contracts,
-  revisions,
-  adjustments,
-  users,
-  session,
-  settings,
-} satisfies Record<string, StoredRecord[]>;
+const SEEDED: Record<keyof typeof SEED, StoredRecord[]> = SEED;
 
 export type CollectionName = keyof typeof SEED;
 
 const NAMES = Object.keys(SEED) as CollectionName[];
 
 /** Bump whenever a collection changes. Existing data stays; new collections get their seed. */
-const DB_VERSION = 8;
+const DB_VERSION = 9;
+/** Version 9 replaced the demo data, so a browser on an older version starts again from it. */
+const RESEED_BELOW = 9;
 
 async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   if (names.length === 0) return;
@@ -65,7 +33,7 @@ async function writeSeed(db: IDBPDatabase, names: CollectionName[]) {
   await Promise.all(
     names.flatMap((name) => {
       const store = tx.objectStore(name);
-      const seed: StoredRecord[] = SEED[name];
+      const seed = SEEDED[name];
       return [store.clear(), ...seed.map((record) => store.put(record))];
     }),
   );
@@ -109,9 +77,10 @@ export function createMockDb(databaseName: string): MockDb {
     opened ??= (async () => {
       const created: CollectionName[] = [];
       const db = await openDB(databaseName, DB_VERSION, {
-        upgrade(database) {
+        upgrade(database, oldVersion) {
+          const reseed = oldVersion > 0 && oldVersion < RESEED_BELOW;
           for (const name of [...database.objectStoreNames]) {
-            if (!NAMES.some((known) => known === name)) database.deleteObjectStore(name);
+            if (reseed || !NAMES.some((known) => known === name)) database.deleteObjectStore(name);
           }
           for (const name of NAMES) {
             if (database.objectStoreNames.contains(name)) continue;
