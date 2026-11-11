@@ -1,6 +1,7 @@
 import { FlexRender, useTable, type SortingState } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { Fragment, type MouseEvent, type ReactNode } from 'react';
+import { useNavigate } from 'react-router';
 
 import { cn } from '@/lib/cn';
 
@@ -23,12 +24,29 @@ interface DataTableProps<TData extends object> {
   isFetching?: boolean;
   isCompact?: boolean;
   emptyState: ReactNode;
+  /** Makes the whole row open this page, not only the link in its first cell. */
+  getRowHref?: ((row: TData) => string) | undefined;
+  /** Makes the whole row run this, such as opening an editor. */
+  onRowClick?: ((row: TData) => void) | undefined;
+  /**
+   * Puts a heading row above each run of rows with the same key. The rows must already
+   * arrive with each group together.
+   */
+  grouping?: TableGrouping<TData> | undefined;
 }
+
+export interface TableGrouping<TData> {
+  key: (row: TData) => string;
+  /** The heading, given every row of the group on this page. */
+  heading: (rows: TData[]) => ReactNode;
+}
+
+const INTERACTIVE = 'a, button, input, select, textarea, label, [role="menu"], [popover]';
 
 /**
  * Presentational, server-driven table. It knows nothing about any record, API or the URL:
- * the feature passes data in and receives sort changes out. It scrolls sideways inside its
- * own frame on a narrow screen, never the page.
+ * the feature passes data in and receives sort changes out. On a wide screen the page scrolls
+ * and the header sticks; on a narrow one the table scrolls sideways inside its own frame.
  */
 export function DataTable<TData extends object>({
   columns,
@@ -40,7 +58,11 @@ export function DataTable<TData extends object>({
   isFetching = false,
   isCompact = false,
   emptyState,
+  getRowHref,
+  onRowClick,
+  grouping,
 }: DataTableProps<TData>) {
+  const navigate = useNavigate();
   const sorting: SortingState = sort ? [sort] : [];
 
   const table = useTable({
@@ -58,17 +80,39 @@ export function DataTable<TData extends object>({
   });
 
   const rows = table.getRowModel().rows;
+  const isClickable = Boolean(getRowHref ?? onRowClick);
+
+  /**
+   * A click anywhere on a row opens it. The row's own link or button stays the keyboard and
+   * screen-reader path; clicks on a control inside the row, or that end a text selection, are
+   * left alone.
+   */
+  function handleRowClick(event: MouseEvent<HTMLTableRowElement>, row: TData) {
+    if ((event.target as HTMLElement).closest(INTERACTIVE)) return;
+    if (window.getSelection()?.toString()) return;
+    if (onRowClick) {
+      onRowClick(row);
+      return;
+    }
+    const href = getRowHref?.(row);
+    if (!href) return;
+    if (event.metaKey || event.ctrlKey) {
+      window.open(href, '_blank', 'noopener');
+      return;
+    }
+    void navigate(href);
+  }
 
   if (rows.length === 0) return <>{emptyState}</>;
 
   return (
-    <div className="max-h-[70vh] overflow-auto">
+    <div className="relative overflow-x-auto lg:overflow-visible">
       <table
-        className={cn('w-full border-collapse text-sm', isFetching && 'opacity-60')}
+        className={cn('w-full border-separate border-spacing-0 text-sm', isFetching && 'opacity-60')}
         aria-busy={isFetching || undefined}
       >
         <caption className="sr-only">{caption}</caption>
-        <thead className="bg-surface sticky top-0 z-10">
+        <thead className="lg:sticky lg:top-0 lg:z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -77,19 +121,24 @@ export function DataTable<TData extends object>({
                   <th
                     key={header.id}
                     scope="col"
-                    className="border-border text-muted h-9 border-b px-4 text-start text-xs font-medium whitespace-nowrap"
+                    className="border-border bg-surface-raised text-muted h-8 border-b px-4 text-start text-xs font-medium whitespace-nowrap"
                     aria-sort={sorted === 'asc' ? 'ascending' : sorted === 'desc' ? 'descending' : undefined}
                   >
                     {header.column.getCanSort() ? (
                       <button
                         type="button"
-                        className="hover:text-foreground inline-flex items-center gap-1 transition-colors duration-150"
+                        className="hover:text-foreground group inline-flex items-center gap-1 transition-colors duration-150"
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         <FlexRender header={header} />
-                        {sorted === 'asc' && <ArrowUp aria-hidden className="size-3.5" />}
-                        {sorted === 'desc' && <ArrowDown aria-hidden className="size-3.5" />}
-                        {!sorted && <ChevronsUpDown aria-hidden className="text-faint size-3.5" />}
+                        {sorted === 'asc' && <ArrowUp aria-hidden className="text-foreground size-3.5" />}
+                        {sorted === 'desc' && <ArrowDown aria-hidden className="text-foreground size-3.5" />}
+                        {!sorted && (
+                          <ChevronsUpDown
+                            aria-hidden
+                            className="text-faint size-3.5 opacity-0 transition-opacity group-hover:opacity-100"
+                          />
+                        )}
                       </button>
                     ) : (
                       <FlexRender header={header} />
@@ -101,18 +150,47 @@ export function DataTable<TData extends object>({
           ))}
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.id}
-              className="border-border hover:bg-background border-b transition-colors duration-150 last:border-b-0"
-              style={{ height: isCompact ? 'var(--table-row-height-compact)' : 'var(--table-row-height)' }}
-            >
-              {row.getAllCells().map((cell) => (
-                <td key={cell.id} className="text-foreground px-4 py-1.5">
-                  <FlexRender cell={cell} />
-                </td>
-              ))}
-            </tr>
+          {rows.map((row, index) => (
+            <Fragment key={row.id}>
+              {grouping &&
+                (index === 0 ||
+                  grouping.key(row.original) !== grouping.key((rows[index - 1] ?? row).original)) && (
+                  <tr>
+                    <th
+                      scope="colgroup"
+                      colSpan={row.getAllCells().length}
+                      className="border-border bg-surface-muted text-foreground text-meta h-9 border-b px-4 text-start font-semibold"
+                    >
+                      {grouping.heading(
+                        rows
+                          .filter((item) => grouping.key(item.original) === grouping.key(row.original))
+                          .map((item) => item.original),
+                      )}
+                    </th>
+                  </tr>
+                )}
+              <tr
+                key={row.id}
+                className={cn(
+                  'hover:bg-surface-raised group/row transition-colors duration-100 [&:last-child>td]:border-b-0',
+                  isClickable && 'cursor-pointer',
+                )}
+                style={{ height: isCompact ? 'var(--table-row-height-compact)' : 'var(--table-row-height)' }}
+                {...(isClickable
+                  ? {
+                      onClick: (event: MouseEvent<HTMLTableRowElement>) => {
+                        handleRowClick(event, row.original);
+                      },
+                    }
+                  : {})}
+              >
+                {row.getAllCells().map((cell) => (
+                  <td key={cell.id} className="border-border-subtle text-foreground border-b px-4 py-1.5">
+                    <FlexRender cell={cell} />
+                  </td>
+                ))}
+              </tr>
+            </Fragment>
           ))}
         </tbody>
       </table>

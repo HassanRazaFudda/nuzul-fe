@@ -41,7 +41,7 @@ export function DecisionRow({
   const decisionErrors = errors.decisions?.[sale.id];
 
   return (
-    <li className="space-y-3 px-5 py-4 text-sm">
+    <li className="space-y-3 px-4 py-4 text-sm">
       <div className="text-foreground">
         <span className="font-medium">{sale.reference}</span>, {hotelName}: {sale.rooms}{' '}
         {typeName(sale.soldAsTypeId)}

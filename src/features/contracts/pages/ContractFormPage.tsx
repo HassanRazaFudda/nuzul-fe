@@ -122,7 +122,17 @@ function ContractFormScreen({ contract }: { contract: ContractView | null }) {
 
   return (
     <>
-      <PageHeader title={contract ? `Edit ${contract.number}` : 'Add contract'} />
+      <PageHeader
+        title={contract ? `Edit ${contract.number}` : 'New sales contract'}
+        breadcrumbs={
+          contract
+            ? [
+                { label: 'Sales contracts', to: '/contracts' },
+                { label: contract.number, to: `/contracts/${contract.id}` },
+              ]
+            : [{ label: 'Sales contracts', to: '/contracts' }]
+        }
+      />
       <ContractForm
         contract={contract}
         agents={agents}

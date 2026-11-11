@@ -15,11 +15,11 @@ export function PermissionGrid({ selected, grantable, disabled, onChange }: Perm
   }
 
   return (
-    <div className="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-5 p-4 md:grid-cols-2 xl:grid-cols-3">
       {PERMISSION_GROUPS.map((group) => (
         <fieldset key={group.area}>
           <legend className="text-foreground mb-2 text-sm font-semibold">{group.area}</legend>
-          <ul className="space-y-1.5">
+          <ul className="space-y-2">
             {group.permissions.map(([permission, label]) => {
               const canGrant = grantable.includes(permission);
               return (
@@ -27,19 +27,20 @@ export function PermissionGrid({ selected, grantable, disabled, onChange }: Perm
                   <label className="text-foreground flex items-start gap-2 text-sm">
                     <input
                       type="checkbox"
-                      className="accent-primary mt-0.5 size-4"
+                      className="mt-0.5 size-4"
                       checked={selected.includes(permission)}
                       disabled={disabled || !canGrant}
                       onChange={(event) => {
                         toggle(permission, event.target.checked);
                       }}
                     />
-                    <span>
+                    <span title={permission}>
                       {label}
-                      <span className="text-muted block text-xs">
-                        {permission}
-                        {!canGrant && ' · you do not hold this, so you cannot change it'}
-                      </span>
+                      {!canGrant && (
+                        <span className="text-muted block text-xs">
+                          Only someone who holds it can grant it
+                        </span>
+                      )}
                     </span>
                   </label>
                 </li>

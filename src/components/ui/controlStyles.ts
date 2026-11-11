@@ -1,2 +1,3 @@
+/** Inputs, selects and text areas share one look. Only typed fields can be read-only. */
 export const CONTROL_CLASS =
-  'w-full rounded-control border border-border-strong bg-surface px-3 text-sm text-foreground transition-colors duration-150 placeholder:text-muted hover:border-faint disabled:cursor-not-allowed disabled:bg-background disabled:text-muted aria-invalid:border-danger';
+  'w-full rounded-control border border-border-strong bg-surface px-2.5 text-sm text-foreground shadow-control transition-[border-color,box-shadow] duration-150 placeholder:text-faint hover:border-faint focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-foreground/8 [&:is(input,textarea):read-only]:bg-surface-raised [&:is(input,textarea):read-only]:text-secondary disabled:cursor-not-allowed disabled:bg-surface-raised disabled:text-muted aria-invalid:border-danger aria-invalid:focus-visible:ring-danger/12';

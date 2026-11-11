@@ -25,19 +25,22 @@ interface ReportTableProps<TRow> {
 /** One column definition drives both the table and its Excel export, so they always agree. */
 export function ReportTable<TRow>({ caption, columns, rows, rowKey, footer, empty }: ReportTableProps<TRow>) {
   const align = (column: ReportColumn<TRow>) => (column.isNumeric ? 'text-end tabular-nums' : 'text-start');
-  if (rows.length === 0) return <p className="text-muted px-5 py-10 text-center text-sm">{empty}</p>;
+  if (rows.length === 0) return <p className="text-muted px-4 py-10 text-center text-sm">{empty}</p>;
 
   return (
-    <div className="mt-2 overflow-x-auto">
-      <table className="w-full text-sm">
+    <div className="relative overflow-x-auto">
+      <table className="w-full border-separate border-spacing-0 text-sm">
         <caption className="sr-only">{caption}</caption>
         <thead>
-          <tr className="border-border text-muted border-b text-xs">
+          <tr className="text-muted text-xs">
             {columns.map((column) => (
               <th
                 key={column.header}
                 scope="col"
-                className={cn('h-9 px-3 font-medium whitespace-nowrap first:ps-5 last:pe-5', align(column))}
+                className={cn(
+                  'border-border bg-surface-raised h-8 border-b px-3 font-medium whitespace-nowrap first:sticky first:left-0 first:z-[1] first:ps-4 last:pe-4',
+                  align(column),
+                )}
               >
                 {column.header}
               </th>
@@ -46,12 +49,15 @@ export function ReportTable<TRow>({ caption, columns, rows, rowKey, footer, empt
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={rowKey(row)} className="border-border text-foreground border-b last:border-b-0">
+            <tr
+              key={rowKey(row)}
+              className="text-foreground hover:bg-surface-raised group/row [&:last-child>td]:border-b-0"
+            >
               {columns.map((column) => (
                 <td
                   key={column.header}
                   className={cn(
-                    'px-3 py-2.5 whitespace-nowrap first:min-w-36 first:ps-5 first:whitespace-normal last:pe-5',
+                    'border-border-subtle group-hover/row:bg-surface-raised first:bg-surface border-b px-3 py-2 whitespace-nowrap first:sticky first:left-0 first:z-[1] first:ps-4 first:font-medium last:pe-4',
                     align(column),
                   )}
                 >
@@ -63,11 +69,14 @@ export function ReportTable<TRow>({ caption, columns, rows, rowKey, footer, empt
         </tbody>
         {footer && (
           <tfoot>
-            <tr className="border-border bg-background text-foreground border-t font-medium">
+            <tr className="text-foreground font-semibold">
               {columns.map((column) => (
                 <td
                   key={column.header}
-                  className={cn('px-3 py-2.5 whitespace-nowrap first:ps-5 last:pe-5', align(column))}
+                  className={cn(
+                    'border-border bg-surface-raised border-t px-3 py-2.5 whitespace-nowrap first:sticky first:left-0 first:ps-4 last:pe-4',
+                    align(column),
+                  )}
                 >
                   {column.cell(footer)}
                 </td>

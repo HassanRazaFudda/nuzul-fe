@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/Card';
 import type { ListParams, Paginated } from '@/lib/api/pagination';
 
 import type { ServerColumnDef } from './data-table-features';
-import { DataTable } from './DataTable';
+import { DataTable, type TableGrouping } from './DataTable';
 import { Pagination } from './Pagination';
 import { TableToolbar } from './TableToolbar';
 import { useSearchDraft } from './useSearchDraft';
@@ -28,6 +28,12 @@ interface DataListProps<TData extends object, TSort extends string> {
   emptyHint?: string;
   emptyAction?: ReactNode;
   toolbar?: ReactNode;
+  /** Makes the whole row open the record. */
+  getRowHref?: (row: TData) => string;
+  /** Makes the whole row run this, such as opening an editor. */
+  onRowClick?: (row: TData) => void;
+  /** Heading rows above each group, such as each hotel's room types. */
+  grouping?: TableGrouping<TData>;
 }
 
 /** A whole list: search, the four states (loading, error, empty, data), sort and pages. */
@@ -44,6 +50,9 @@ export function DataList<TData extends object, TSort extends string>({
   emptyHint,
   emptyAction,
   toolbar,
+  getRowHref,
+  onRowClick,
+  grouping,
 }: DataListProps<TData, TSort>) {
   const { isCompact, setCompact } = useTableDensity();
   const searchBox = useSearchDraft(params.search, (search) => {
@@ -77,6 +86,9 @@ export function DataList<TData extends object, TSort extends string>({
           columns={columns}
           data={data.items}
           getRowId={getRowId}
+          getRowHref={getRowHref}
+          onRowClick={onRowClick}
+          grouping={grouping}
           isCompact={isCompact}
           isFetching={isFetching && isPlaceholderData}
           sort={{ id: params.sortBy, desc: params.sortDir === 'desc' }}

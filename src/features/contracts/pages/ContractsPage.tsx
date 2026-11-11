@@ -1,5 +1,5 @@
 import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { FileSignature } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
 
 import { DataList } from '@/components/data-table/DataList';
@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { buttonClass } from '@/components/ui/buttonStyles';
 import { Select } from '@/components/ui/Select';
 import { TabBar } from '@/components/ui/TabBar';
+import { calendarMonthsQuery } from '@/features/calendar';
 import { currenciesQuery } from '@/features/currencies';
 import { hotelOptionsQuery } from '@/features/hotels';
 import { useCan } from '@/lib/auth/session';
@@ -36,7 +37,7 @@ const isSortField = (id: string): id is ContractSortField =>
 
 const EMPTY: Record<ContractStatus, { title: string; hint?: string }> = {
   draft: { title: 'No drafts' },
-  confirmed: { title: 'No confirmed contracts', hint: 'Add a contract, then confirm it' },
+  confirmed: { title: 'No confirmed contracts', hint: 'Contracts appear here once confirmed' },
   locked: { title: 'No locked contracts' },
   cancelled: { title: 'No cancelled contracts' },
 };
@@ -48,8 +49,8 @@ export function ContractsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const hotelId = searchParams.get(HOTEL_PARAM) ?? '';
   const query = useQuery(contractListQuery({ ...params, hotelId }));
-  const [{ data: hotels }, { data: currencies }] = useSuspenseQueries({
-    queries: [hotelOptionsQuery, currenciesQuery],
+  const [{ data: hotels }, { data: currencies }, { data: months }] = useSuspenseQueries({
+    queries: [hotelOptionsQuery, currenciesQuery, calendarMonthsQuery],
   });
 
   function handleHotelChange(next: string) {
@@ -65,9 +66,10 @@ export function ContractsPage() {
     );
   }
 
-  const columns = contractColumns(
-    (code) => currencies.find((item) => item.code === code) ?? { symbol: code, decimals: 2 },
-  );
+  const columns = contractColumns({
+    months,
+    moneyFormat: (code) => currencies.find((item) => item.code === code) ?? { symbol: code, decimals: 2 },
+  });
   const counts = query.data?.counts;
 
   return (
@@ -77,13 +79,13 @@ export function ContractsPage() {
         action={
           canManage && (
             <Link to="/contracts/new" className={buttonClass('primary')}>
-              <Plus aria-hidden className="size-4" />
-              Add contract
+              <FileSignature aria-hidden />
+              New contract
             </Link>
           )
         }
       />
-      <div className="space-y-4 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         <TabBar
           label="Contracts by status"
           value={params.status}
@@ -91,7 +93,7 @@ export function ContractsPage() {
             updateParams({ status });
           }}
           items={[
-            { value: 'draft', label: 'Draft', count: counts?.draft },
+            { value: 'draft', label: 'Draft', count: counts?.draft, isAttention: true },
             { value: 'confirmed', label: 'Confirmed', count: counts?.confirmed },
             { value: 'locked', label: 'Locked', count: counts?.locked },
             { value: 'cancelled', label: 'Cancelled', count: counts?.cancelled },
@@ -101,6 +103,7 @@ export function ContractsPage() {
           caption="Contracts"
           columns={columns}
           getRowId={(contract) => contract.id}
+          getRowHref={(contract) => `/contracts/${contract.id}`}
           query={query}
           params={params}
           defaultSortBy="number"
@@ -111,7 +114,7 @@ export function ContractsPage() {
           toolbar={
             <Select
               aria-label="Filter by hotel"
-              className="w-56"
+              className="text-meta h-(--control-height-sm) w-52"
               value={hotelId}
               onChange={(event) => {
                 handleHotelChange(event.target.value);

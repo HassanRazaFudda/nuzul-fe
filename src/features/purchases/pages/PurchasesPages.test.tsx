@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { hotelSchema } from '@/features/hotels';
 import { mockDb } from '@/mock-api/db';
-import { renderApp } from '@/test/render';
+import { chooseFromMenu, renderApp } from '@/test/render';
 
 import { purchaseSchema } from '../api/purchase.schemas';
 
@@ -99,8 +99,9 @@ describe('adding a purchase', () => {
       expect((await stored('PUR-0004'))?.status).toBe('confirmed');
     });
     expect(router.state.location.pathname).toMatch(/^\/purchases\//);
-    expect(await screen.findByRole('button', { name: 'Cancel purchase' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Terminate' })).toBeInTheDocument();
+    await user.click(await screen.findByRole('button', { name: /^More actions/ }));
+    expect(await screen.findByRole('menuitem', { name: /^Cancel purchase/ })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: /^Terminate/ })).toBeInTheDocument();
   });
 
   it('shows live totals while typing', async () => {
@@ -109,7 +110,7 @@ describe('adding a purchase', () => {
     await fillLine(user);
 
     const totals = within(
-      screen.getByRole('heading', { name: 'Totals' }).closest('section') ?? document.body,
+      screen.getByRole('heading', { name: 'Summary' }).closest('section') ?? document.body,
     );
 
     expect(totals.getAllByText('SAR 1,500.00')).not.toHaveLength(0);
@@ -153,7 +154,7 @@ describe('adding a purchase', () => {
     await fillLine(user, 'triple');
     expect(screen.queryByLabelText(/^Meal rate\W*$/)).not.toBeInTheDocument();
 
-    await user.selectOptions(screen.getByLabelText('Meal arrangement'), 'separate');
+    await user.click(screen.getByLabelText('Bought separately'));
 
     expect(screen.getByLabelText(/^Persons per room/)).toHaveValue(3);
     await user.type(screen.getByLabelText(/^Meal rate\W*$/), '10');
@@ -168,7 +169,7 @@ describe('adding a purchase', () => {
     const { user } = renderApp('/purchases/new');
     await fillHeader(user);
     await user.click(screen.getByLabelText('Same rate for all lines'));
-    await user.click(screen.getByLabelText('Rate is per night'));
+    await user.click(screen.getByLabelText('Rate per night'));
     await user.type(screen.getByLabelText(/^Rate for all lines/), '200');
     await user.selectOptions(screen.getByLabelText(/^Room type/), 'double');
     await user.type(screen.getByLabelText(/^Rooms/), '2');
@@ -258,7 +259,7 @@ describe('a saved purchase', () => {
 
   it('cancels a confirmed purchase with a reason, and offers nothing afterwards', async () => {
     const { user } = renderApp('/purchases/purchase-1');
-    await user.click(await screen.findByRole('button', { name: 'Cancel purchase' }));
+    await chooseFromMenu(user, /^More actions/, 'Cancel purchase');
     const dialog = await screen.findByRole('dialog');
 
     // It backs CON-0001 and CON-0002, so the preview lists them.
@@ -274,13 +275,13 @@ describe('a saved purchase', () => {
       expect((await stored('PUR-0001'))?.status).toBe('cancelled');
     });
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Cancel purchase' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /^More actions/ })).not.toBeInTheDocument();
     });
   });
 
   it('deletes a draft, and never reuses its number', async () => {
     const { user, router } = renderApp('/purchases/purchase-2');
-    await user.click(await screen.findByRole('button', { name: 'Delete' }));
+    await chooseFromMenu(user, /^More actions/, 'Delete draft');
     await user.click(await screen.findByRole('button', { name: 'Delete draft' }));
 
     await waitFor(() => {

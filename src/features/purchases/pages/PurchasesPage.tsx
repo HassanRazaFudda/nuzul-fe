@@ -1,5 +1,5 @@
 import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
 
 import { DataList } from '@/components/data-table/DataList';
@@ -37,7 +37,7 @@ const isSortField = (id: string): id is PurchaseSortField =>
 
 const EMPTY: Record<PurchaseStatus, { title: string; hint?: string }> = {
   draft: { title: 'No drafts' },
-  confirmed: { title: 'No confirmed purchases', hint: 'Add a purchase, then confirm it' },
+  confirmed: { title: 'No confirmed purchases', hint: 'Purchases appear here once confirmed' },
   locked: { title: 'No locked purchases' },
   cancelled: { title: 'No cancelled purchases' },
   terminated: { title: 'No terminated purchases' },
@@ -80,13 +80,13 @@ export function PurchasesPage() {
         action={
           canManage && (
             <Link to="/purchases/new" className={buttonClass('primary')}>
-              <Plus aria-hidden className="size-4" />
-              Add purchase
+              <ShoppingCart aria-hidden />
+              New purchase
             </Link>
           )
         }
       />
-      <div className="space-y-4 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         <TabBar
           label="Purchases by status"
           value={params.status}
@@ -94,7 +94,7 @@ export function PurchasesPage() {
             updateParams({ status });
           }}
           items={[
-            { value: 'draft', label: 'Draft', count: counts?.draft },
+            { value: 'draft', label: 'Draft', count: counts?.draft, isAttention: true },
             { value: 'confirmed', label: 'Confirmed', count: counts?.confirmed },
             { value: 'locked', label: 'Locked', count: counts?.locked },
             { value: 'cancelled', label: 'Cancelled', count: counts?.cancelled },
@@ -105,6 +105,7 @@ export function PurchasesPage() {
           caption="Purchases"
           columns={columns}
           getRowId={(purchase) => purchase.id}
+          getRowHref={(purchase) => `/purchases/${purchase.id}`}
           query={query}
           params={params}
           defaultSortBy="number"
@@ -115,7 +116,7 @@ export function PurchasesPage() {
           toolbar={
             <Select
               aria-label="Filter by hotel"
-              className="w-56"
+              className="text-meta h-(--control-height-sm) w-52"
               value={hotelId}
               onChange={(event) => {
                 handleHotelChange(event.target.value);

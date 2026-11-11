@@ -83,24 +83,23 @@ export function SalesReportPage() {
           hotels={hotels}
           currencies={currencies}
           periodLabel="Contract date"
+          primary={
+            <Select
+              aria-label="Group by"
+              className="text-meta h-(--control-height-sm) w-44"
+              value={params.groupBy}
+              onChange={(event) => {
+                if (isGroup(event.target.value)) updateParams({ groupBy: event.target.value });
+              }}
+            >
+              {SALES_GROUPS.map((group) => (
+                <option key={group} value={group}>
+                  By {GROUP_LABELS[group].toLowerCase()}
+                </option>
+              ))}
+            </Select>
+          }
         >
-          <FormField label="Group by">
-            {(field) => (
-              <Select
-                {...field}
-                value={params.groupBy}
-                onChange={(event) => {
-                  if (isGroup(event.target.value)) updateParams({ groupBy: event.target.value });
-                }}
-              >
-                {SALES_GROUPS.map((group) => (
-                  <option key={group} value={group}>
-                    {GROUP_LABELS[group]}
-                  </option>
-                ))}
-              </Select>
-            )}
-          </FormField>
           <FormField label="Status">
             {(field) => (
               <Select
@@ -179,7 +178,7 @@ export function SalesReportPage() {
         return (
           <Card className="overflow-hidden">
             {rows.length > 0 && (
-              <p className="text-muted border-border border-b px-5 py-3 text-sm">
+              <p className="text-muted border-border border-b px-4 py-3 text-sm">
                 Total sales{' '}
                 <span className="text-foreground ms-1 text-base font-medium tabular-nums">
                   {money(amountOf(rows).toFixed(2))}

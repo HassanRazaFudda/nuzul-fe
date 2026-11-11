@@ -1,9 +1,24 @@
-import { Menu, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
+import {
+  FileSignature,
+  Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Plus,
+  Search,
+  ShoppingCart,
+  X,
+} from 'lucide-react';
 import { Suspense, useEffect, useRef, useState, ViewTransition } from 'react';
 import { Outlet, useLocation } from 'react-router';
 
 import { Toaster } from '@/components/feedback/Toaster';
+import { Menu as ActionMenu } from '@/components/ui/Menu';
 import { Spinner } from '@/components/ui/Spinner';
+import { useCan } from '@/lib/auth/session';
+import { cn } from '@/lib/cn';
+
+import { openCommandPalette, shortcutLabel } from './command-palette';
+import { CommandPalette } from './CommandPalette';
 
 import { SidebarNav } from './SidebarNav';
 import { UserMenu } from './UserMenu';
@@ -38,6 +53,74 @@ function Brand({ showName = true }: { showName?: boolean }) {
 
 const ICON_BUTTON =
   'rounded-control p-1.5 text-muted transition-colors duration-150 hover:bg-surface-muted hover:text-foreground';
+
+/** Search and create, at the top of the menu, so both are one click from every screen. */
+function QuickActions({ isRail, onNavigate }: { isRail: boolean; onNavigate?: () => void }) {
+  const can = useCan();
+  const [shortcut] = useState(shortcutLabel);
+  const newItems = [
+    can('contract.create') && {
+      label: 'Sales contract',
+      to: '/contracts/new',
+      icon: <FileSignature aria-hidden />,
+      hint: 'Sell rooms to an agent',
+    },
+    can('purchase.create') && {
+      label: 'Purchase',
+      to: '/purchases/new',
+      icon: <ShoppingCart aria-hidden />,
+      hint: 'Buy rooms from a vendor',
+    },
+  ];
+  const hasNew = newItems.some(Boolean);
+
+  function search() {
+    onNavigate?.();
+    openCommandPalette();
+  }
+
+  if (isRail) {
+    return (
+      <div className="flex flex-col items-center gap-1 px-2 pb-2">
+        <button
+          type="button"
+          onClick={search}
+          aria-label="Search"
+          title={`Search (${shortcut})`}
+          className={ICON_BUTTON}
+        >
+          <Search aria-hidden className="size-4" />
+        </button>
+        {hasNew && (
+          <ActionMenu label="Create new" items={newItems} align="start" triggerIcon={<Plus aria-hidden />} />
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 px-3 pb-2">
+      <button
+        type="button"
+        onClick={search}
+        className="rounded-control border-border bg-surface text-muted shadow-control hover:border-border-strong hover:text-secondary text-meta flex h-8 min-w-0 flex-1 items-center gap-2 border px-2.5 transition-colors duration-150"
+      >
+        <Search aria-hidden className="size-3.5 shrink-0" />
+        <span className="flex-1 truncate text-start">Search</span>
+        <kbd className="text-muted text-2xs">{shortcut}</kbd>
+      </button>
+      {hasNew && (
+        <ActionMenu
+          label="Create new"
+          items={newItems}
+          align="start"
+          triggerIcon={<Plus aria-hidden />}
+          className="bg-primary text-primary-foreground shadow-solid-danger hover:bg-primary-hover hover:text-primary-foreground aria-expanded:bg-primary-active aria-expanded:text-primary-foreground"
+        />
+      )}
+    </div>
+  );
+}
 
 export function AppLayout() {
   const { pathname } = useLocation();
@@ -78,9 +161,9 @@ export function AppLayout() {
       </a>
 
       {/* Desktop sidebar */}
-      <aside className="border-border bg-surface sticky top-0 hidden h-dvh flex-col overflow-hidden border-e lg:flex print:hidden">
+      <aside className="border-border bg-background sticky top-0 hidden h-dvh flex-col overflow-hidden border-e lg:flex print:hidden">
         {isCollapsed ? (
-          <div className="flex flex-col items-center gap-2 py-4">
+          <div className="flex flex-col items-center gap-2 pt-4 pb-3">
             <Brand showName={false} />
             <button
               type="button"
@@ -93,7 +176,7 @@ export function AppLayout() {
             </button>
           </div>
         ) : (
-          <div className="flex h-16 items-center justify-between gap-3 ps-5 pe-3">
+          <div className="flex h-14 items-center justify-between gap-3 ps-4 pe-2.5">
             <Brand />
             <button
               type="button"
@@ -106,12 +189,13 @@ export function AppLayout() {
             </button>
           </div>
         )}
+        <QuickActions isRail={isCollapsed} />
         <SidebarNav isRail={isCollapsed} />
         <UserMenu isRail={isCollapsed} />
       </aside>
 
       {/* Mobile top bar */}
-      <div className="border-border bg-surface flex h-14 items-center gap-3 border-b px-4 lg:hidden print:hidden">
+      <div className="border-border bg-surface/90 sticky top-0 z-30 flex h-13 items-center gap-3 border-b px-4 backdrop-blur lg:hidden print:hidden">
         <button
           type="button"
           onClick={() => {
@@ -123,6 +207,14 @@ export function AppLayout() {
           <Menu aria-hidden className="size-5" />
         </button>
         <Brand />
+        <button
+          type="button"
+          onClick={openCommandPalette}
+          aria-label="Search"
+          className={cn(ICON_BUTTON, 'ms-auto')}
+        >
+          <Search aria-hidden className="size-5" />
+        </button>
       </div>
 
       {/* Mobile drawer */}
@@ -134,13 +226,14 @@ export function AppLayout() {
             onClick={closeDrawer}
             className="bg-scrim absolute inset-0 size-full"
           />
-          <aside className="bg-surface shadow-overlay absolute inset-y-0 start-0 flex w-(--sidebar-width) max-w-[85vw] flex-col">
+          <aside className="bg-background shadow-overlay absolute inset-y-0 start-0 flex w-(--sidebar-width) max-w-[85vw] flex-col">
             <div className="flex h-14 items-center justify-between ps-5 pe-3">
               <Brand />
               <button type="button" onClick={closeDrawer} aria-label="Close menu" className={ICON_BUTTON}>
                 <X aria-hidden className="size-5" />
               </button>
             </div>
+            <QuickActions isRail={false} onNavigate={closeDrawer} />
             <SidebarNav isRail={false} onNavigate={closeDrawer} />
             <UserMenu isRail={false} />
           </aside>
@@ -149,7 +242,7 @@ export function AppLayout() {
 
       <main id="main" ref={mainRef} tabIndex={-1} className="min-w-0">
         <ViewTransition key={pathname} default="none" enter="page-in" exit="page-out">
-          <div className="mx-auto max-w-[100rem] pb-12">
+          <div className="mx-auto max-w-(--page-max)">
             <Suspense fallback={<Spinner />}>
               <Outlet />
             </Suspense>
@@ -157,6 +250,7 @@ export function AppLayout() {
         </ViewTransition>
       </main>
       <Toaster />
+      <CommandPalette />
     </div>
   );
 }

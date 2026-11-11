@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { toast } from '@/components/feedback/toast';
 import { Card, CardHeader } from '@/components/ui/Card';
+import { Switch } from '@/components/ui/Choice';
 import { Select } from '@/components/ui/Select';
 import { hotelOptionsQuery } from '@/features/hotels';
 import { useCan } from '@/lib/auth/session';
@@ -84,7 +85,7 @@ export function ConversionMatrix() {
       {pairs.length === 0 ? (
         <EmptyState title="Nothing to convert" hint="Conversion needs room types of different sizes" />
       ) : (
-        <ul className="divide-border divide-y">
+        <ul className="divide-border-subtle divide-y">
           {pairs.map((pair) => {
             const label = `Sell ${pair.source.name} as ${pair.soldAs.name}`;
             const own = ruleFor(hotelId, pair);
@@ -92,23 +93,19 @@ export function ConversionMatrix() {
             return (
               <li
                 key={`${pair.source.id}-${pair.soldAs.id}`}
-                className="flex flex-wrap items-center justify-between gap-3 px-5 py-3"
+                className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
               >
                 <span className="text-foreground text-sm">{label}</span>
                 {hotelId === null ? (
-                  <label className="text-muted flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      className="accent-primary size-4"
-                      aria-label={label}
-                      checked={own?.allowed ?? false}
-                      disabled={!canManage}
-                      onChange={(event) => {
-                        handleSetRule(pair, event.target.checked);
-                      }}
-                    />
-                    {own?.allowed ? 'Allowed' : 'Not allowed'}
-                  </label>
+                  <Switch
+                    label={<span className="text-muted">{own?.allowed ? 'Allowed' : 'Not allowed'}</span>}
+                    aria-label={label}
+                    checked={own?.allowed ?? false}
+                    disabled={!canManage}
+                    onChange={(event) => {
+                      handleSetRule(pair, event.target.checked);
+                    }}
+                  />
                 ) : (
                   <Select
                     aria-label={label}
@@ -133,7 +130,7 @@ export function ConversionMatrix() {
           })}
         </ul>
       )}
-      <p className="border-border text-muted border-t px-5 py-3 text-xs">
+      <p className="border-border text-muted border-t px-4 py-3 text-xs">
         A converted sale still draws on, and is costed at, the purchased type. It adds no rooms.
       </p>
     </Card>

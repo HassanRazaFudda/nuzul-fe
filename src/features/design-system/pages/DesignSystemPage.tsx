@@ -4,15 +4,19 @@ import { useState } from 'react';
 
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
 import { DataTable, type DataTableSort } from '@/components/data-table/DataTable';
+import { Callout } from '@/components/feedback/Callout';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { TableSkeleton } from '@/components/feedback/TableSkeleton';
 import { FormField } from '@/components/form/FormField';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader } from '@/components/ui/Card';
+import { Segmented, Switch } from '@/components/ui/Choice';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/Input';
+import { Menu } from '@/components/ui/Menu';
 import { Select } from '@/components/ui/Select';
 import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { TabBar } from '@/components/ui/TabBar';
@@ -68,7 +72,7 @@ const COLUMNS = columnHelper.columns([
 ]);
 
 const SWATCHES = [
-  ['primary (ink)', 'bg-primary'],
+  ['primary (Junaidi red)', 'bg-primary'],
   ['accent (Junaidi red)', 'bg-accent'],
   ['secondary', 'bg-secondary'],
   ['muted', 'bg-muted'],
@@ -98,13 +102,13 @@ export function DesignSystemPage() {
         title="Design system"
         action={<Button icon={<Plus aria-hidden className="size-4" />}>Primary action</Button>}
       />
-      <div className="space-y-5 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         <Card>
           <CardHeader
             title="Colour tokens"
             subtitle="Ink acts, red asks for a look, green and amber carry state"
           />
-          <div className="grid grid-cols-3 gap-4 p-5 sm:grid-cols-5 lg:grid-cols-9">
+          <div className="grid grid-cols-3 gap-4 p-4 sm:grid-cols-5 lg:grid-cols-9">
             {SWATCHES.map(([name, className]) => (
               <div key={name}>
                 <div className={`rounded-control border-border h-12 border ${className}`} />
@@ -116,7 +120,7 @@ export function DesignSystemPage() {
 
         <Card>
           <CardHeader title="Buttons" />
-          <div className="flex flex-wrap items-center gap-2 p-5">
+          <div className="flex flex-wrap items-center gap-2 p-4">
             <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
             <Button variant="danger-ghost">Danger ghost</Button>
@@ -137,8 +141,58 @@ export function DesignSystemPage() {
 
         <div className="grid gap-5 lg:grid-cols-2">
           <Card>
+            <CardHeader
+              title="States and flags"
+              subtitle="A record's state is a pill; so is a flag that needs a look"
+            />
+            <div className="flex flex-wrap gap-2 px-4 pb-4">
+              <Badge tone="neutral">Draft</Badge>
+              <Badge tone="success">Confirmed</Badge>
+              <Badge tone="warning">Terminated</Badge>
+              <Badge tone="danger">Cancelled</Badge>
+              <Badge tone="danger">Overbooked</Badge>
+              <Badge tone="warning">Needs vendor</Badge>
+            </div>
+          </Card>
+          <Card>
+            <CardHeader title="Choices and actions" subtitle="Rare and destructive actions live behind …" />
+            <div className="flex flex-wrap items-center gap-4 px-4 pb-4">
+              <Segmented
+                legend="Rate type"
+                options={[
+                  { value: 'occupancy', label: 'By occupancy' },
+                  { value: 'flat', label: 'Flat' },
+                ]}
+                register={{ name: 'example-rate', defaultChecked: true }}
+              />
+              <Switch label="Rate per night" defaultChecked />
+              <Menu
+                label="More actions for the example"
+                items={[
+                  { label: 'Lock', hint: 'No one can change it until unlocked' },
+                  { label: 'Cancel', tone: 'danger' },
+                ]}
+              />
+            </div>
+          </Card>
+        </div>
+
+        <Callout
+          tone="danger"
+          title="A room type on this contract is overbooked"
+          action={
+            <Button variant="secondary" size="sm">
+              Buy rooms
+            </Button>
+          }
+        >
+          A problem is said once, with the action that fixes it beside it
+        </Callout>
+
+        <div className="grid gap-5 lg:grid-cols-2">
+          <Card>
             <CardHeader title="Form fields" />
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
+            <div className="grid gap-4 p-4 sm:grid-cols-2">
               <FormField label="Hotel" required hint="Required on every purchase">
                 {(field) => <Input {...field} placeholder="Artal International" />}
               </FormField>
@@ -159,7 +213,7 @@ export function DesignSystemPage() {
 
           <Card>
             <CardHeader title="Inventory states" subtitle="Words first, never colour alone" />
-            <div className="flex flex-wrap items-center gap-2 p-5">
+            <div className="flex flex-wrap items-center gap-2 p-4">
               <InventoryStateTag state="available" rooms={89} />
               <InventoryStateTag state="full" />
               <InventoryStateTag state="overbooked" rooms={16} />
@@ -176,7 +230,7 @@ export function DesignSystemPage() {
 
         <Card>
           <CardHeader title="Data table" subtitle="SRS Case 1 through the real ledger engine" />
-          <div className="space-y-4 p-5">
+          <div className="space-y-4 p-4">
             <TabBar
               label="Table states"
               value={stateView}

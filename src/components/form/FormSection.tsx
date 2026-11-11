@@ -13,10 +13,10 @@ interface FormSectionProps {
 /** One part of a long form. Parts share a surface and are split by a hairline, not boxed. */
 export function FormSection({ title, action, className, children }: FormSectionProps) {
   return (
-    <section className={cn('border-border space-y-4 border-t p-5 first:border-t-0', className)}>
+    <section className={cn('border-border space-y-4 border-t p-4 first:border-t-0', className)}>
       {(title ?? action) && (
         <div className="flex flex-wrap items-center justify-between gap-2">
-          {title && <h2 className="text-foreground text-[0.9375rem] font-semibold">{title}</h2>}
+          {title && <h2 className="text-foreground text-sm font-semibold">{title}</h2>}
           {action}
         </div>
       )}

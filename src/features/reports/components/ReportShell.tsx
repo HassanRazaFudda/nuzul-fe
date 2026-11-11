@@ -1,6 +1,7 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 import { Download, Printer } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
+import { NavLink } from 'react-router';
 
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { QueryErrorState } from '@/components/feedback/QueryErrorState';
@@ -9,7 +10,10 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { getErrorMessage } from '@/lib/api/api-error';
 import { useCan } from '@/lib/auth/session';
+import { cn } from '@/lib/cn';
 import { saveWorkbook, type WorkbookSheet } from '@/lib/export/workbook';
+
+import { REPORTS } from './report-catalog';
 
 interface ReportShellProps<TData> {
   title: string;
@@ -60,13 +64,14 @@ export function ReportShell<TData>({
     <>
       <PageHeader
         title={title}
+        breadcrumbs={[{ label: 'Reports', to: '/reports' }]}
         subtitle={[subtitle, `Amounts in ${currency}`].filter(Boolean).join(' · ')}
         action={
           <div className="flex flex-wrap gap-2 print:hidden">
             {canExport && (
               <Button
                 variant="secondary"
-                icon={<Download aria-hidden className="size-4" />}
+                icon={<Download aria-hidden />}
                 disabled={!data}
                 isLoading={isExporting}
                 onClick={() => void handleExport()}
@@ -76,18 +81,36 @@ export function ReportShell<TData>({
             )}
             <Button
               variant="secondary"
-              icon={<Printer aria-hidden className="size-4" />}
+              icon={<Printer aria-hidden />}
               disabled={!data}
               onClick={() => {
                 window.print();
               }}
             >
-              Print / PDF
+              Print
             </Button>
           </div>
         }
       />
-      <div className="space-y-5 p-5 lg:p-8 print:p-0">
+      <div className="space-y-4 px-(--page-gutter) pt-4 pb-10 print:p-0">
+        <nav aria-label="Reports" className="-mx-1 flex gap-1 overflow-x-auto px-1 print:hidden">
+          {REPORTS.map((report) => (
+            <NavLink
+              key={report.to}
+              to={report.to}
+              className={({ isActive }) =>
+                cn(
+                  'rounded-pill text-meta inline-flex h-7 shrink-0 items-center px-3 whitespace-nowrap transition-colors duration-150',
+                  isActive
+                    ? 'bg-surface text-foreground shadow-raised ring-border font-medium ring-1'
+                    : 'text-secondary hover:bg-surface-muted hover:text-foreground',
+                )
+              }
+            >
+              {report.short}
+            </NavLink>
+          ))}
+        </nav>
         {filters}
         {exportError !== null && (
           <ErrorNotice title="The file could not be saved">{getErrorMessage(exportError)}</ErrorNotice>

@@ -3,34 +3,37 @@ import { describe, expect, it } from 'vitest';
 
 import { purchaseSchema } from '@/features/purchases';
 import { mockDb } from '@/mock-api/db';
-import { renderApp } from '@/test/render';
+import { chooseFromMenu, renderApp } from '@/test/render';
 
 const DOUBLE_POOL = '/inventory/hotel-artal/double';
 
 describe('the ledger overview', () => {
-  it('lists pools with the overbooked one first', async () => {
+  it('groups room types under their hotel, the overbooked hotel first', async () => {
     renderApp('/inventory');
 
     const table = await screen.findByRole('table', { name: 'Rooms ledger' });
     await within(table).findByText('Overbooked by 5');
     const rows = within(table).getAllByRole('row');
     expect(
-      within(rows[1] ?? table).getByRole('link', { name: 'Artal International Double' }),
+      within(rows[1] ?? table).getByRole('columnheader', { name: 'Artal International 2 room types' }),
     ).toBeInTheDocument();
-    expect(within(rows[2] ?? table).getByText('Fully utilised')).toBeInTheDocument();
+    expect(
+      within(rows[2] ?? table).getByRole('link', { name: 'Artal International Double' }),
+    ).toBeInTheDocument();
+    expect(within(rows[3] ?? table).getByText('Sold out')).toBeInTheDocument();
   });
 
   it('keeps the state filter in the URL', async () => {
     const { user, router } = renderApp('/inventory');
     await screen.findByText('Overbooked by 5');
 
-    await user.selectOptions(screen.getByLabelText('Filter by state'), 'full');
+    await user.click(screen.getByRole('tab', { name: 'Sold out' }));
 
     await waitFor(() => {
       expect(screen.queryByText('Overbooked by 5')).not.toBeInTheDocument();
     });
     const table = screen.getByRole('table', { name: 'Rooms ledger' });
-    expect(within(table).getByText('Fully utilised')).toBeInTheDocument();
+    expect(within(table).getByText('Sold out')).toBeInTheDocument();
     expect(router.state.location.search).toBe('?status=full');
   });
 
@@ -52,7 +55,7 @@ describe('the ledger overview', () => {
 });
 
 describe('a pool', () => {
-  it('shows the grid first, then what to buy, then the Result', async () => {
+  it('shows what to buy first, then the grid, then the Result', async () => {
     renderApp(DOUBLE_POOL);
 
     const grid = await screen.findByRole('table', { name: 'Night by night' });
@@ -60,8 +63,8 @@ describe('a pool', () => {
     const buy = screen.getByRole('link', { name: 'Purchase 5 rooms' });
     expect(within(grid).getByText('-5')).toBeInTheDocument();
     expect(within(grid).getByText('Overbooked by 5')).toBeInTheDocument();
-    expect(grid.compareDocumentPosition(buy) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(buy.compareDocumentPosition(result) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(buy.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(grid.compareDocumentPosition(result) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('warns when the Result hides a shortage', async () => {
@@ -115,7 +118,7 @@ describe('a pool', () => {
     await user.click(screen.getByRole('button', { name: 'Save as draft' }));
     await user.click(await screen.findByRole('button', { name: 'Confirm' }));
     await user.click(await screen.findByRole('button', { name: 'Confirm purchase' }));
-    await screen.findByRole('button', { name: 'Cancel purchase' });
+    await screen.findByRole('button', { name: /^More actions/ });
 
     await router.navigate(DOUBLE_POOL);
 
@@ -123,18 +126,18 @@ describe('a pool', () => {
     await waitFor(() => {
       expect(within(grid).queryByText(/^Overbooked/)).not.toBeInTheDocument();
     });
-    expect(within(grid).getByText('Fully utilised')).toBeInTheDocument();
+    expect(within(grid).getByText('Sold out')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /^Purchase / })).not.toBeInTheDocument();
   });
 
   it('shows the shortage again when a purchase is cancelled', async () => {
     const { user, router } = renderApp('/purchases/purchase-1');
-    await user.click(await screen.findByRole('button', { name: 'Cancel purchase' }));
+    await chooseFromMenu(user, /^More actions/, 'Cancel purchase');
     const dialog = await screen.findByRole('dialog');
     await user.type(within(dialog).getByLabelText(/^Reason/), 'Vendor withdrew');
     await user.click(within(dialog).getByRole('button', { name: /^Cancel purchase/ }));
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Cancel purchase' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /^More actions/ })).not.toBeInTheDocument();
     });
 
     await router.navigate('/inventory/hotel-artal/triple');

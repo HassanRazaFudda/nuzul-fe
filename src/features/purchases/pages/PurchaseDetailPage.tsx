@@ -2,6 +2,9 @@ import { useQueryClient, useSuspenseQueries, useSuspenseQuery } from '@tanstack/
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
+import { Ban, Check, Lock, LockOpen, Pencil, Trash2, XCircle } from 'lucide-react';
+
+import { Callout } from '@/components/feedback/Callout';
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { toast } from '@/components/feedback/toast';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -9,6 +12,7 @@ import { Button } from '@/components/ui/Button';
 import { buttonClass } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { Menu } from '@/components/ui/Menu';
 import { Detail } from '@/components/ui/Detail';
 import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { calendarMonthsQuery, formatDay } from '@/features/calendar';
@@ -155,29 +159,65 @@ export function PurchaseDetailPage() {
     <>
       <PageHeader
         title={number}
-        subtitle={`${purchase.hotelName} from ${purchase.vendorName}`}
+        breadcrumbs={[{ label: 'Purchases', to: `/purchases?status=${status}` }]}
+        subtitle={
+          <>
+            <span className="text-foreground font-medium">{purchase.hotelName}</span> from{' '}
+            {purchase.vendorName}
+          </>
+        }
         status={<PurchaseStatusBadge status={status} />}
         action={
           <>
+            <Menu
+              label={`More actions for ${number}`}
+              items={[
+                status === 'draft' &&
+                  can('purchase.delete') && {
+                    label: 'Delete draft',
+                    icon: <Trash2 aria-hidden />,
+                    tone: 'danger',
+                    onSelect: () => {
+                      setPending('delete');
+                    },
+                  },
+                status === 'confirmed' &&
+                  can('purchase.unlock') && {
+                    label: 'Lock',
+                    icon: <Lock aria-hidden />,
+                    hint: 'No one can change it until unlocked',
+                    onSelect: () => {
+                      handleLock(true);
+                    },
+                  },
+                status === 'confirmed' &&
+                  can('purchase.terminate') && {
+                    label: 'Terminate',
+                    icon: <Ban aria-hidden />,
+                    hint: 'End it early and release the remaining nights',
+                    to: `/purchases/${id}/terminate`,
+                  },
+                status === 'confirmed' &&
+                  can('purchase.delete') && {
+                    label: 'Cancel purchase',
+                    icon: <XCircle aria-hidden />,
+                    hint: 'As if it never happened; kept for history',
+                    tone: 'danger',
+                    onSelect: () => void startReview('cancel'),
+                  },
+              ]}
+            />
             {status === 'draft' && (
               <>
-                {can('purchase.delete') && (
-                  <Button
-                    variant="danger-ghost"
-                    onClick={() => {
-                      setPending('delete');
-                    }}
-                  >
-                    Delete
-                  </Button>
-                )}
                 {can('purchase.edit') && (
                   <Link to={`/purchases/${id}/edit`} className={buttonClass('secondary')}>
+                    <Pencil aria-hidden />
                     Edit
                   </Link>
                 )}
                 {can('purchase.confirm') && (
                   <Button
+                    icon={<Check aria-hidden />}
                     onClick={() => {
                       setPending('confirm');
                     }}
@@ -187,39 +227,16 @@ export function PurchaseDetailPage() {
                 )}
               </>
             )}
-            {status === 'confirmed' && (
-              <>
-                {can('purchase.delete') && (
-                  <Button variant="danger-ghost" onClick={() => void startReview('cancel')}>
-                    Cancel purchase
-                  </Button>
-                )}
-                {can('purchase.unlock') && (
-                  <Button
-                    variant="ghost"
-                    isLoading={setLocked.isPending}
-                    onClick={() => {
-                      handleLock(true);
-                    }}
-                  >
-                    Lock
-                  </Button>
-                )}
-                {can('purchase.terminate') && (
-                  <Link to={`/purchases/${id}/terminate`} className={buttonClass('secondary')}>
-                    Terminate
-                  </Link>
-                )}
-                {can('purchase.edit') && (
-                  <Link to={`/purchases/${id}/edit`} className={buttonClass('primary')}>
-                    Edit
-                  </Link>
-                )}
-              </>
+            {status === 'confirmed' && can('purchase.edit') && (
+              <Link to={`/purchases/${id}/edit`} className={buttonClass('primary')}>
+                <Pencil aria-hidden />
+                Edit
+              </Link>
             )}
             {status === 'locked' && can('purchase.unlock') && (
               <Button
                 variant="secondary"
+                icon={<LockOpen aria-hidden />}
                 isLoading={setLocked.isPending}
                 onClick={() => {
                   handleLock(false);
@@ -236,15 +253,31 @@ export function PurchaseDetailPage() {
           </>
         }
       />
-      <div className="space-y-5 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
+        {status === 'draft' && (
+          <Callout tone="neutral" title="Draft: these rooms are not on the ledger yet">
+            Check the stay and room lines below, then confirm to add them to the pools.
+          </Callout>
+        )}
         {actionError !== null && (
           <ErrorNotice title="This could not be done">{getErrorMessage(actionError)}</ErrorNotice>
         )}
 
         <SummaryStrip>
-          <Stat label="Nights" value={nights} hint={`${String(roomTotal)} rooms`} />
+          <Stat
+            label="Stay"
+            value={`${String(nights)} ${nights === 1 ? 'night' : 'nights'}`}
+            hint={`${formatDay(purchase.checkIn, months)} to ${formatDay(purchase.checkOut, months)}`}
+          />
+          <Stat
+            label="Rooms"
+            value={roomTotal}
+            hint={`${(roomTotal * nights).toLocaleString('en-GB')} room-nights`}
+          />
           <Stat label="Room cost" value={formatMoney(purchase.roomCost.amount, format)} />
-          <Stat label="Meal cost" value={formatMoney(purchase.mealCost.amount, format)} />
+          {meal.pricing === 'separate' && (
+            <Stat label="Meal cost" value={formatMoney(purchase.mealCost.amount, format)} />
+          )}
           <Stat
             label="Total"
             value={formatMoney(purchase.total.amount, format)}
@@ -253,8 +286,8 @@ export function PurchaseDetailPage() {
         </SummaryStrip>
 
         <Card>
-          <CardHeader title="Stay" />
-          <dl className="grid gap-x-6 gap-y-4 p-5 sm:grid-cols-2 xl:grid-cols-4">
+          <CardHeader title="Details" />
+          <dl className="grid gap-x-6 gap-y-4 px-4 pb-4 sm:grid-cols-2 xl:grid-cols-4">
             <Detail label="Check-in">{dayLabel(purchase.checkIn)}</Detail>
             <Detail label="Check-out">{dayLabel(purchase.checkOut)}</Detail>
             <Detail label="Rate">
@@ -269,7 +302,7 @@ export function PurchaseDetailPage() {
               {meal.pricing === 'separate' && (
                 <span className="tabular-nums">
                   {formatMoney(meal.rate, format)}, {MEAL_BASIS_LABELS[meal.basis].toLowerCase()}
-                  <span className="text-muted block text-[0.8125rem]">
+                  <span className="text-muted text-meta block">
                     {CHARGE_BASIS_LABELS[meal.chargeBasis]}
                     {purchase.mealMaximum !== null &&
                       ` · at most ${formatMoney(purchase.mealMaximum, format)}, not in the total`}
@@ -286,22 +319,22 @@ export function PurchaseDetailPage() {
         </Card>
 
         <Card className="overflow-hidden">
-          <CardHeader title="Room lines" />
-          <div className="overflow-x-auto">
-            <table className="mt-2 w-full text-sm">
+          <CardHeader title="Room lines" meta={purchase.lines.length} divided />
+          <div className="relative overflow-x-auto">
+            <table className="w-full text-sm">
               <caption className="sr-only">Room lines</caption>
               <thead>
-                <tr className="text-muted border-border border-b text-xs">
-                  <th scope="col" className="px-5 py-2 text-start font-medium">
+                <tr className="bg-surface-raised text-muted border-border border-b text-xs">
+                  <th scope="col" className="h-8 px-4 text-start font-medium">
                     Room type
                   </th>
-                  <th scope="col" className="px-5 py-2 text-end font-medium">
+                  <th scope="col" className="h-8 px-4 text-end font-medium">
                     Rooms
                   </th>
-                  <th scope="col" className="px-5 py-2 text-end font-medium">
+                  <th scope="col" className="h-8 px-4 text-end font-medium">
                     Cost rate ({currencyCode})
                   </th>
-                  <th scope="col" className="px-5 py-2 text-end font-medium">
+                  <th scope="col" className="h-8 px-4 text-end font-medium">
                     Cost ({currencyCode})
                   </th>
                 </tr>
@@ -310,16 +343,16 @@ export function PurchaseDetailPage() {
                 {purchase.lines.map((line) => (
                   <tr
                     key={line.roomTypeId}
-                    className="border-border text-foreground border-b last:border-b-0"
+                    className="border-border-subtle text-foreground border-b last:border-b-0"
                   >
-                    <td className="px-5 py-2.5">
+                    <td className="px-4 py-2.5">
                       {roomTypes.find((type) => type.id === line.roomTypeId)?.name ?? line.roomTypeId}
                     </td>
-                    <td className="px-5 py-2.5 text-end tabular-nums">{line.rooms}</td>
-                    <td className="px-5 py-2.5 text-end tabular-nums">
+                    <td className="px-4 py-2.5 text-end tabular-nums">{line.rooms}</td>
+                    <td className="px-4 py-2.5 text-end tabular-nums">
                       {formatAmount(line.rate, format.decimals)}
                     </td>
-                    <td className="px-5 py-2.5 text-end tabular-nums">
+                    <td className="px-4 py-2.5 text-end tabular-nums">
                       {formatAmount(line.cost.amount, format.decimals)}
                     </td>
                   </tr>
@@ -332,7 +365,7 @@ export function PurchaseDetailPage() {
         {purchase.termination && (
           <Card>
             <CardHeader title="Terminated" />
-            <dl className="grid gap-x-6 gap-y-3 p-5 text-sm sm:grid-cols-2">
+            <dl className="grid gap-x-6 gap-y-3 p-4 text-sm sm:grid-cols-2">
               <div>
                 <dt className="text-muted text-xs">Termination date</dt>
                 <dd className="text-foreground">{dayLabel(purchase.termination.terminationDate)}</dd>

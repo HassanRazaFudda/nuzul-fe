@@ -40,7 +40,7 @@ describe('profit & loss', () => {
 
     expect(router.state.location.search).toBe(`${MAY}&currency=PKR`);
     const summary = await screen.findByRole('region', { name: 'Summary' });
-    const headline = within(summary).getByText('Profit, known portion').parentElement;
+    const headline = within(summary).getByText('Profit so far').parentElement;
     await waitFor(() => {
       expect(within(headline ?? document.body).getByText(/^PKR /)).toBeInTheDocument();
     });
@@ -49,11 +49,12 @@ describe('profit & loss', () => {
   it('shows an exchange difference only when revaluing', async () => {
     const { user } = renderApp(`/profit-loss${MAY}&currency=PKR`);
     await screen.findByText(/^Partial/);
-    expect(screen.queryByText('Exchange difference (not realised)')).not.toBeInTheDocument();
+    expect(screen.queryByText('Exchange difference')).not.toBeInTheDocument();
 
+    await user.click(screen.getByRole('button', { name: 'More filters' }));
     await user.selectOptions(screen.getByLabelText('Exchange rates'), 'revaluation');
 
-    expect(await screen.findByText('Exchange difference (not realised)')).toBeInTheDocument();
+    expect(await screen.findByText('Exchange difference')).toBeInTheDocument();
   });
 
   it('flags meal income with no meal bought', async () => {
@@ -62,7 +63,7 @@ describe('profit & loss', () => {
 
     renderApp(`/profit-loss${MAY}`);
 
-    expect(await screen.findByText('Meal cost missing')).toBeInTheDocument();
+    expect(await screen.findByText('Meal margin is overstated')).toBeInTheDocument();
   });
 
   it('shows termination adjustments dated in the period as their own line', async () => {

@@ -83,7 +83,7 @@ export function AuditLogPage() {
   return (
     <>
       <PageHeader title="Audit log" />
-      <div className="p-5 lg:p-8">
+      <div className="px-(--page-gutter) pt-4 pb-10">
         <Card className="overflow-hidden">
           <fieldset className="border-border grid gap-3 border-b p-4 sm:grid-cols-2 lg:grid-cols-5">
             <legend className="sr-only">Filters</legend>
@@ -174,7 +174,7 @@ export function AuditLogPage() {
               <QueryErrorState error={query.error} onRetry={() => void query.refetch()} />
             </div>
           ) : query.data.length === 0 ? (
-            <p className="text-muted px-5 py-12 text-center text-sm">
+            <p className="text-muted px-4 py-12 text-center text-sm">
               {Object.values(filters).some(Boolean)
                 ? 'Nothing matches these filters'
                 : 'No changes recorded yet'}
@@ -185,7 +185,7 @@ export function AuditLogPage() {
                 const base = LINKS[entry.entity];
                 const changes = changedFields(entry);
                 return (
-                  <li key={entry.id} className="space-y-1 px-5 py-3 text-sm">
+                  <li key={entry.id} className="space-y-1 px-4 py-3 text-sm">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <span className="text-foreground">
                         <span className="font-medium">{who(entry.userId)}</span> ·{' '}

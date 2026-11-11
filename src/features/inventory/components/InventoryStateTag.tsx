@@ -7,18 +7,17 @@ interface InventoryStateTagProps {
   rooms?: number;
 }
 
-/** Inventory state: always words, never colour alone. Only a shortage asks for a look. */
+/**
+ * Inventory state in the words an agent uses: rooms left to sell, sold out, or overbooked.
+ * Always words, never colour alone; only a shortage is red.
+ */
 export function InventoryStateTag({ state, rooms }: InventoryStateTagProps) {
   switch (state) {
     case 'overbooked':
-      return (
-        <Badge look="text" tone="danger">
-          Overbooked{rooms ? ` by ${rooms}` : ''}
-        </Badge>
-      );
+      return <Badge tone="danger">Overbooked{rooms ? ` by ${String(rooms)}` : ''}</Badge>;
     case 'full':
-      return <Badge tone="warning">Fully utilised</Badge>;
+      return <Badge tone="neutral">Sold out</Badge>;
     case 'available':
-      return <Badge tone="success">Available{rooms ? `: ${rooms}` : ''}</Badge>;
+      return <Badge tone="success">{rooms ? `${String(rooms)} available` : 'Available'}</Badge>;
   }
 }

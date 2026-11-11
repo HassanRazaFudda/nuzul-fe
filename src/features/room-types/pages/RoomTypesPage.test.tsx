@@ -11,7 +11,7 @@ const ruleById = (id: string) => mockDb.get('conversionRules', id, conversionRul
 describe('RoomTypesPage', () => {
   it('is off by default, and turning a pair on is saved', async () => {
     const { user } = renderApp('/room-types');
-    const box = await screen.findByRole('checkbox', { name: 'Sell Quad as Double' });
+    const box = await screen.findByRole('switch', { name: 'Sell Quad as Double' });
     expect(box).not.toBeChecked();
 
     await user.click(box);
@@ -50,6 +50,6 @@ describe('RoomTypesPage', () => {
     await user.type(screen.getByLabelText(/^Name/), 'Quint');
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(await screen.findByRole('checkbox', { name: 'Sell Quint as Double' })).toBeInTheDocument();
+    expect(await screen.findByRole('switch', { name: 'Sell Quint as Double' })).toBeInTheDocument();
   });
 });

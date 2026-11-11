@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { mockDb } from '@/mock-api/db';
-import { renderApp } from '@/test/render';
+import { chooseFromMenu, renderApp } from '@/test/render';
 
 import { partnerSchema } from '../api/partner.schemas';
 
@@ -10,14 +10,14 @@ describe('vendors and agents', () => {
   it('starts a form on its first field, so typing never hits the close button', async () => {
     const { user } = renderApp('/vendors');
 
-    await user.click(await screen.findByRole('button', { name: 'Add vendor' }));
+    await user.click(await screen.findByRole('button', { name: 'New vendor' }));
 
     expect(screen.getByLabelText(/^Name/)).toHaveFocus();
   });
 
   it('refuses an empty name, points to the field, then adds the vendor', async () => {
     const { user } = renderApp('/vendors');
-    await user.click(await screen.findByRole('button', { name: 'Add vendor' }));
+    await user.click(await screen.findByRole('button', { name: 'New vendor' }));
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -36,7 +36,7 @@ describe('vendors and agents', () => {
 
   it('rejects a bad email', async () => {
     const { user } = renderApp('/vendors');
-    await user.click(await screen.findByRole('button', { name: 'Add vendor' }));
+    await user.click(await screen.findByRole('button', { name: 'New vendor' }));
     await user.type(screen.getByLabelText(/^Name/), 'X');
     await user.type(screen.getByLabelText('Email'), 'not-an-email');
 
@@ -49,18 +49,19 @@ describe('vendors and agents', () => {
   it('moves a deactivated vendor to the Inactive tab, without deleting it', async () => {
     const { user } = renderApp('/vendors');
 
-    await user.click(await screen.findByRole('button', { name: 'Deactivate Sample Vendor A' }));
+    await chooseFromMenu(user, 'Actions for Sample Vendor A', 'Deactivate');
     await waitFor(async () => {
       expect((await mockDb.get('vendors', 'vendor-a', partnerSchema))?.active).toBe(false);
     });
     await user.click(screen.getByRole('tab', { name: /Inactive/ }));
 
-    expect(await screen.findByRole('button', { name: 'Activate Sample Vendor A' })).toBeInTheDocument();
+    await user.click(await screen.findByRole('button', { name: 'Actions for Sample Vendor A' }));
+    expect(await screen.findByRole('menuitem', { name: /^Activate/ })).toBeInTheDocument();
   });
 
   it('asks before discarding unsaved work', async () => {
     const { user } = renderApp('/agents');
-    await user.click(await screen.findByRole('button', { name: 'Add agent' }));
+    await user.click(await screen.findByRole('button', { name: 'New agent' }));
     await user.type(screen.getByLabelText(/^Name/), 'Half typed');
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));

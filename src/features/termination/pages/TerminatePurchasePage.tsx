@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button';
 import { buttonClass } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { DateInput } from '@/components/ui/DateInput';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
@@ -130,7 +131,7 @@ export function TerminatePurchasePage() {
     return (
       <>
         <PageHeader title={`Terminate ${purchase.number}`} />
-        <div className="p-5 lg:p-8">
+        <div className="px-(--page-gutter) pt-4 pb-10">
           <Card>
             <EmptyState
               title="Only a confirmed purchase can be terminated"
@@ -202,34 +203,46 @@ export function TerminatePurchasePage() {
     <>
       <PageHeader
         title={`Terminate ${purchase.number}`}
-        subtitle={`${purchase.hotelName} from ${purchase.vendorName}, ${formatDay(purchase.checkIn, months)} to ${formatDay(purchase.checkOut, months)}`}
+        breadcrumbs={[
+          { label: 'Purchases', to: '/purchases' },
+          { label: purchase.number, to: `/purchases/${id}` },
+        ]}
+        subtitle={
+          <>
+            <span className="text-foreground font-medium">{purchase.hotelName}</span> from{' '}
+            {purchase.vendorName}, {formatDay(purchase.checkIn, months)} to{' '}
+            {formatDay(purchase.checkOut, months)}
+          </>
+        }
       />
-      <form noValidate onSubmit={handleSubmit} className="space-y-5 p-5 lg:p-8">
+      <form noValidate onSubmit={handleSubmit} className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         {saveError !== null && (
           <ErrorNotice title="This could not be saved">{getErrorMessage(saveError)}</ErrorNotice>
         )}
         {showSummary && <FormErrorSummary form={form} labels={{ ...LABELS, ...decisionLabels }} />}
 
         <Card>
-          <CardHeader title="1. Dates and money" />
-          <div className="grid gap-4 p-5 sm:grid-cols-2">
-            <FormField label="Termination date" required error={errors.terminationDate?.message}>
-              {(field) => <Input {...field} type="date" {...form.register('terminationDate')} />}
-            </FormField>
+          <CardHeader title="1. When and why" divided />
+          <div className="grid gap-4 p-4 sm:grid-cols-2">
             <FormField
               label="First released night"
               required
               error={errors.effectiveDate?.message}
-              hint={
-                effectiveDate
-                  ? `${formatDay(effectiveDate, months)}: this night and later leave the ledger`
-                  : 'This night and later leave the ledger'
-              }
+              hint="This night and every later one leave the ledger"
+              aside={effectiveDate ? formatDay(effectiveDate, months) : undefined}
             >
-              {(field) => <Input {...field} type="date" {...form.register('effectiveDate')} />}
+              {(field) => <DateInput {...field} {...form.register('effectiveDate')} />}
+            </FormField>
+            <FormField
+              label="Termination date"
+              required
+              error={errors.terminationDate?.message}
+              hint="When the vendor agreed to end it"
+            >
+              {(field) => <DateInput {...field} {...form.register('terminationDate')} />}
             </FormField>
             <FormField label="Reason" required error={errors.reason?.message} className="sm:col-span-2">
-              {(field) => <Textarea {...field} {...form.register('reason')} />}
+              {(field) => <Textarea {...field} rows={2} className="min-h-16" {...form.register('reason')} />}
             </FormField>
             {(
               [
@@ -258,15 +271,24 @@ export function TerminatePurchasePage() {
         </Card>
 
         <Card>
-          <CardHeader title="2. Sales losing their rooms" />
+          <CardHeader
+            title="2. Sales losing their rooms"
+            meta={isEffectiveUsable && affected.length > 0 ? affected.length : undefined}
+            subtitle={
+              isEffectiveUsable && affected.length > 0
+                ? 'Decide what happens to each before you finish'
+                : undefined
+            }
+            divided
+          />
           {!isEffectiveUsable ? (
-            <p className="text-muted px-5 py-4 text-sm">
+            <p className="text-muted px-4 py-4 text-sm">
               Choose the first released night to see the affected sales
             </p>
           ) : affected.length === 0 ? (
-            <p className="text-muted px-5 py-4 text-sm">No sale uses this purchase from that night on</p>
+            <p className="text-muted px-4 py-4 text-sm">No sale uses this purchase from that night on</p>
           ) : (
-            <ul className="divide-border divide-y">
+            <ul className="divide-border-subtle divide-y">
               {affected.map((line) => (
                 <DecisionRow
                   key={line.sale.id}
@@ -294,17 +316,17 @@ export function TerminatePurchasePage() {
         </Card>
 
         <Card>
-          <CardHeader title="3. Review" />
-          <div className="text-muted p-5 text-sm">
+          <CardHeader title="3. Review" divided />
+          <div className="text-muted p-4 text-sm">
             {impact ? (
               <ImpactPreview impact={impact} names={names} months={months} />
             ) : (
               'Choose the first released night to see the effect'
             )}
           </div>
-          <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-3">
-            <Link to={`/purchases/${id}`} className={buttonClass('secondary')}>
-              Cancel
+          <div className="border-border flex flex-wrap justify-end gap-2 border-t px-4 py-3">
+            <Link to={`/purchases/${id}`} className={buttonClass('ghost')}>
+              Back to {purchase.number}
             </Link>
             <Button type="submit" variant="danger">
               Terminate purchase

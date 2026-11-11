@@ -142,7 +142,7 @@ export function AgreementSettingsPage() {
           </Link>
         }
       />
-      <form noValidate onSubmit={handleSubmit} className="space-y-5 p-5 lg:p-8">
+      <form noValidate onSubmit={handleSubmit} className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         {!canManage && (
           <ErrorNotice title="Read only">
             You need the permission to manage settings to change this.
@@ -156,7 +156,7 @@ export function AgreementSettingsPage() {
         <fieldset disabled={!canManage} className="space-y-5">
           <Card>
             <CardHeader title="Company" />
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
+            <div className="grid gap-4 p-4 sm:grid-cols-2">
               <TextField form={form} name="companyName" label="Company name" />
               <TextField form={form} name="glNumber" label="G.L. No." />
               <TextField form={form} name="ceoName" label="Chief executive" hint="Written as Mr. …" />
@@ -170,7 +170,7 @@ export function AgreementSettingsPage() {
 
           <Card>
             <CardHeader title="Document" />
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
+            <div className="grid gap-4 p-4 sm:grid-cols-2">
               <TextField form={form} name="seasonWord" label="Season word" hint="As in HAJJ 1448 H / 2027" />
               <TextField form={form} name="witness" label="Closing line" />
               <FormField label="Recital" required error={errors.recital?.message} className="sm:col-span-2">
@@ -200,7 +200,7 @@ export function AgreementSettingsPage() {
               title="2. Terms of payment"
               subtitle="**Words between double asterisks** print bold"
             />
-            <ul className="space-y-3 p-5">
+            <ul className="space-y-3 p-4">
               {payment.fields.map((field, index) => (
                 <li key={field.id} className="grid items-start gap-3 sm:grid-cols-[12rem_1fr_auto]">
                   <FormField label="In bold" required error={errors.paymentTerms?.[index]?.lead?.message}>
@@ -241,7 +241,7 @@ export function AgreementSettingsPage() {
               title="3. Terms & conditions"
               subtitle="One bullet per line. **Words between double asterisks** print bold"
             />
-            <ul className="space-y-4 p-5">
+            <ul className="space-y-4 p-4">
               {sections.fields.map((field, index) => (
                 <li key={field.id} className="rounded-control border-border space-y-3 border p-3">
                   <div className="flex flex-wrap items-start gap-2">

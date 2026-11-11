@@ -32,7 +32,7 @@ export function BuyList({ hotelId, roomTypeId, need, months }: BuyListProps) {
   return (
     <ul className="divide-border divide-y">
       {need.map((row) => (
-        <li key={row.from} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 text-sm">
+        <li key={row.from} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
           <span className="text-foreground">
             Buy <span className="font-semibold tabular-nums">{row.buy}</span>{' '}
             {row.buy === 1 ? 'room' : 'rooms'}, <DayCell day={row.from} months={months} /> to{' '}

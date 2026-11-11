@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { purchaseSchema } from '@/features/purchases';
 import { mockDb } from '@/mock-api/db';
-import { renderApp } from '@/test/render';
+import { chooseFromMenu, renderApp } from '@/test/render';
 
 import { contractSchema } from '../api/contract.schemas';
 
@@ -30,6 +30,13 @@ const save = (user: User) => user.click(screen.getByRole('button', { name: 'Save
 
 async function confirmDraft(user: User) {
   await user.click(await screen.findByRole('button', { name: 'Confirm' }));
+}
+
+/** The vendor split is folded into one line until opened. */
+async function vendorRoomsField(user: ReturnType<typeof renderApp>['user']) {
+  const open = screen.queryByRole('button', { name: 'Change vendors' });
+  if (open) await user.click(open);
+  return screen.getByLabelText(/^Vendor rooms/);
 }
 
 describe('contracts list', () => {
@@ -74,7 +81,7 @@ describe('adding a contract', () => {
     const { user } = renderApp('/contracts/new');
     await fillContract(user);
 
-    expect(screen.getByLabelText(/^Vendor rooms/)).toHaveValue(5);
+    expect(await vendorRoomsField(user)).toHaveValue(5);
     await save(user);
 
     expect(await screen.findByRole('heading', { name: 'CON-0005' })).toBeInTheDocument();
@@ -96,7 +103,7 @@ describe('adding a contract', () => {
   it('charges meals, except at a hotel that opted out', async () => {
     const { user } = renderApp('/contracts/new');
     await fillContract(user);
-    await user.selectOptions(screen.getByLabelText('Meal plan'), 'halfboard');
+    await user.click(screen.getByLabelText('Halfboard'));
     expect(screen.getByLabelText(/^Meal rate/)).toHaveValue('75');
     await user.clear(screen.getByLabelText(/^Meal rate/));
     await user.type(screen.getByLabelText(/^Meal rate/), '20');
@@ -110,7 +117,7 @@ describe('adding a contract', () => {
   it('leaves meals off a hotel that opted out', async () => {
     const { user } = renderApp('/contracts/new');
     await fillContract(user);
-    await user.selectOptions(screen.getByLabelText('Meal plan'), 'fullboard');
+    await user.click(screen.getByLabelText('Fullboard'));
     await user.click(screen.getByLabelText('No meals at this hotel'));
     await save(user);
 
@@ -122,11 +129,11 @@ describe('adding a contract', () => {
   it('holds several hotels, and adds them into the grand total', async () => {
     const { user } = renderApp('/contracts/new');
     await fillContract(user);
-    await user.click(screen.getByRole('button', { name: 'Add hotel' }));
+    await user.click(screen.getByRole('button', { name: 'Add another hotel' }));
     await user.selectOptions(screen.getAllByLabelText(/^Hotel \*/)[1] ?? document.body, 'hotel-swissotel');
     await user.type(screen.getAllByLabelText(/^Check-in/)[1] ?? document.body, '2027-05-08');
     await user.type(screen.getAllByLabelText(/^Check-out/)[1] ?? document.body, '2027-05-09');
-    await user.selectOptions(screen.getAllByLabelText(/^Rate type/)[1] ?? document.body, 'flat');
+    await user.click(screen.getAllByLabelText('Flat')[1] ?? document.body);
     await user.type(screen.getByLabelText(/^Flat rate/), '100');
     await user.selectOptions(screen.getAllByLabelText(/^Sold as/)[1] ?? document.body, 'quad');
     await user.type(screen.getAllByLabelText(/^Rooms/)[1] ?? document.body, '1');
@@ -142,7 +149,7 @@ describe('adding a contract', () => {
     const { user } = renderApp('/contracts/new');
     await fillContract(user, '16');
 
-    expect(await screen.findByText('This would overbook')).toBeInTheDocument();
+    expect(await screen.findByText('This sale would overbook')).toBeInTheDocument();
     expect(screen.getByText(/^Artal International, Double: short by/)).toBeInTheDocument();
     await save(user);
 
@@ -157,7 +164,7 @@ describe('adding a contract', () => {
       within(source)
         .getAllByRole('option')
         .map((option) => option.textContent),
-    ).toEqual(['Double']);
+    ).toEqual(['Double (same)']);
   });
 
   it('draws a converted line from the source pool, at the sold-as rate', async () => {
@@ -182,7 +189,7 @@ describe('adding a contract', () => {
   it('refuses vendor rooms above what is free', async () => {
     const { user } = renderApp('/contracts/new');
     await fillContract(user, '16');
-    const vendorRooms = screen.getByLabelText(/^Vendor rooms/);
+    const vendorRooms = await vendorRoomsField(user);
     expect(vendorRooms).toHaveValue(15);
 
     await user.clear(vendorRooms);
@@ -196,7 +203,7 @@ describe('adding a contract', () => {
   it('saves a changed vendor split, and flags rooms left with no vendor', async () => {
     const { user } = renderApp('/contracts/new');
     await fillContract(user);
-    const vendorRooms = screen.getByLabelText(/^Vendor rooms/);
+    const vendorRooms = await vendorRoomsField(user);
     await user.clear(vendorRooms);
     await user.type(vendorRooms, '3');
 
@@ -246,7 +253,9 @@ describe('confirming', () => {
     await waitFor(async () => {
       expect((await stored('CON-0005'))?.status).toBe('confirmed');
     });
-    expect(await screen.findByRole('button', { name: 'Cancel contract' })).toBeInTheDocument();
+    await user.click(await screen.findByRole('button', { name: /^More actions/ }));
+    expect(await screen.findByRole('menuitem', { name: /^Cancel contract/ })).toBeInTheDocument();
+    await user.keyboard('{Escape}');
     expect(screen.getByRole('link', { name: 'Edit' })).toBeInTheDocument();
 
     await router.navigate('/inventory/hotel-artal/double');
@@ -333,7 +342,7 @@ describe('confirming', () => {
 describe('a saved contract', () => {
   it('cancelling gives the rooms back to the ledger', async () => {
     const { user, router } = renderApp('/contracts/contract-2');
-    await user.click(await screen.findByRole('button', { name: 'Cancel contract' }));
+    await chooseFromMenu(user, /^More actions/, 'Cancel contract');
     const dialog = await screen.findByRole('dialog');
     await user.type(within(dialog).getByLabelText(/^Reason/), 'Agent withdrew');
     await user.click(within(dialog).getByRole('button', { name: 'Cancel contract' }));
@@ -398,7 +407,7 @@ describe('a saved contract', () => {
 
   it('deletes a draft, and never reuses its number', async () => {
     const { user, router } = renderApp('/contracts/contract-3');
-    await user.click(await screen.findByRole('button', { name: 'Delete' }));
+    await chooseFromMenu(user, /^More actions/, 'Delete draft');
     await user.click(await screen.findByRole('button', { name: 'Delete draft' }));
     await waitFor(() => {
       expect(router.state.location.pathname).toBe('/contracts');

@@ -58,6 +58,7 @@ export const ledgerApi = {
           hotel: (pool) => pool.hotelName,
           roomType: (pool) => pool.roomTypeName,
         },
+        groupKey: (pool) => pool.hotelId,
       },
     );
   },

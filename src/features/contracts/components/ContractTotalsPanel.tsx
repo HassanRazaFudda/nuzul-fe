@@ -57,7 +57,7 @@ export function ContractTotalsPanel({ control, currencies, roomTypes, hotelName 
   const pkr = moneyLine(totals.total, code, usableRate(values.rateToPkr)).amountPkr;
 
   return (
-    <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 p-5 text-sm">
+    <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 px-4 pb-4 text-sm">
       {totals.hotels.map((hotel, index) => (
         <div key={index} className="col-span-2 grid grid-cols-subgrid">
           <dt className="text-muted truncate">
@@ -73,7 +73,7 @@ export function ContractTotalsPanel({ control, currencies, roomTypes, hotelName 
       <dt className="text-muted">Meals</dt>
       <dd className="text-foreground text-end tabular-nums">{formatMoney(totals.mealIncome, format)}</dd>
       <dt className="border-border text-foreground border-t pt-2 font-semibold">Grand total</dt>
-      <dd className="border-border text-foreground border-t pt-2 text-end font-semibold tabular-nums">
+      <dd className="border-border text-foreground border-t pt-2 text-end text-base font-semibold tabular-nums">
         {formatMoney(totals.total, format)}
       </dd>
       <dt className="text-muted">In PKR</dt>

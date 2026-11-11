@@ -28,6 +28,8 @@ export interface NavItem {
   purpose?: string;
   /** Shown when the signed-in user holds any of these. Every one, when there are none. */
   permissions?: readonly Permission[];
+  /** A short line under the label in the Settings menu. */
+  description?: string;
 }
 
 export interface NavGroup {
@@ -35,23 +37,26 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-/** The menu follows the work: buy, sell, watch the ledger, then the setup behind it. */
+/**
+ * The menu holds the daily work only: sell, buy, watch the rooms, then the people and the
+ * money. Everything set up once a season lives in Settings.
+ */
 export const NAVIGATION: NavGroup[] = [
   { items: [{ path: '', label: 'Overview', icon: LayoutDashboard }] },
   {
-    label: 'Operations',
+    label: 'Work',
     items: [
-      {
-        path: 'purchases',
-        label: 'Purchases',
-        icon: ShoppingCart,
-        permissions: ['purchase.view'],
-      },
       {
         path: 'contracts',
         label: 'Sales contracts',
         icon: FileSignature,
         permissions: ['contract.view'],
+      },
+      {
+        path: 'purchases',
+        label: 'Purchases',
+        icon: ShoppingCart,
+        permissions: ['purchase.view'],
       },
       {
         path: 'inventory',
@@ -64,9 +69,9 @@ export const NAVIGATION: NavGroup[] = [
   {
     label: 'Directory',
     items: [
+      { path: 'agents', label: 'Agents', icon: Handshake },
       { path: 'hotels', label: 'Hotels', icon: BedDouble },
       { path: 'vendors', label: 'Vendors', icon: Store },
-      { path: 'agents', label: 'Agents', icon: Handshake },
     ],
   },
   {
@@ -86,36 +91,38 @@ export const NAVIGATION: NavGroup[] = [
       },
     ],
   },
+];
+
+/** Configured once a season or by an administrator, so it sits behind one Settings entry. */
+export const SETTINGS_ITEMS: NavItem[] = [
   {
-    label: 'Setup',
-    items: [
-      { path: 'room-types', label: 'Room types', icon: DoorOpen },
-      { path: 'calendar', label: 'Calendar', icon: CalendarDays },
-      { path: 'currencies', label: 'Currencies', icon: Coins },
-      {
-        path: 'settings/agreement',
-        label: 'Agreement',
-        icon: ScrollText,
-        permissions: ['settings.manage'],
-      },
-    ],
+    path: 'room-types',
+    label: 'Room types',
+    icon: DoorOpen,
+    description: 'Types and which may be sold as another',
+  },
+  { path: 'calendar', label: 'Hijri calendar', icon: CalendarDays, description: 'Announced month dates' },
+  { path: 'currencies', label: 'Currencies', icon: Coins, description: 'Exchange rates against PKR' },
+  {
+    path: 'settings/agreement',
+    label: 'Agreement',
+    icon: ScrollText,
+    permissions: ['settings.manage'],
+    description: 'Company details and printed terms',
   },
   {
-    label: 'Admin',
-    items: [
-      {
-        path: 'users',
-        label: 'Users & permissions',
-        icon: UserCog,
-        permissions: ['user.manage', 'permission.assign'],
-      },
-      {
-        path: 'audit',
-        label: 'Audit log',
-        icon: History,
-        permissions: ['audit.view'],
-      },
-    ],
+    path: 'users',
+    label: 'Users & permissions',
+    icon: UserCog,
+    permissions: ['user.manage', 'permission.assign'],
+    description: 'Who can do what',
+  },
+  {
+    path: 'audit',
+    label: 'Audit log',
+    icon: History,
+    permissions: ['audit.view'],
+    description: 'Every change, by whom and when',
   },
 ];
 

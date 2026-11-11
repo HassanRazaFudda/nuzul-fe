@@ -3,6 +3,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { Menu } from '@/components/ui/Menu';
 import { formatIsoDate } from '@/lib/format/dates';
 import { rateOn } from '@/lib/money/money';
 
@@ -80,10 +81,10 @@ export function currencyColumns({
         const isBase = currency.code === RATE_BASE_CURRENCY;
         const isLocked = isBase || currency.code === DEFAULT_CURRENCY;
         return (
-          <div className="flex justify-end gap-1">
+          <div className="flex items-center justify-end gap-1">
             {!isBase && (
               <Button
-                variant="ghost"
+                variant="secondary"
                 size="sm"
                 aria-label={`Update ${currency.code} rate`}
                 onClick={() => {
@@ -93,38 +94,31 @@ export function currencyColumns({
                 Update rate
               </Button>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={`${currency.code} rate history`}
-              onClick={() => {
-                onShowHistory(currency);
-              }}
-            >
-              History
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={`Edit ${currency.code}`}
-              onClick={() => {
-                onEdit(currency);
-              }}
-            >
-              Edit
-            </Button>
-            {!isLocked && (
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-label={`${currency.enabled ? 'Disable' : 'Enable'} ${currency.code}`}
-                onClick={() => {
-                  onSetEnabled(currency, !currency.enabled);
-                }}
-              >
-                {currency.enabled ? 'Disable' : 'Enable'}
-              </Button>
-            )}
+            <Menu
+              label={`More actions for ${currency.code}`}
+              items={[
+                {
+                  label: 'Rate history',
+                  onSelect: () => {
+                    onShowHistory(currency);
+                  },
+                },
+                {
+                  label: 'Edit',
+                  onSelect: () => {
+                    onEdit(currency);
+                  },
+                },
+                !isLocked && {
+                  label: currency.enabled ? 'Disable' : 'Enable',
+                  tone: currency.enabled ? 'danger' : undefined,
+                  hint: currency.enabled ? 'No longer offered on new records' : undefined,
+                  onSelect: () => {
+                    onSetEnabled(currency, !currency.enabled);
+                  },
+                },
+              ]}
+            />
           </div>
         );
       },

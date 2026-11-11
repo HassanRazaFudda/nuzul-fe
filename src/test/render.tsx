@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { App } from '@/app/App';
@@ -15,4 +15,20 @@ export function renderApp(route: string) {
   const user = userEvent.setup();
   render(<App queryClient={queryClient} router={router} />);
   return { user, router, queryClient };
+}
+
+/**
+ * Opens a "…" menu and picks one of its actions. Rare actions such as Lock, Terminate and
+ * Cancel live in a menu, never as buttons in the header.
+ */
+export async function chooseFromMenu(
+  user: ReturnType<typeof userEvent.setup>,
+  trigger: string | RegExp,
+  item: string,
+) {
+  await user.click(await screen.findByRole('button', { name: trigger }));
+  // A menu item's name is its label, then any hint under it.
+  await user.click(
+    await screen.findByRole('menuitem', { name: (name) => name === item || name.startsWith(item) }),
+  );
 }

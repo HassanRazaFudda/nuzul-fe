@@ -5,7 +5,7 @@ import { contractSchema } from '@/features/contracts';
 import { purchaseSchema } from '@/features/purchases';
 import { mockDb } from '@/mock-api/db';
 import { setSession, userRecordSchema } from '@/mock-api/session';
-import { renderApp } from '@/test/render';
+import { chooseFromMenu, renderApp } from '@/test/render';
 
 import { usersApi } from '../api/users.api';
 
@@ -52,7 +52,7 @@ describe('what each person sees', () => {
     renderApp('/hotels');
 
     expect(await screen.findByText('Artal International')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Add hotel' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'New hotel' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^Deactivate/ })).not.toBeInTheDocument();
   });
 
@@ -124,7 +124,7 @@ describe('permissions', () => {
 describe('lock and restore', () => {
   it('a locked purchase still counts, offers no edit, and unlocks', async () => {
     const { user } = renderApp('/purchases/purchase-1');
-    await user.click(await screen.findByRole('button', { name: 'Lock' }));
+    await chooseFromMenu(user, /^More actions/, 'Lock');
 
     expect(await screen.findByRole('button', { name: 'Unlock' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Edit' })).not.toBeInTheDocument();

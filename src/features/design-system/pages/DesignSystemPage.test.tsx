@@ -12,7 +12,7 @@ describe('DesignSystemPage', () => {
 
     // Numbers sort largest first on the first click.
     await user.click(sortButton);
-    expect(firstRow().getByText('Available: 89')).toBeInTheDocument();
+    expect(firstRow().getByText('89 available')).toBeInTheDocument();
 
     await user.click(sortButton);
     expect(firstRow().getByText('Overbooked by 16')).toBeInTheDocument();

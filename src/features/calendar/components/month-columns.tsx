@@ -1,7 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 
 import type { ServerTableFeatures } from '@/components/data-table/data-table-features';
-import { Button } from '@/components/ui/Button';
+import { Menu } from '@/components/ui/Menu';
 import { dayNumber, formatIsoDate, isoDate } from '@/lib/format/dates';
 
 import type { CalendarMonth } from '../domain/calendar';
@@ -22,7 +22,11 @@ export function monthColumns({ onEdit, onRemove }: MonthColumnOptions) {
       enableSorting: false,
       cell: (info) => <span className="font-medium">{info.getValue()}</span>,
     }),
-    columnHelper.accessor('cycle', { header: 'Year', enableSorting: false }),
+    columnHelper.accessor('cycle', {
+      header: 'Year',
+      enableSorting: false,
+      cell: (info) => <span className="text-secondary tabular-nums">{info.getValue()} AH</span>,
+    }),
     columnHelper.accessor('ordinal', {
       enableSorting: false,
       header: () => <span className="block text-end">No.</span>,
@@ -50,27 +54,25 @@ export function monthColumns({ onEdit, onRemove }: MonthColumnOptions) {
         const month = info.row.original;
         const name = `${month.name} ${month.cycle}`;
         return (
-          <div className="flex justify-end gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={`Edit ${name}`}
-              onClick={() => {
-                onEdit(month);
-              }}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={`Remove ${name}`}
-              onClick={() => {
-                onRemove(month);
-              }}
-            >
-              Remove
-            </Button>
+          <div className="flex justify-end">
+            <Menu
+              label={`Actions for ${name}`}
+              items={[
+                {
+                  label: 'Edit',
+                  onSelect: () => {
+                    onEdit(month);
+                  },
+                },
+                {
+                  label: 'Remove',
+                  tone: 'danger',
+                  onSelect: () => {
+                    onRemove(month);
+                  },
+                },
+              ]}
+            />
           </div>
         );
       },

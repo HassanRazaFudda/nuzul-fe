@@ -26,8 +26,16 @@ export function purchaseColumns({ months, moneyFormat }: PurchaseColumnOptions) 
         </Link>
       ),
     }),
-    columnHelper.accessor('hotelName', { header: 'Hotel', enableSorting: false }),
-    columnHelper.accessor('vendorName', { id: 'vendor', header: 'Vendor' }),
+    columnHelper.accessor('hotelName', {
+      header: 'Hotel',
+      enableSorting: false,
+      cell: (info) => <span className="text-foreground font-medium">{info.getValue()}</span>,
+    }),
+    columnHelper.accessor('vendorName', {
+      id: 'vendor',
+      header: 'Vendor',
+      cell: (info) => <span className="text-secondary">{info.getValue()}</span>,
+    }),
     columnHelper.accessor('checkIn', {
       header: 'Stay',
       cell: (info) => {
@@ -56,7 +64,7 @@ export function purchaseColumns({ months, moneyFormat }: PurchaseColumnOptions) 
       cell: (info) => {
         const { total } = info.row.original;
         return (
-          <span className="block text-end">
+          <span className="block text-end font-medium">
             <Amount amount={total.amount} currency={moneyFormat(total.currencyCode)} />
           </span>
         );
