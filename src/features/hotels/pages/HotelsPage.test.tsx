@@ -9,7 +9,7 @@ import { hotelSchema } from '../api/hotel.schemas';
 describe('HotelsPage', () => {
   it('adds a hotel in a new city, and rejects a bad rate', async () => {
     const { user } = renderApp('/hotels');
-    await user.click(await screen.findByRole('button', { name: 'Add hotel' }));
+    await user.click(await screen.findByRole('button', { name: 'New hotel' }));
     await user.type(screen.getByLabelText(/^Hotel name/), 'Taif Inn');
     await user.click(screen.getByRole('button', { name: 'Add a city' }));
     await user.type(screen.getByLabelText('New city name'), 'Taif');
@@ -27,7 +27,7 @@ describe('HotelsPage', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(await screen.findByText('Taif Inn')).toBeInTheDocument();
-    expect(await screen.findByText('SAR 420.50')).toBeInTheDocument();
+    expect(await screen.findByText('420.50')).toBeInTheDocument();
     const hotels = await mockDb.list('hotels', hotelSchema);
     expect(hotels.find((hotel) => hotel.name === 'Taif Inn')?.doubleRate).toBe('420.50');
   });

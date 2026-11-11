@@ -1,9 +1,9 @@
 import { clsx, type ClassValue } from 'clsx';
 import { extendTailwindMerge } from 'tailwind-merge';
 
-// Teach the merger our custom radius and shadow tokens, so overrides resolve correctly.
+// Teach the merger our custom radius, shadow and text-size tokens, so overrides resolve correctly.
 const twMerge = extendTailwindMerge({
-  extend: { theme: { radius: ['control', 'card'], shadow: ['raised', 'overlay'] } },
+  extend: { theme: { radius: ['control', 'card'], shadow: ['raised', 'overlay'], text: ['meta', '2xs'] } },
 });
 
 /** Merge conditional class names and resolve Tailwind conflicts (last one wins). */

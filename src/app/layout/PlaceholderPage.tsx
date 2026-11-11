@@ -14,7 +14,7 @@ export function PlaceholderPage({ title, purpose }: PlaceholderPageProps) {
   return (
     <>
       <PageHeader title={title} />
-      <div className="p-5 lg:p-8">
+      <div className="px-(--page-gutter) pt-4 pb-10">
         <Card>
           <EmptyState
             icon={<Construction aria-hidden className="size-8" />}

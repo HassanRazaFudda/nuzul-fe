@@ -32,11 +32,11 @@ export function TableToolbar({
   }
 
   return (
-    <div className="border-border flex flex-wrap items-center gap-2 border-b px-4 py-3">
+    <div className="border-border flex flex-wrap items-center gap-2 border-b px-3 py-2.5">
       <form role="search" onSubmit={handleSubmit} className="relative min-w-48 flex-1 sm:max-w-xs">
         <Search
           aria-hidden
-          className="text-muted pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2"
+          className="text-muted pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2"
         />
         <Input
           type="search"
@@ -44,9 +44,9 @@ export function TableToolbar({
           onChange={(event) => {
             onDraftChange(event.target.value);
           }}
-          placeholder="Search"
+          placeholder={`Search ${label.toLowerCase()}`}
           aria-label={`Search ${label}`}
-          className="h-(--control-height-sm) ps-9"
+          className="h-(--control-height-sm) ps-8"
         />
       </form>
       {children}
@@ -59,7 +59,7 @@ export function TableToolbar({
           onCompactChange(!isCompact);
         }}
         className={cn(
-          'rounded-control ms-auto p-1.5 transition-colors duration-150',
+          'rounded-control ms-auto hidden p-1.5 transition-colors duration-150 sm:block',
           isCompact
             ? 'bg-surface-muted text-foreground'
             : 'text-muted hover:bg-surface-muted hover:text-foreground',

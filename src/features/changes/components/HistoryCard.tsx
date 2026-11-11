@@ -35,7 +35,7 @@ export function HistoryCard({ entity, entityId, money }: HistoryCardProps) {
       ) : (
         <ol className="divide-border divide-y text-sm">
           {(data ?? []).map((revision) => (
-            <li key={revision.id} className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-2.5">
+            <li key={revision.id} className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-2.5">
               <span className="text-foreground">
                 <span className="font-medium">{ACTION_LABELS[revision.action]}</span>
                 <span className="text-muted">
@@ -57,7 +57,7 @@ export function HistoryCard({ entity, entityId, money }: HistoryCardProps) {
               </span>
             </li>
           ))}
-          {data?.length === 0 && <li className="text-muted px-5 py-3">No changes recorded yet.</li>}
+          {data?.length === 0 && <li className="text-muted px-4 py-3">No changes recorded yet.</li>}
         </ol>
       )}
     </Card>

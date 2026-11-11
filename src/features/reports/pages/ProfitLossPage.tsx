@@ -1,10 +1,8 @@
 import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
 import { Link } from 'react-router';
 
-import { ErrorNotice } from '@/components/feedback/ErrorNotice';
-import { LINK_CLASS } from '@/components/ui/buttonStyles';
+import { Callout } from '@/components/feedback/Callout';
 import { Card, CardHeader } from '@/components/ui/Card';
-import { Detail } from '@/components/ui/Detail';
 import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { currenciesQuery } from '@/features/currencies';
 import { hotelOptionsQuery } from '@/features/hotels';
@@ -132,7 +130,7 @@ export function ProfitLossPage() {
           <>
             <SummaryStrip>
               <Stat
-                label="Profit, known portion"
+                label="Profit so far"
                 value={money(total.profitKnown)}
                 hint={
                   data.isPartial
@@ -152,37 +150,36 @@ export function ProfitLossPage() {
                 value={money(data.adjustments)}
                 hint="Penalties less refunds"
               />
+              <Stat
+                label="Cost of unsold rooms"
+                value={
+                  <Link
+                    to={`/reports/exposure${search ? `?${search}` : ''}`}
+                    className="underline-offset-4 hover:underline"
+                  >
+                    {money(data.exposure)}
+                  </Link>
+                }
+                hint="Memo, not part of the profit"
+              />
+              {data.exchangeDifference !== null && (
+                <Stat
+                  label="Exchange difference"
+                  value={money(data.exchangeDifference)}
+                  hint="Memo, not realised"
+                />
+              )}
             </SummaryStrip>
 
             {Number(total.mealMissingRoomNights) > 0 && (
-              <ErrorNotice title="Meal cost missing">
+              <Callout tone="warning" title="Meal margin is overstated">
                 {total.mealMissingRoomNights} room-nights earn meal income with no meal bought for those
-                nights, so the meal margin is overstated.
-              </ErrorNotice>
+                nights.
+              </Callout>
             )}
 
-            <Card>
-              <CardHeader title="Memo" subtitle="Not part of the profit above" />
-              <dl className="grid gap-x-6 gap-y-3 px-5 pt-3 pb-5 sm:grid-cols-2">
-                <Detail label="Unsold exposure">
-                  <span className="tabular-nums">{money(data.exposure)}</span>{' '}
-                  <Link
-                    to={`/reports/inventory${search ? `?${search}` : ''}`}
-                    className={`${LINK_CLASS} ms-2 text-[0.8125rem] print:hidden`}
-                  >
-                    Unsold rooms
-                  </Link>
-                </Detail>
-                {data.exchangeDifference !== null && (
-                  <Detail label="Exchange difference (not realised)">
-                    <span className="tabular-nums">{money(data.exchangeDifference)}</span>
-                  </Detail>
-                )}
-              </dl>
-            </Card>
-
             <Card className="overflow-hidden">
-              <CardHeader title="By hotel" />
+              <CardHeader title="By hotel" divided />
               <ReportTable
                 caption="Profit and loss by hotel"
                 columns={columns}
@@ -193,7 +190,7 @@ export function ProfitLossPage() {
               />
             </Card>
             <Card className="overflow-hidden">
-              <CardHeader title="By hotel and room type" subtitle="Room type as purchased" />
+              <CardHeader title="By hotel and room type" subtitle="Room type as purchased" divided />
               <ReportTable
                 caption="Profit and loss by hotel and room type"
                 columns={columns}

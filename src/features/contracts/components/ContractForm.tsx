@@ -4,17 +4,21 @@ import { useState, type SubmitEvent } from 'react';
 import { useFieldArray, useForm, useFormState, useWatch, type Path } from 'react-hook-form';
 import { Link, useBlocker } from 'react-router';
 
+import { Callout } from '@/components/feedback/Callout';
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { FormErrorSummary } from '@/components/form/FormErrorSummary';
 import { FormField } from '@/components/form/FormField';
+import { FormSection } from '@/components/form/FormSection';
 import { Button } from '@/components/ui/Button';
 import { buttonClass } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { Segmented } from '@/components/ui/Choice';
+import { DateInput } from '@/components/ui/DateInput';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
-import type { CalendarMonth } from '@/features/calendar';
+import { formatDay, type CalendarMonth } from '@/features/calendar';
 import {
   DEFAULT_CURRENCY,
   RATE_BASE_CURRENCY,
@@ -155,6 +159,7 @@ export function ContractForm({
   const [showSummary, setShowSummary] = useState(false);
   const canSetRate = useCan()('finance.set_rate');
   const [saveError, setSaveError] = useState<unknown>(null);
+  const [showRate, setShowRate] = useState(false);
   // The save itself navigates away, so leaving while it runs needs no question.
   const blocker = useBlocker(isDirty && !isSubmitting);
 
@@ -216,96 +221,93 @@ export function ContractForm({
     (currency) => currency.enabled || currency.code === contract?.currencyCode,
   );
 
+  const contractDate = useWatch({ control: form.control, name: 'date' });
+  const rateToPkr = useWatch({ control: form.control, name: 'rateToPkr' });
+  const isRateEditable = currencyCode !== RATE_BASE_CURRENCY && canSetRate;
+  const rateVisible = showRate || Boolean(errors.rateToPkr);
+  const dateLabel = contractDate ? formatDay(contractDate, months) : '';
+  const mealOptions = [
+    { value: 'none', label: 'No meals' },
+    ...MEAL_PLANS.map((plan) => ({ value: plan, label: MEAL_PLAN_LABELS[plan] })),
+  ];
+
   return (
-    <form noValidate onSubmit={handleSubmit} className="space-y-5 p-5 lg:p-8">
+    <form noValidate onSubmit={handleSubmit} className="space-y-5 px-(--page-gutter) pt-4 pb-10">
       {saveError !== null && (
         <ErrorNotice title="This could not be saved">{getErrorMessage(saveError)}</ErrorNotice>
       )}
       {showSummary && <FormErrorSummary form={form} labels={labelsFor(watchedHotels)} />}
 
-      <div className="grid items-start gap-5 xl:grid-cols-[1fr_20rem]">
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-5">
           <Card>
-            <CardHeader title="Contract" />
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
-              <FormField label="Agent" required error={errors.agentId?.message}>
-                {(field) => (
-                  <Select {...field} {...form.register('agentId')}>
-                    <option value="">Choose an agent</option>
-                    {agentOptions.map((agent) => (
-                      <option key={agent.id} value={agent.id}>
-                        {agent.name}
-                      </option>
-                    ))}
-                  </Select>
-                )}
-              </FormField>
-              <FormField label="Contract date" required error={errors.date?.message}>
-                {(field) => <Input {...field} type="date" {...form.register('date')} />}
-              </FormField>
-              <FormField label="Currency" required error={errors.currencyCode?.message}>
-                {(field) => (
-                  <Select
-                    {...field}
-                    {...currencyField}
-                    onChange={(event) => {
-                      void currencyField.onChange(event);
-                      handleCurrencyChange(event.target.value);
-                    }}
-                  >
-                    {currencyOptions.map((currency) => (
-                      <option key={currency.code} value={currency.code}>
-                        {currency.code}
-                      </option>
-                    ))}
-                  </Select>
-                )}
-              </FormField>
-              <FormField
-                label="Rate against PKR"
-                required
-                error={errors.rateToPkr?.message}
-                hint="Stays with this contract"
-              >
-                {(field) => (
-                  <Input
-                    {...field}
-                    inputMode="decimal"
-                    readOnly={currencyCode === RATE_BASE_CURRENCY || !canSetRate}
-                    {...form.register('rateToPkr')}
-                  />
-                )}
-              </FormField>
-              <FormField label="Meal plan">
-                {(field) => (
-                  <Select
-                    {...field}
-                    {...mealField}
-                    onChange={(event) => {
+            <FormSection title="Agent">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+                <FormField label="Agent" required error={errors.agentId?.message}>
+                  {(field) => (
+                    <Select {...field} {...form.register('agentId')}>
+                      <option value="">Choose an agent</option>
+                      {agentOptions.map((agent) => (
+                        <option key={agent.id} value={agent.id}>
+                          {agent.name}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                </FormField>
+                <FormField
+                  label="Contract date"
+                  required
+                  error={errors.date?.message}
+                  aside={dateLabel && dateLabel !== contractDate ? dateLabel : undefined}
+                >
+                  {(field) => <DateInput {...field} {...form.register('date')} />}
+                </FormField>
+              </div>
+            </FormSection>
+            <FormSection title="Meals">
+              <div className="flex flex-wrap items-start gap-4">
+                <Segmented
+                  legend="Meal plan"
+                  options={mealOptions}
+                  register={{
+                    ...mealField,
+                    onChange: (event) => {
                       void mealField.onChange(event);
                       handleMealChange(event.target.value);
-                    }}
+                    },
+                  }}
+                />
+                {mealKind !== 'none' && (
+                  <FormField
+                    label="Meal rate, per person per night"
+                    hideLabel
+                    required
+                    error={errors.mealRate?.message}
+                    className="w-44"
                   >
-                    <option value="none">None</option>
-                    {MEAL_PLANS.map((plan) => (
-                      <option key={plan} value={plan}>
-                        {MEAL_PLAN_LABELS[plan]}
-                      </option>
-                    ))}
-                  </Select>
+                    {(field) => (
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          inputMode="decimal"
+                          className="ps-12 tabular-nums"
+                          {...form.register('mealRate')}
+                        />
+                        <span className="text-muted pointer-events-none absolute inset-y-0 start-2.5 flex items-center text-xs">
+                          {currencyCode}
+                        </span>
+                      </div>
+                    )}
+                  </FormField>
                 )}
-              </FormField>
-              {mealKind !== 'none' && (
-                <FormField
-                  label="Meal rate"
-                  required
-                  error={errors.mealRate?.message}
-                  hint="Per person per night"
-                >
-                  {(field) => <Input {...field} inputMode="decimal" {...form.register('mealRate')} />}
-                </FormField>
-              )}
-            </div>
+                {mealKind !== 'none' && (
+                  <span className="text-muted text-meta flex h-(--control-height) items-center">
+                    per person per night
+                  </span>
+                )}
+              </div>
+            </FormSection>
           </Card>
 
           {entries.fields.map((field, index) => (
@@ -325,49 +327,115 @@ export function ContractForm({
               }}
             />
           ))}
-          <Button
-            variant="secondary"
-            icon={<Plus aria-hidden className="size-4" />}
+          <button
+            type="button"
             onClick={() => {
               entries.append(emptyEntry(), { shouldFocus: false });
             }}
+            className="rounded-card border-border-strong text-secondary hover:border-faint hover:bg-surface hover:text-foreground flex w-full items-center justify-center gap-2 border border-dashed py-3 text-sm font-medium transition-colors duration-150"
           >
-            Add hotel
-          </Button>
+            <Plus aria-hidden className="size-4" />
+            Add another hotel
+          </button>
 
-          <Card className="p-5">
-            <FormField label="Notes" error={errors.notes?.message}>
-              {(field) => <Textarea {...field} rows={3} {...form.register('notes')} />}
-            </FormField>
+          <Card>
+            <FormSection>
+              <FormField label="Notes" error={errors.notes?.message}>
+                {(field) => (
+                  <Textarea
+                    {...field}
+                    rows={2}
+                    className="min-h-16"
+                    placeholder="Anything the team should know about this sale"
+                    {...form.register('notes')}
+                  />
+                )}
+              </FormField>
+            </FormSection>
           </Card>
         </div>
 
-        <div className="space-y-5 xl:sticky xl:top-6">
+        <div className="space-y-4 xl:sticky xl:top-6">
           {preview.shortages.length > 0 && (
-            <ErrorNotice title="This would overbook">
+            <Callout tone="danger" title="This sale would overbook">
               <OverbookingList
                 preview={preview}
                 hotelName={hotelName}
                 roomTypes={roomTypes}
                 months={months}
               />
-            </ErrorNotice>
+            </Callout>
           )}
           <Card>
-            <CardHeader title="Totals" />
+            <CardHeader title="Summary" />
             <ContractTotalsPanel
               control={form.control}
               currencies={currencies}
               roomTypes={roomTypes}
               hotelName={hotelName}
             />
-            <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-4">
-              <Link to={cancelTo} className={buttonClass('secondary')}>
-                Cancel
-              </Link>
-              <Button type="submit" isLoading={isSubmitting}>
+            <div className="border-border text-meta space-y-2 border-t px-4 py-3">
+              <div className="flex items-center justify-between gap-2">
+                <Select
+                  aria-label="Currency"
+                  className="text-meta h-(--control-height-sm) w-24"
+                  {...currencyField}
+                  onChange={(event) => {
+                    void currencyField.onChange(event);
+                    handleCurrencyChange(event.target.value);
+                  }}
+                >
+                  {currencyOptions.map((currency) => (
+                    <option key={currency.code} value={currency.code}>
+                      {currency.code}
+                    </option>
+                  ))}
+                </Select>
+                {currencyCode !== RATE_BASE_CURRENCY && (
+                  <span className="text-muted flex items-center gap-2 tabular-nums">
+                    1 {currencyCode} = {rateToPkr || '…'} PKR
+                    {isRateEditable && !rateVisible && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowRate(true);
+                        }}
+                        className="text-secondary hover:text-foreground underline underline-offset-2"
+                      >
+                        Change
+                      </button>
+                    )}
+                  </span>
+                )}
+              </div>
+              <div className={rateVisible ? undefined : 'hidden'}>
+                <FormField
+                  label="Rate against PKR"
+                  required
+                  error={errors.rateToPkr?.message}
+                  hint="Frozen on this contract"
+                >
+                  {(field) => (
+                    <Input
+                      {...field}
+                      inputMode="decimal"
+                      readOnly={!isRateEditable}
+                      {...form.register('rateToPkr')}
+                    />
+                  )}
+                </FormField>
+              </div>
+            </div>
+            <div className="border-border flex flex-col gap-2 border-t px-4 py-4">
+              <Button type="submit" isLoading={isSubmitting} className="w-full">
                 {submitLabel}
               </Button>
+              <Link to={cancelTo} className={`${buttonClass('ghost')} w-full`}>
+                Cancel
+              </Link>
+              {!contract || contract.status === 'draft' ? (
+                <p className="text-muted text-center text-xs">You confirm it on the next screen</p>
+              ) : null}
             </div>
           </Card>
         </div>

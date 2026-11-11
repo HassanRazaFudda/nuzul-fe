@@ -11,7 +11,7 @@ export function RouteErrorBoundary() {
     return (
       <>
         <PageHeader title="Page not found" />
-        <div className="p-5 lg:p-8">
+        <div className="px-(--page-gutter) pt-4 pb-10">
           <Link to="/" className={buttonClass('secondary')}>
             Back to overview
           </Link>
@@ -21,7 +21,7 @@ export function RouteErrorBoundary() {
   }
 
   return (
-    <div className="p-5 lg:p-8">
+    <div className="px-(--page-gutter) pt-4 pb-10">
       <QueryErrorState
         error={error}
         onRetry={() => {

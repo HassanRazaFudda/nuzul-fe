@@ -127,7 +127,17 @@ function PurchaseFormScreen({ purchase }: { purchase: PurchaseView | null }) {
 
   return (
     <>
-      <PageHeader title={purchase ? `Edit ${purchase.number}` : 'Add purchase'} />
+      <PageHeader
+        title={purchase ? `Edit ${purchase.number}` : 'New purchase'}
+        breadcrumbs={
+          purchase
+            ? [
+                { label: 'Purchases', to: '/purchases' },
+                { label: purchase.number, to: `/purchases/${purchase.id}` },
+              ]
+            : [{ label: 'Purchases', to: '/purchases' }]
+        }
+      />
       <PurchaseForm
         purchase={purchase}
         hotels={hotels}

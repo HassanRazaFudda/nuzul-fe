@@ -19,6 +19,7 @@
   --stone-400: #a6a19a;
   --stone-600: #6b665f; /* 5.2:1 on stone-50 */
   --stone-700: #4f4b45;
+  --stone-800: #2e2b27;
   --stone-900: #1c1a17;
   --stone-950: #0f0e0c;
 
@@ -27,6 +28,7 @@
   --red-200: #ecc3c7;
   --red-500: #9f0b1f; /* Junaidi's red, as on the letterhead and the PDF */
   --red-600: #870919;
+  --red-700: #6e0714;
 
   --green-50: #eef6f1;
   --green-200: #c8e3d2;
@@ -44,10 +46,10 @@
 
   --color-transparent: transparent;
 
-  /* Ink: the primary action. */
-  --color-primary: var(--stone-900);
-  --color-primary-hover: var(--stone-700);
-  --color-primary-active: var(--stone-950);
+  /* Junaidi's red: the primary action, as on the letterhead. */
+  --color-primary: var(--red-500);
+  --color-primary-hover: var(--red-600);
+  --color-primary-active: var(--red-700);
   --color-primary-foreground: var(--stone-0);
 
   /* Junaidi's red: the brand mark, the current place, and anything that needs a look. */
@@ -62,7 +64,9 @@
   --color-muted: var(--stone-600);
   --color-faint: var(--stone-400);
   --color-border: var(--stone-200);
+  --color-border-subtle: var(--stone-100);
   --color-border-strong: var(--stone-300);
+  --color-surface-raised: var(--stone-50);
   --color-scrim: rgb(28 26 23 / 0.36);
 
   --color-success: var(--green-500);
@@ -85,23 +89,37 @@
   --font-sans: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
 
-  --radius-control: 0.5rem;
-  --radius-card: 0.75rem;
+  --radius-control: 0.375rem;
+  --radius-card: 0.625rem;
+  --radius-pill: 999px;
 
-  --shadow-raised: 0 1px 2px rgb(28 26 23 / 0.05);
-  --shadow-overlay: 0 12px 32px rgb(28 26 23 / 0.16);
+  --shadow-raised: 0 1px 2px rgb(28 26 23 / 0.04);
+  --shadow-control: 0 1px 1px rgb(28 26 23 / 0.04);
+  --shadow-popover: 0 1px 2px rgb(28 26 23 / 0.06), 0 8px 24px rgb(28 26 23 / 0.12);
+  --shadow-overlay: 0 24px 64px rgb(28 26 23 / 0.22);
+  /* A solid button: a faint light edge on top, a crisp dark outline drawn inside (so it is exactly as tall as a bordered button), a soft drop. */
+  --shadow-solid:
+    inset 0 1px 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(15 14 12 / 0.9), 0 1px 2px rgb(28 26 23 / 0.18);
+  --shadow-solid-danger:
+    inset 0 1px 0 rgb(255 255 255 / 0.14), inset 0 0 0 1px rgb(110 7 20 / 0.9), 0 1px 2px rgb(110 7 20 / 0.2);
+
+  /* Two sizes between the Tailwind steps: meta text and labels (13 px), counts and key hints (11 px). */
+  --text-meta: 0.8125rem;
+  --text-2xs: 0.6875rem;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ---- 3. Component: sizes specific to one component family. ---- */
 :root {
-  --control-height: 2.5rem;
-  --control-height-sm: 2rem;
+  --control-height: 2.25rem;
+  --control-height-sm: 1.875rem;
   --sidebar-width: 15rem;
-  --sidebar-rail-width: 4rem;
-  --table-row-height: 2.75rem;
-  --table-row-height-compact: 2.25rem;
+  --sidebar-rail-width: 3.75rem;
+  --table-row-height: 2.625rem;
+  --table-row-height-compact: 2.125rem;
+  --page-gutter: 1rem;
+  --page-max: 92rem;
   --motion-page: 160ms;
 }
 
@@ -145,6 +163,32 @@
     background: var(--color-scrim);
   }
 
+  /* Native selects keep their keyboard and screen-reader behaviour, with our own chevron. */
+  select:not([multiple]) {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236b665f' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m7 15 5 5 5-5M7 9l5-5 5 5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 0.875rem;
+    padding-inline-end: 2rem;
+  }
+
+  input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0.45;
+    cursor: pointer;
+  }
+  input[type='date']::-webkit-calendar-picker-indicator:hover {
+    opacity: 0.8;
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--color-foreground);
+  }
+
+  kbd {
+    font-family: var(--font-sans);
+  }
+
   /* One icon stroke everywhere, a touch lighter than lucide's default. */
   svg.lucide {
     stroke-width: 1.75;
@@ -182,6 +226,38 @@
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --page-gutter: 2rem;
+  }
+}
+
+/* Popovers and menus: a short drop with a fade. */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+.animate-pop-in {
+  animation: pop-in 140ms var(--ease-out) both;
+}
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+.animate-overlay-in {
+  animation: overlay-in 180ms var(--ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop-in,
+  .animate-overlay-in {
+    animation: none;
   }
 }
 

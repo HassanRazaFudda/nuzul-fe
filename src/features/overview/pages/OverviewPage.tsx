@@ -1,12 +1,12 @@
 import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
-import { ChevronRight, Plus } from 'lucide-react';
+import { ArrowRight, CheckCircle2, FileSignature, Plus, ShoppingCart } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import { EmptyState } from '@/components/feedback/EmptyState';
-import { PageHeader } from '@/components/layout/PageHeader';
+import { PageBody, PageHeader } from '@/components/layout/PageHeader';
 import { Amount } from '@/components/ui/Amount';
-import { buttonClass, FIGURE_LINK_CLASS, LINK_CLASS, RECORD_LINK_CLASS } from '@/components/ui/buttonStyles';
+import { buttonClass, FIGURE_LINK_CLASS, RECORD_LINK_CLASS } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { calendarMonthsQuery, formatDay } from '@/features/calendar';
@@ -15,6 +15,7 @@ import { InventoryStateTag, seasonPoolsQuery, type PoolSummary } from '@/feature
 import { purchaseListQuery } from '@/features/purchases';
 import { profitAndLossQuery, salesParamsSchema, salesReportQuery } from '@/features/reports';
 import { useCan } from '@/lib/auth/session';
+import { cn } from '@/lib/cn';
 import { formatIsoDate, isoDate, todayIso } from '@/lib/format/dates';
 import { formatMoney } from '@/lib/money/money';
 
@@ -22,14 +23,24 @@ import { OccupancyChart } from '../components/OccupancyChart';
 
 const SAR = { symbol: 'SAR', decimals: 2 };
 const FIRST_FIVE = { page: 1, pageSize: 5, search: '', hotelId: '' };
-const CARD_LINK = `${LINK_CLASS} text-[0.8125rem]`;
-const ROW = 'border-border hover:bg-background border-b transition-colors duration-150 last:border-b-0';
+const CARD_LINK =
+  'text-muted hover:text-foreground inline-flex items-center gap-1 text-meta transition-colors duration-150';
+const ROWS_SHOWN = 8;
 
 type DayLabel = (iso: string) => string;
 
 function useToday() {
   const [today] = useState(() => todayIso(new Date()));
   return today;
+}
+
+function CardLink({ to, children }: { to: string; children: ReactNode }) {
+  return (
+    <Link to={to} className={CARD_LINK}>
+      {children}
+      <ArrowRight aria-hidden className="size-3.5" />
+    </Link>
+  );
 }
 
 /** Profit and unsold rooms across every stay, in SAR. Loads after the page, never blocks it. */
@@ -41,7 +52,7 @@ function MoneyFigures() {
   return (
     <>
       <Stat
-        label="Profit, known portion"
+        label="Profit so far"
         value={
           data ? (
             <Link to="/profit-loss" className={FIGURE_LINK_CLASS}>
@@ -51,11 +62,11 @@ function MoneyFigures() {
             '…'
           )
         }
-        hint={data?.isPartial ? 'Some sold nights have no purchase yet' : 'All stays'}
+        hint={data?.isPartial ? 'Partial: some sold nights are not purchased yet' : 'All stays'}
         {...(data?.total.profitKnown.startsWith('-') ? { tone: 'danger' as const } : {})}
       />
       <Stat
-        label="Unsold exposure"
+        label="Cost of unsold rooms"
         value={
           data ? (
             <Link to="/reports/exposure" className={FIGURE_LINK_CLASS}>
@@ -65,7 +76,7 @@ function MoneyFigures() {
             '…'
           )
         }
-        hint="Purchased, not sold"
+        hint="Purchased, not yet sold"
       />
     </>
   );
@@ -76,10 +87,14 @@ interface AttentionItem {
   to: string;
   title: string;
   detail: string;
-  isProblem: boolean;
+  tone: 'danger' | 'warning';
+  action: string;
 }
 
-/** What someone should look at today: shortages first, then work left in draft. */
+/**
+ * The day's to-do list: every shortage and every draft, each with the one action that clears
+ * it. Shortages first, because they cost money.
+ */
 function NeedsAttention({ pools }: { pools: PoolSummary[] }) {
   const can = useCan();
   const purchases = useQuery({
@@ -96,9 +111,10 @@ function NeedsAttention({ pools }: { pools: PoolSummary[] }) {
           {
             key: to,
             to,
-            title: `${String(count)} draft ${noun}${count === 1 ? '' : 's'}`,
-            detail: 'Not on the ledger until confirmed',
-            isProblem: false,
+            title: `${String(count)} ${noun}${count === 1 ? '' : 's'} in draft`,
+            detail: 'Not counted on the ledger until confirmed',
+            tone: 'warning',
+            action: 'Review',
           },
         ]
       : [];
@@ -111,38 +127,51 @@ function NeedsAttention({ pools }: { pools: PoolSummary[] }) {
         to: `/inventory/${pool.hotelId}/${pool.roomTypeId}`,
         title: `${pool.hotelName} · ${pool.roomTypeName}`,
         detail: `Overbooked by ${String(pool.shortage)} ${pool.shortage === 1 ? 'room' : 'rooms'}`,
-        isProblem: true,
+        tone: 'danger' as const,
+        action: can('purchase.create') ? 'Buy rooms' : 'View',
       })),
-    ...drafts(purchases.data?.counts.draft ?? 0, 'purchase', '/purchases?status=draft'),
     ...drafts(contracts.data?.counts.draft ?? 0, 'contract', '/contracts?status=draft'),
+    ...drafts(purchases.data?.counts.draft ?? 0, 'purchase', '/purchases?status=draft'),
   ];
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader title="Needs attention" />
+    <Card className="flex flex-col overflow-hidden">
+      <CardHeader title="Needs attention" meta={items.length > 0 ? items.length : undefined} divided />
       {items.length === 0 ? (
-        <p className="text-muted px-5 pt-2 pb-5 text-sm">Every night is covered and nothing waits in draft</p>
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-4 py-10 text-center">
+          <CheckCircle2 aria-hidden className="text-success size-6" />
+          <p className="text-foreground text-sm font-medium">All clear</p>
+          <p className="text-muted text-meta">Every night is covered and nothing waits in draft</p>
+        </div>
       ) : (
-        <ul className="divide-border mt-2 divide-y border-t">
+        <ul className="divide-border-subtle divide-y">
           {items.map((item) => (
             <li key={item.key}>
               <Link
                 to={item.to}
-                className="hover:bg-background flex items-center gap-3 px-5 py-3 transition-colors duration-150"
+                className="group hover:bg-surface-raised flex items-center gap-3 px-4 py-3 transition-colors duration-150"
               >
                 <span
                   aria-hidden
-                  className={`size-2 shrink-0 rounded-full ${item.isProblem ? 'bg-danger' : 'bg-neutral'}`}
+                  className={cn(
+                    'h-8 w-1 shrink-0 rounded-full',
+                    item.tone === 'danger' ? 'bg-danger' : 'bg-warning',
+                  )}
                 />
                 <span className="min-w-0 flex-1">
                   <span className="text-foreground block truncate text-sm font-medium">{item.title}</span>
                   <span
-                    className={`block text-[0.8125rem] ${item.isProblem ? 'text-danger-strong' : 'text-muted'}`}
+                    className={cn(
+                      'text-meta block',
+                      item.tone === 'danger' ? 'text-danger-strong' : 'text-muted',
+                    )}
                   >
                     {item.detail}
                   </span>
                 </span>
-                <ChevronRight aria-hidden className="text-faint size-4 shrink-0" />
+                <span className={cn(buttonClass('secondary', 'sm'), 'group-hover:border-faint')}>
+                  {item.action}
+                </span>
               </Link>
             </li>
           ))}
@@ -152,79 +181,116 @@ function NeedsAttention({ pools }: { pools: PoolSummary[] }) {
   );
 }
 
+/** Problems first, then what is left to sell, then what is sold out. */
+function byUrgency(a: PoolSummary, b: PoolSummary) {
+  const rank = { overbooked: 0, available: 1, full: 2 } as const;
+  if (rank[a.state] !== rank[b.state]) return rank[a.state] - rank[b.state];
+  if (a.state === 'overbooked') return b.shortage - a.shortage;
+  if (a.state === 'available') return b.lowestAvailable - a.lowestAvailable;
+  return a.hotelName.localeCompare(b.hotelName);
+}
+
+/** How full each hotel and room type is, as a bar, with what can still be sold. */
 function RoomsByHotel({ pools, dayLabel }: { pools: PoolSummary[]; dayLabel: DayLabel }) {
+  const [showAll, setShowAll] = useState(false);
+  const navigate = useNavigate();
+  const sorted = pools.toSorted(byUrgency);
+  const shown = showAll ? sorted : sorted.slice(0, ROWS_SHOWN);
+
   return (
     <Card className="overflow-hidden">
       <CardHeader
         title="Rooms by hotel"
-        action={
-          <Link to="/inventory" className={CARD_LINK}>
-            Rooms ledger
-          </Link>
-        }
+        meta={pools.length > 0 ? pools.length : undefined}
+        action={<CardLink to="/inventory">Rooms ledger</CardLink>}
+        divided
       />
       {pools.length === 0 ? (
         <EmptyState title="No confirmed purchases yet" />
       ) : (
-        <div className="mt-2 overflow-x-auto">
-          <table className="w-full text-sm">
-            <caption className="sr-only">Rooms by hotel and room type</caption>
-            <thead>
-              <tr className="border-border text-muted border-y text-xs">
-                <th scope="col" className="h-9 ps-5 pe-3 text-start font-medium">
-                  Hotel and room type
-                </th>
-                <th scope="col" className="px-3 text-end font-medium whitespace-nowrap">
-                  Room-nights sold
-                </th>
-                <th scope="col" className="px-3 text-end font-medium">
-                  Sold
-                </th>
-                <th scope="col" className="ps-3 pe-5 text-end font-medium">
-                  State
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {pools.map((pool) => {
-                const share =
-                  pool.roomNightsPurchased > 0
-                    ? Math.round((pool.roomNightsSold / pool.roomNightsPurchased) * 100)
-                    : null;
-                return (
-                  <tr key={pool.id} className={ROW}>
-                    <td className="py-3 ps-5 pe-3">
-                      <Link
-                        to={`/inventory/${pool.hotelId}/${pool.roomTypeId}`}
-                        className="text-foreground font-medium hover:underline"
-                      >
-                        {pool.hotelName} · {pool.roomTypeName}
-                      </Link>
-                      <span className="text-muted block text-xs">
-                        {dayLabel(pool.firstNight)} to {dayLabel(pool.lastCheckOut)}
-                      </span>
-                    </td>
-                    <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
-                      {pool.roomNightsSold.toLocaleString('en-GB')}
-                      <span className="text-muted">
-                        {' '}
-                        / {pool.roomNightsPurchased.toLocaleString('en-GB')}
-                      </span>
-                    </td>
-                    <td
-                      className={`px-3 py-3 text-end tabular-nums ${share !== null && share > 100 ? 'text-danger-strong font-medium' : ''}`}
+        <>
+          <div className="relative overflow-x-auto">
+            <table className="w-full text-sm">
+              <caption className="sr-only">Rooms by hotel and room type</caption>
+              <thead>
+                <tr className="bg-surface-raised text-muted text-xs">
+                  <th scope="col" className="h-8 px-4 text-start font-medium">
+                    Hotel and room type
+                  </th>
+                  <th scope="col" className="w-[38%] px-3 text-start font-medium">
+                    Room-nights sold
+                  </th>
+                  <th scope="col" className="px-4 text-end font-medium">
+                    Tightest night
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {shown.map((pool) => {
+                  const share =
+                    pool.roomNightsPurchased > 0 ? pool.roomNightsSold / pool.roomNightsPurchased : 0;
+                  const to = `/inventory/${pool.hotelId}/${pool.roomTypeId}`;
+                  return (
+                    <tr
+                      key={pool.id}
+                      onClick={(event) => {
+                        if ((event.target as HTMLElement).closest('a')) return;
+                        void navigate(to);
+                      }}
+                      className="border-border-subtle hover:bg-surface-raised cursor-pointer border-t transition-colors duration-100"
                     >
-                      {share === null ? '—' : `${String(share)}%`}
-                    </td>
-                    <td className="py-3 ps-3 pe-5 text-end">
-                      <InventoryStateTag state={pool.state} rooms={Math.abs(pool.lowestAvailable)} />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      <td className="px-4 py-2.5">
+                        <Link to={to} className="text-foreground font-medium">
+                          {pool.hotelName} · {pool.roomTypeName}
+                        </Link>
+                        <span className="text-muted block text-xs">
+                          {dayLabel(pool.firstNight)} to {dayLabel(pool.lastCheckOut)}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <div className="flex items-center gap-3">
+                          <div
+                            aria-hidden
+                            className="bg-surface-muted relative h-1.5 min-w-16 flex-1 overflow-hidden rounded-full"
+                          >
+                            <div
+                              className={cn(
+                                'absolute inset-y-0 left-0 rounded-full',
+                                pool.state === 'overbooked' ? 'bg-danger' : 'bg-secondary',
+                              )}
+                              style={{ width: `${String(Math.min(share, 1) * 100)}%` }}
+                            />
+                          </div>
+                          <span className="text-secondary w-28 shrink-0 text-end text-xs whitespace-nowrap tabular-nums">
+                            {pool.roomNightsSold.toLocaleString('en-GB')}
+                            <span className="text-muted">
+                              {' '}
+                              / {pool.roomNightsPurchased.toLocaleString('en-GB')}
+                            </span>
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-2.5 text-end">
+                        <InventoryStateTag state={pool.state} rooms={Math.abs(pool.lowestAvailable)} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {sorted.length > ROWS_SHOWN && (
+            <button
+              type="button"
+              onClick={() => {
+                setShowAll(!showAll);
+              }}
+              className="border-border-subtle text-muted hover:bg-surface-raised hover:text-foreground text-meta w-full border-t py-2.5 transition-colors duration-150"
+            >
+              {showAll ? 'Show fewer' : `Show all ${String(sorted.length)}`}
+            </button>
+          )}
+        </>
       )}
     </Card>
   );
@@ -241,34 +307,38 @@ function TopAgents() {
     <Card className="overflow-hidden">
       <CardHeader
         title="Top agents"
-        action={
-          <Link to="/reports/sales?groupBy=agent" className={CARD_LINK}>
-            Sales report
-          </Link>
-        }
+        action={<CardLink to="/reports/sales?groupBy=agent">Sales report</CardLink>}
+        divided
       />
       {!data ? (
-        <p className="text-muted px-5 pt-2 pb-5 text-sm">Loading…</p>
+        <p className="text-muted px-4 py-5 text-sm">Loading…</p>
       ) : rows.length === 0 ? (
-        <p className="text-muted px-5 pt-2 pb-5 text-sm">No confirmed sales yet</p>
+        <p className="text-muted px-4 py-5 text-sm">No confirmed sales yet</p>
       ) : (
-        <ol className="space-y-4 px-5 pt-3 pb-5">
-          {rows.map((row) => (
+        <ol className="space-y-3.5 px-4 pt-3.5 pb-4">
+          {rows.map((row, index) => (
             <li key={row.group}>
-              <div className="flex items-baseline justify-between gap-3 text-sm">
-                <span className="text-foreground truncate">{data.names.agents[row.group] ?? row.group}</span>
-                <Amount amount={row.amount} currency={SAR} />
+              <div className="flex items-baseline gap-2.5 text-sm">
+                <span className="text-muted w-3 text-xs tabular-nums">{index + 1}</span>
+                <span className="text-foreground min-w-0 flex-1 truncate">
+                  {data.names.agents[row.group] ?? row.group}
+                </span>
+                <span className="font-medium">
+                  <Amount amount={row.amount} currency={SAR} />
+                </span>
               </div>
-              <div aria-hidden className="bg-surface-muted mt-1.5 h-1 overflow-hidden rounded-full">
-                <div
-                  className="bg-secondary h-full rounded-full"
-                  style={{ width: `${String(top > 0 ? (Number(row.amount) / top) * 100 : 0)}%` }}
-                />
+              <div className="ms-5.5 mt-1.5 flex items-center gap-3">
+                <div aria-hidden className="bg-surface-muted h-1 flex-1 overflow-hidden rounded-full">
+                  <div
+                    className="bg-secondary/70 h-full rounded-full"
+                    style={{ width: `${String(top > 0 ? (Number(row.amount) / top) * 100 : 0)}%` }}
+                  />
+                </div>
+                <span className="text-muted text-xs whitespace-nowrap tabular-nums">
+                  {row.contracts} {row.contracts === 1 ? 'contract' : 'contracts'} ·{' '}
+                  {Number(row.roomNights).toLocaleString('en-GB')} rn
+                </span>
               </div>
-              <p className="text-muted mt-1 text-xs tabular-nums">
-                {row.contracts} {row.contracts === 1 ? 'contract' : 'contracts'},{' '}
-                {Number(row.roomNights).toLocaleString('en-GB')} room-nights
-              </p>
             </li>
           ))}
         </ol>
@@ -278,6 +348,7 @@ function TopAgents() {
 }
 
 function LatestContracts() {
+  const navigate = useNavigate();
   const { data } = useQuery(
     contractListQuery({ ...FIRST_FIVE, status: 'confirmed', sortBy: 'date', sortDir: 'desc' }),
   );
@@ -287,23 +358,20 @@ function LatestContracts() {
     <Card className="overflow-hidden">
       <CardHeader
         title="Latest contracts"
-        action={
-          <Link to="/contracts" className={CARD_LINK}>
-            All contracts
-          </Link>
-        }
+        action={<CardLink to="/contracts">All contracts</CardLink>}
+        divided
       />
       {!data ? (
-        <p className="text-muted px-5 pt-2 pb-5 text-sm">Loading…</p>
+        <p className="text-muted px-4 py-5 text-sm">Loading…</p>
       ) : contracts.length === 0 ? (
-        <p className="text-muted px-5 pt-2 pb-5 text-sm">No confirmed contracts yet</p>
+        <p className="text-muted px-4 py-5 text-sm">No confirmed contracts yet</p>
       ) : (
-        <div className="mt-2 overflow-x-auto">
+        <div className="relative overflow-x-auto">
           <table className="w-full text-sm">
             <caption className="sr-only">Latest confirmed contracts</caption>
             <thead>
-              <tr className="border-border text-muted border-y text-xs">
-                <th scope="col" className="h-9 ps-5 pe-3 text-start font-medium">
+              <tr className="bg-surface-raised text-muted text-xs">
+                <th scope="col" className="h-8 px-4 text-start font-medium">
                   Contract
                 </th>
                 <th scope="col" className="px-3 text-start font-medium">
@@ -313,32 +381,39 @@ function LatestContracts() {
                   Hotels
                 </th>
                 <th scope="col" className="px-3 text-start font-medium">
-                  Date
+                  Signed
                 </th>
-                <th scope="col" className="ps-3 pe-5 text-end font-medium">
+                <th scope="col" className="px-4 text-end font-medium">
                   Total
                 </th>
               </tr>
             </thead>
             <tbody>
               {contracts.map((contract) => (
-                <tr key={contract.id} className={ROW}>
-                  <td className="py-3 ps-5 pe-3 whitespace-nowrap">
+                <tr
+                  key={contract.id}
+                  onClick={(event) => {
+                    if ((event.target as HTMLElement).closest('a')) return;
+                    void navigate(`/contracts/${contract.id}`);
+                  }}
+                  className="border-border-subtle hover:bg-surface-raised cursor-pointer border-t transition-colors duration-100"
+                >
+                  <td className="px-4 py-2.5 whitespace-nowrap">
                     <Link to={`/contracts/${contract.id}`} className={RECORD_LINK_CLASS}>
                       {contract.number}
                     </Link>
                   </td>
-                  <td className="px-3 py-3">{contract.agentName}</td>
-                  <td className="px-3 py-3">
-                    <span className="me-3">
-                      {[...new Set(contract.hotels.map((entry) => entry.hotelName))].join(', ')}
+                  <td className="px-3 py-2.5">{contract.agentName}</td>
+                  <td className="px-3 py-2.5">
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="text-secondary">
+                        {[...new Set(contract.hotels.map((entry) => entry.hotelName))].join(', ')}
+                      </span>
+                      <ContractTags tags={contract.tags} />
                     </span>
-                    <ContractTags tags={contract.tags} />
                   </td>
-                  <td className="text-secondary px-3 py-3 whitespace-nowrap">
-                    {formatIsoDate(contract.date)}
-                  </td>
-                  <td className="py-3 ps-3 pe-5 text-end">
+                  <td className="text-muted px-3 py-2.5 whitespace-nowrap">{formatIsoDate(contract.date)}</td>
+                  <td className="px-4 py-2.5 text-end">
                     <Amount
                       amount={contract.total.amount}
                       currency={{ symbol: contract.total.currencyCode, decimals: 2 }}
@@ -358,25 +433,15 @@ function Legend() {
   return (
     <ul className="text-muted flex flex-wrap gap-x-4 gap-y-1 text-xs">
       <li className="flex items-center gap-1.5">
-        <svg aria-hidden width="16" height="2" className="overflow-visible">
-          <line
-            x1="0"
-            x2="16"
-            y1="1"
-            y2="1"
-            className="stroke-foreground"
-            strokeWidth="2"
-            strokeDasharray="5 3"
-          />
-        </svg>
-        Purchased
-      </li>
-      <li className="flex items-center gap-1.5">
-        <span aria-hidden className="bg-secondary/25 border-secondary h-2.5 w-4 border-t-[1.5px]" />
+        <span aria-hidden className="bg-primary h-0.5 w-3.5 rounded-full" />
         Sold
       </li>
       <li className="flex items-center gap-1.5">
-        <span aria-hidden className="bg-danger h-[3px] w-4 rounded-full" />
+        <span aria-hidden className="bg-faint h-0.5 w-3.5 rounded-full" />
+        Purchased
+      </li>
+      <li className="flex items-center gap-1.5">
+        <span aria-hidden className="bg-primary-active ring-surface size-2 rounded-full ring-2" />
         Overbooked
       </li>
     </ul>
@@ -397,21 +462,27 @@ function Dashboard({ actions }: { actions: ReactNode }) {
   const last = nights.at(-1);
   const seasonLine =
     first && last
-      ? `${dayLabel(isoDate(first.day))} to ${dayLabel(isoDate(last.day + 1))}, ${String(nights.length)} nights`
+      ? `Season ${dayLabel(isoDate(first.day))} to ${dayLabel(isoDate(last.day + 1))} · ${String(nights.length)} nights`
       : undefined;
 
   return (
     <>
       <PageHeader title="Overview" {...(seasonLine ? { subtitle: seasonLine } : {})} action={actions} />
-      <div className="space-y-6 p-5 lg:p-8">
+      <PageBody>
         <SummaryStrip>
-          <Stat label="Room-nights purchased" value={purchased.toLocaleString('en-GB')} />
           <Stat
             label="Room-nights sold"
             value={sold.toLocaleString('en-GB')}
             {...(purchased > 0
-              ? { hint: `${String(Math.round((sold / purchased) * 100))}% of purchased` }
+              ? {
+                  hint: `${String(Math.round((sold / purchased) * 100))}% of ${purchased.toLocaleString('en-GB')} purchased`,
+                }
               : {})}
+          />
+          <Stat
+            label="Left to sell"
+            value={Math.max(purchased - sold, 0).toLocaleString('en-GB')}
+            hint="Room-nights"
           />
           <Stat
             label="Overbooked"
@@ -420,15 +491,16 @@ function Dashboard({ actions }: { actions: ReactNode }) {
                 {overbooked}
               </Link>
             }
-            hint={`of ${String(pools.length)} hotel and room types`}
+            hint={`of ${String(pools.length)} hotel room types`}
             {...(overbooked > 0 ? { tone: 'danger' as const } : {})}
           />
           {can('report.view') && can('finance.view_cost') && <MoneyFigures />}
         </SummaryStrip>
 
-        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+        <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(20rem,1fr)_minmax(0,2fr)]">
+          <NeedsAttention pools={pools} />
           <Card className="overflow-hidden">
-            <CardHeader title="Occupancy by night" action={<Legend />} />
+            <CardHeader title="Occupancy by night" action={<Legend />} divided />
             {nights.length === 0 ? (
               <EmptyState title="No confirmed purchases yet" />
             ) : (
@@ -437,16 +509,15 @@ function Dashboard({ actions }: { actions: ReactNode }) {
               </div>
             )}
           </Card>
-          <NeedsAttention pools={pools} />
         </div>
 
-        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
           <RoomsByHotel pools={pools} dayLabel={dayLabel} />
           {can('report.view') && <TopAgents />}
         </div>
 
         {can('contract.view') && <LatestContracts />}
-      </div>
+      </PageBody>
     </>
   );
 }
@@ -457,14 +528,14 @@ export function OverviewPage() {
     <>
       {can('purchase.create') && (
         <Link to="/purchases/new" className={buttonClass('secondary')}>
-          <Plus aria-hidden className="size-4" />
-          Add purchase
+          <ShoppingCart aria-hidden />
+          New purchase
         </Link>
       )}
       {can('contract.create') && (
         <Link to="/contracts/new" className={buttonClass('primary')}>
-          <Plus aria-hidden className="size-4" />
-          Add contract
+          <FileSignature aria-hidden />
+          New contract
         </Link>
       )}
     </>
@@ -474,11 +545,14 @@ export function OverviewPage() {
     return (
       <>
         <PageHeader title="Overview" action={actions} />
-        <div className="p-5 lg:p-8">
+        <PageBody>
           <Card>
-            <EmptyState title="Choose where to start from the menu" />
+            <EmptyState
+              icon={<Plus aria-hidden className="size-6" />}
+              title="Choose where to start from the menu"
+            />
           </Card>
-        </div>
+        </PageBody>
       </>
     );
   }

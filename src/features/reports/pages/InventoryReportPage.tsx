@@ -101,7 +101,7 @@ export function InventoryReportPage({ isExposureOnly = false }: InventoryReportP
         return (
           <Card className="overflow-hidden">
             {isExposureOnly && rows.length > 0 && (
-              <p className="text-muted border-border border-b px-5 py-3 text-sm">
+              <p className="text-muted border-border border-b px-4 py-3 text-sm">
                 Total unsold cost{' '}
                 <span className="text-foreground ms-1 text-base font-medium tabular-nums">
                   {money(exposureOf(rows).toFixed(2))}

@@ -16,9 +16,9 @@ export function PoolSources({ pool, months }: PoolSourcesProps) {
     `${formatDay(checkIn, months)} to ${formatDay(checkOut, months)}`;
 
   return (
-    <div className="grid gap-6 px-5 pt-3 pb-5 text-sm lg:grid-cols-2">
+    <div className="grid gap-6 px-4 pt-3 pb-4 text-sm lg:grid-cols-2">
       <div>
-        <h3 className="text-muted mb-2 text-[0.8125rem]">Purchases</h3>
+        <h3 className="text-muted text-meta mb-2">Purchases</h3>
         {pool.purchases.length === 0 ? (
           <p className="text-muted">None on this pool.</p>
         ) : (
@@ -36,7 +36,7 @@ export function PoolSources({ pool, months }: PoolSourcesProps) {
         )}
       </div>
       <div>
-        <h3 className="text-muted mb-2 text-[0.8125rem]">Sales</h3>
+        <h3 className="text-muted text-meta mb-2">Sales</h3>
         {pool.sales.length === 0 ? (
           <p className="text-muted">None on this pool.</p>
         ) : (

@@ -4,17 +4,13 @@ import { useSearchParams } from 'react-router';
 import { DataList } from '@/components/data-table/DataList';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Select } from '@/components/ui/Select';
+import { TabBar } from '@/components/ui/TabBar';
 import { calendarMonthsQuery } from '@/features/calendar';
 import { hotelOptionsQuery } from '@/features/hotels';
 import { createListParams } from '@/lib/router/useListParams';
 
-import { poolListQuery } from '../api/ledger.queries';
-import {
-  POOL_SORT_FIELDS,
-  POOL_STATE_FILTERS,
-  type PoolSortField,
-  type PoolStateFilter,
-} from '../api/ledger.schemas';
+import { overbookedPoolsQuery, poolListQuery } from '../api/ledger.queries';
+import { POOL_SORT_FIELDS, POOL_STATE_FILTERS, type PoolSortField } from '../api/ledger.schemas';
 import { poolColumns } from '../components/pool-columns';
 
 const usePoolListParams = createListParams({
@@ -27,14 +23,13 @@ const usePoolListParams = createListParams({
 const HOTEL_PARAM = 'hotel';
 
 const isSortField = (id: string): id is PoolSortField => POOL_SORT_FIELDS.some((field) => field === id);
-const isStateFilter = (value: string): value is PoolStateFilter =>
-  POOL_STATE_FILTERS.some((filter) => filter === value);
 
 export function LedgerPage() {
   const { params, updateParams } = usePoolListParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const hotelId = searchParams.get(HOTEL_PARAM) ?? '';
   const query = useQuery(poolListQuery({ ...params, hotelId }));
+  const overbooked = useQuery(overbookedPoolsQuery).data;
   const [{ data: hotels }, { data: months }] = useSuspenseQueries({
     queries: [hotelOptionsQuery, calendarMonthsQuery],
   });
@@ -54,12 +49,37 @@ export function LedgerPage() {
 
   return (
     <>
-      <PageHeader title="Rooms ledger" />
-      <div className="p-5 lg:p-8">
+      <PageHeader title="Rooms ledger" subtitle="Every hotel and room type, night by night" />
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
+        <TabBar
+          label="Rooms by state"
+          value={params.status}
+          onChange={(status) => {
+            updateParams({ status });
+          }}
+          items={[
+            { value: 'all', label: 'All' },
+            { value: 'overbooked', label: 'Overbooked', count: overbooked, isAttention: true },
+            { value: 'available', label: 'Rooms to sell' },
+            { value: 'full', label: 'Sold out' },
+          ]}
+        />
         <DataList
           caption="Rooms ledger"
           columns={poolColumns(months)}
           getRowId={(pool) => pool.id}
+          getRowHref={(pool) => `/inventory/${pool.hotelId}/${pool.roomTypeId}`}
+          grouping={{
+            key: (pool) => pool.hotelId,
+            heading: (pools) => (
+              <span className="flex items-baseline gap-2">
+                {pools[0]?.hotelName}{' '}
+                <span className="text-muted text-xs font-normal">
+                  {pools.length === 1 ? '1 room type' : `${String(pools.length)} room types`}
+                </span>
+              </span>
+            ),
+          }}
           query={query}
           params={params}
           defaultSortBy="state"
@@ -71,7 +91,7 @@ export function LedgerPage() {
             <>
               <Select
                 aria-label="Filter by hotel"
-                className="w-56"
+                className="text-meta h-(--control-height-sm) w-52"
                 value={hotelId}
                 onChange={(event) => {
                   handleHotelChange(event.target.value);
@@ -83,20 +103,6 @@ export function LedgerPage() {
                     {hotel.name}
                   </option>
                 ))}
-              </Select>
-              <Select
-                aria-label="Filter by state"
-                className="w-44"
-                value={params.status}
-                onChange={(event) => {
-                  const { value } = event.target;
-                  if (isStateFilter(value)) updateParams({ status: value });
-                }}
-              >
-                <option value="all">All states</option>
-                <option value="overbooked">Overbooked</option>
-                <option value="full">Fully utilised</option>
-                <option value="available">Available</option>
               </Select>
             </>
           }

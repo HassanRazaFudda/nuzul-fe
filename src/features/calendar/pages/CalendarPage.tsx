@@ -76,7 +76,7 @@ export function CalendarPage() {
           )
         }
       />
-      <div className="space-y-5 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         {problems.length > 0 && (
           <ErrorNotice title="The months do not line up">
             <ul className="space-y-0.5">

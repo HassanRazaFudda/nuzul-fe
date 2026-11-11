@@ -62,17 +62,29 @@ export function UsersPage() {
           )
         }
       />
-      <div className="p-5 lg:p-8">
+      <div className="px-(--page-gutter) pt-4 pb-10">
         <Card className="overflow-hidden">
-          <ul className="divide-border divide-y">
+          <ul className="divide-border-subtle divide-y">
             {users.map((user) => (
               <li key={user.id}>
                 <Link
                   to={`/users/${user.id}`}
-                  className="hover:bg-background flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3 text-sm transition-colors duration-150"
+                  className="hover:bg-surface-raised flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2.5 text-sm transition-colors duration-150"
                 >
-                  <span className="text-foreground min-w-48 flex-1 font-medium">{user.name}</span>
-                  <span className="text-muted w-32 text-[0.8125rem] tabular-nums">
+                  <span className="flex min-w-48 flex-1 items-center gap-3">
+                    <span
+                      aria-hidden
+                      className="bg-surface-muted text-secondary flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-medium"
+                    >
+                      {user.name
+                        .split(/\s+/)
+                        .slice(0, 2)
+                        .map((word) => word[0]?.toUpperCase() ?? '')
+                        .join('')}
+                    </span>
+                    <span className="text-foreground font-medium">{user.name}</span>
+                  </span>
+                  <span className="text-muted text-meta w-32 tabular-nums">
                     {user.permissions.length} permissions
                   </span>
                   <span className="w-28">

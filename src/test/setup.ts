@@ -19,3 +19,8 @@ HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogEleme
 HTMLDialogElement.prototype.close = function close(this: HTMLDialogElement) {
   this.open = false;
 };
+
+// jsdom cannot draw on a canvas; charts skip drawing and are checked in a browser.
+HTMLCanvasElement.prototype.getContext = function getContext() {
+  return null;
+} as typeof HTMLCanvasElement.prototype.getContext;

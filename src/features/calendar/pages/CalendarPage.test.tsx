@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { renderApp } from '@/test/render';
+import { chooseFromMenu, renderApp } from '@/test/render';
 
 describe('CalendarPage', () => {
   it('pre-fills the next month, and accepts any number of days', async () => {
@@ -22,7 +22,7 @@ describe('CalendarPage', () => {
 
   it('says so when a change leaves a gap', async () => {
     const { user } = renderApp('/calendar');
-    await user.click(await screen.findByRole('button', { name: 'Edit Zul-Qadah 1448' }));
+    await chooseFromMenu(user, 'Actions for Zul-Qadah 1448', 'Edit');
 
     const days = screen.getByLabelText(/^Days/);
     await user.clear(days);

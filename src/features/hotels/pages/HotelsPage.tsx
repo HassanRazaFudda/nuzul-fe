@@ -48,6 +48,7 @@ export function HotelsPage() {
 
   const columns = hotelColumns({
     currencies,
+    canManage,
     onEdit: setEditing,
     onSetActive: (hotel, active) => {
       setHotelActive.mutate(
@@ -73,12 +74,12 @@ export function HotelsPage() {
                 setEditing('new');
               }}
             >
-              Add hotel
+              New hotel
             </Button>
           )
         }
       />
-      <div className="space-y-4 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         <TabBar
           label="Hotels by status"
           value={params.status}
@@ -92,8 +93,9 @@ export function HotelsPage() {
         />
         <DataList
           caption="Hotels"
-          columns={canManage ? columns : columns.filter((column) => column.id !== 'actions')}
+          columns={columns}
           getRowId={(hotel) => hotel.id}
+          {...(canManage ? { onRowClick: setEditing } : {})}
           query={query}
           params={params}
           defaultSortBy="name"

@@ -23,6 +23,7 @@ import { LoadingScreen } from './layout/LoadingScreen';
 import { PLACEHOLDER_ITEMS } from './layout/navigation';
 import { PlaceholderPage } from './layout/PlaceholderPage';
 import { RouteErrorBoundary } from './layout/RouteErrorBoundary';
+import { SettingsLayout } from './layout/SettingsLayout';
 
 type CreateRouter = (routes: RouteObject[]) => ReturnType<typeof createBrowserRouter>;
 
@@ -55,13 +56,20 @@ export function createAppRouter(queryClient: QueryClient, createRouter: CreateRo
             { path: 'hotels', children: hotelRoutes(queryClient) },
             { path: 'vendors', children: vendorRoutes() },
             { path: 'agents', children: agentRoutes() },
-            { path: 'room-types', children: roomTypeRoutes(queryClient) },
-            { path: 'calendar', children: calendarRoutes(queryClient) },
-            { path: 'currencies', children: currencyRoutes(queryClient) },
             { path: 'design', children: designSystemRoutes() },
-            { path: 'users', children: userRoutes(queryClient) },
-            { path: 'audit', children: auditRoutes() },
-            { path: 'settings/agreement', children: agreementRoutes(queryClient) },
+            {
+              // Setup lives in one frame with its own menu; the addresses stay as they were.
+              Component: SettingsLayout,
+              children: [
+                { path: 'room-types', children: roomTypeRoutes(queryClient) },
+                { path: 'calendar', children: calendarRoutes(queryClient) },
+                { path: 'currencies', children: currencyRoutes(queryClient) },
+                { path: 'users', children: userRoutes(queryClient) },
+                { path: 'audit', children: auditRoutes() },
+                { path: 'settings/agreement', children: agreementRoutes(queryClient) },
+              ],
+            },
+            { path: 'settings', loader: () => redirect('/room-types') },
             ...PLACEHOLDER_ITEMS.map((item) => ({
               path: item.path,
               element: <PlaceholderPage title={item.label} purpose={item.purpose} />,

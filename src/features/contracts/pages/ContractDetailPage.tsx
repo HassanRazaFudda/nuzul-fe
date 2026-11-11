@@ -1,8 +1,9 @@
 import { useQueryClient, useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
-import { Printer } from 'lucide-react';
+import { Check, Lock, LockOpen, Pencil, Printer, Trash2, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
+import { Callout } from '@/components/feedback/Callout';
 import { ErrorNotice } from '@/components/feedback/ErrorNotice';
 import { toast } from '@/components/feedback/toast';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { buttonClass, RECORD_LINK_CLASS } from '@/components/ui/buttonStyles';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { Menu } from '@/components/ui/Menu';
 import { Stat, SummaryStrip } from '@/components/ui/Stat';
 import { calendarMonthsQuery, formatDay } from '@/features/calendar';
 import { HistoryCard, ImpactReviewDialog, type Impact } from '@/features/changes';
@@ -76,6 +78,10 @@ export function ContractDetailPage() {
   const range = (checkIn: string, checkOut: string) =>
     `${formatDay(checkIn, months)} to ${formatDay(checkOut, months)}`;
   const isBusy = confirmContract.isPending || removeContract.isPending;
+  const roomCount = contract.hotels.reduce(
+    (total, entry) => total + entry.lines.reduce((sum, line) => sum + line.rooms, 0),
+    0,
+  );
 
   /** Checks against the records as they are now, not as they were when the page opened. */
   async function startConfirm() {
@@ -164,13 +170,32 @@ export function ContractDetailPage() {
   }
 
   const isOverbooking = preview.shortages.length > 0;
+  // Each overbooked hotel and room type once, so the callout offers one fix per pool.
+  const problemPools = [
+    ...new Map(
+      contract.hotels.flatMap((entry) =>
+        entry.lines
+          .filter((line) => line.tags.overbooked)
+          .map((line) => {
+            const to = `/inventory/${entry.hotelId}/${line.sourceTypeId}`;
+            return [to, { to, label: `${entry.hotelName} ${typeName(line.sourceTypeId)}` }] as const;
+          }),
+      ),
+    ).values(),
+  ];
   const canOverride = can('inventory.override_overbooking');
 
   return (
     <>
       <PageHeader
         title={number}
-        subtitle={`${contract.agentName}, ${formatIsoDate(contract.date)}`}
+        breadcrumbs={[{ label: 'Sales contracts', to: `/contracts?status=${status}` }]}
+        subtitle={
+          <>
+            <span className="text-foreground font-medium">{contract.agentName}</span> · signed{' '}
+            {formatIsoDate(contract.date)}
+          </>
+        }
         status={
           <>
             <ContractStatusBadge status={status} />
@@ -179,62 +204,66 @@ export function ContractDetailPage() {
         }
         action={
           <>
-            <Link
-              to={`/contracts/${id}/print`}
-              className={buttonClass('ghost')}
-              aria-label={`Print ${number}`}
-            >
-              <Printer aria-hidden className="size-4" />
+            <Menu
+              label={`More actions for ${number}`}
+              items={[
+                status === 'draft' &&
+                  can('contract.delete') && {
+                    label: 'Delete draft',
+                    icon: <Trash2 aria-hidden />,
+                    tone: 'danger',
+                    onSelect: () => {
+                      setPending('delete');
+                    },
+                  },
+                status === 'confirmed' &&
+                  can('contract.unlock') && {
+                    label: 'Lock',
+                    icon: <Lock aria-hidden />,
+                    hint: 'No one can change it until unlocked',
+                    onSelect: () => {
+                      handleLock(true);
+                    },
+                  },
+                status === 'confirmed' &&
+                  can('contract.delete') && {
+                    label: 'Cancel contract',
+                    icon: <XCircle aria-hidden />,
+                    hint: 'Its rooms go back to the pools',
+                    tone: 'danger',
+                    onSelect: () => void startReview('cancel'),
+                  },
+              ]}
+            />
+            <Link to={`/contracts/${id}/print`} className={buttonClass('secondary')}>
+              <Printer aria-hidden />
               Print
             </Link>
             {status === 'draft' && (
               <>
-                {can('contract.delete') && (
-                  <Button
-                    variant="danger-ghost"
-                    onClick={() => {
-                      setPending('delete');
-                    }}
-                  >
-                    Delete
-                  </Button>
-                )}
                 {can('contract.edit') && (
                   <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary')}>
+                    <Pencil aria-hidden />
                     Edit
                   </Link>
                 )}
-                {can('contract.confirm') && <Button onClick={() => void startConfirm()}>Confirm</Button>}
+                {can('contract.confirm') && (
+                  <Button icon={<Check aria-hidden />} onClick={() => void startConfirm()}>
+                    Confirm
+                  </Button>
+                )}
               </>
             )}
-            {status === 'confirmed' && (
-              <>
-                {can('contract.delete') && (
-                  <Button variant="danger-ghost" onClick={() => void startReview('cancel')}>
-                    Cancel contract
-                  </Button>
-                )}
-                {can('contract.unlock') && (
-                  <Button
-                    variant="ghost"
-                    isLoading={setLocked.isPending}
-                    onClick={() => {
-                      handleLock(true);
-                    }}
-                  >
-                    Lock
-                  </Button>
-                )}
-                {can('contract.edit') && (
-                  <Link to={`/contracts/${id}/edit`} className={buttonClass('primary')}>
-                    Edit
-                  </Link>
-                )}
-              </>
+            {status === 'confirmed' && can('contract.edit') && (
+              <Link to={`/contracts/${id}/edit`} className={buttonClass('primary')}>
+                <Pencil aria-hidden />
+                Edit
+              </Link>
             )}
             {status === 'locked' && can('contract.unlock') && (
               <Button
                 variant="secondary"
+                icon={<LockOpen aria-hidden />}
                 isLoading={setLocked.isPending}
                 onClick={() => {
                   handleLock(false);
@@ -251,7 +280,45 @@ export function ContractDetailPage() {
           </>
         }
       />
-      <div className="space-y-5 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
+        {status === 'draft' && (
+          <Callout tone="neutral" title="Draft: these rooms are not on the ledger yet">
+            Check the hotels and rooms below, then confirm to take them from the pools.
+          </Callout>
+        )}
+        {status !== 'cancelled' && problemPools.length > 0 && (
+          <Callout
+            tone="danger"
+            title={
+              problemPools.length === 1
+                ? 'A room type on this contract is overbooked'
+                : `${String(problemPools.length)} room types on this contract are overbooked`
+            }
+            action={problemPools.map((pool) => (
+              <Link key={pool.to} to={pool.to} className={buttonClass('secondary', 'sm')}>
+                {can('purchase.create') ? 'Buy rooms' : 'View'}: {pool.label}
+              </Link>
+            ))}
+          >
+            More rooms are sold than purchased on some nights. Buying the missing rooms clears the flag.
+          </Callout>
+        )}
+        {status !== 'cancelled' && contract.tags.needsVendor && (
+          <Callout
+            tone="warning"
+            title="Some rooms have no vendor yet"
+            action={
+              (status === 'confirmed' || status === 'draft') &&
+              can('contract.edit') && (
+                <Link to={`/contracts/${id}/edit`} className={buttonClass('secondary', 'sm')}>
+                  Assign vendors
+                </Link>
+              )
+            }
+          >
+            Their cost stays unknown until a purchase is assigned to them.
+          </Callout>
+        )}
         {actionError !== null && (
           <ErrorNotice title="This could not be done">{getErrorMessage(actionError)}</ErrorNotice>
         )}
@@ -263,16 +330,20 @@ export function ContractDetailPage() {
         )}
 
         <SummaryStrip>
-          <Stat label="Rooms" value={formatMoney(contract.roomAmount.amount, format)} />
           <Stat
-            label="Meals"
-            value={formatMoney(contract.mealIncome.amount, format)}
-            hint={
-              mealPlan.kind === 'none'
-                ? 'No meal plan'
-                : `${MEAL_PLAN_LABELS[mealPlan.kind]}, ${formatMoney(mealPlan.rate, format)} per person per night`
-            }
+            label="Rooms"
+            value={formatMoney(contract.roomAmount.amount, format)}
+            hint={`${String(roomCount)} ${roomCount === 1 ? 'room' : 'rooms'} in ${String(contract.hotels.length)} ${contract.hotels.length === 1 ? 'hotel' : 'hotels'}`}
           />
+          {mealPlan.kind === 'none' ? (
+            <Stat label="Meals" value="None" hint="No meal plan on this contract" />
+          ) : (
+            <Stat
+              label="Meals"
+              value={formatMoney(contract.mealIncome.amount, format)}
+              hint={`${MEAL_PLAN_LABELS[mealPlan.kind]}, ${formatMoney(mealPlan.rate, format)} per person per night`}
+            />
+          )}
           <Stat
             label="Grand total"
             value={formatMoney(contract.total.amount, format)}
@@ -291,11 +362,11 @@ export function ContractDetailPage() {
                 </span>
               }
             />
-            <ul className="divide-border mt-3 divide-y border-t">
+            <ul className="divide-border-subtle border-border divide-y border-t">
               {entry.lines.map((line, lineIndex) => {
                 const unallocated = unallocatedBlocks(entry, line.rooms, line.allocations);
                 return (
-                  <li key={lineIndex} className="space-y-1.5 px-5 py-3 text-sm">
+                  <li key={lineIndex} className="space-y-1.5 px-4 py-3 text-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="text-foreground">
                         <span className="font-medium">
@@ -347,7 +418,7 @@ export function ContractDetailPage() {
         {contract.notes && (
           <Card>
             <CardHeader title="Notes" />
-            <p className="text-foreground px-5 pt-1 pb-5 text-sm whitespace-pre-line">{contract.notes}</p>
+            <p className="text-foreground px-4 pb-4 text-sm whitespace-pre-line">{contract.notes}</p>
           </Card>
         )}
 

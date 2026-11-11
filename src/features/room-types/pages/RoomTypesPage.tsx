@@ -83,7 +83,7 @@ export function RoomTypesPage() {
           )
         }
       />
-      <div className="space-y-5 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         <Card>
           <DataTable
             caption="Room types"

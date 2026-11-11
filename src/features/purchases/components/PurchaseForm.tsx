@@ -11,6 +11,8 @@ import { buttonClass } from '@/components/ui/buttonStyles';
 import { FormSection } from '@/components/form/FormSection';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { Switch } from '@/components/ui/Choice';
+import { DateInput } from '@/components/ui/DateInput';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
@@ -26,6 +28,7 @@ import type { Partner } from '@/features/partners';
 import type { RoomType } from '@/features/room-types';
 import { getErrorMessage } from '@/lib/api/api-error';
 import { useCan } from '@/lib/auth/session';
+import { nightsBetween } from '@/lib/format/dates';
 import { rateOn } from '@/lib/money/money';
 
 import type { PurchaseView } from '../api/purchase.schemas';
@@ -34,6 +37,7 @@ import { MealFields } from './MealFields';
 import { emptyLine, purchaseFormSchema, toFormValues, type PurchaseFormValues } from './purchase-form.schema';
 import type { PurchasePrefill } from './purchase-prefill';
 import { PurchaseTotals } from './PurchaseTotals';
+import { useLivePurchaseTotals } from './use-live-purchase-totals';
 import { RoomLinesField } from './RoomLinesField';
 
 type Labels = Partial<Record<Path<PurchaseFormValues>, string>>;
@@ -136,6 +140,8 @@ export function PurchaseForm({
   const [showSummary, setShowSummary] = useState(false);
   const canSetRate = useCan()('finance.set_rate');
   const [saveError, setSaveError] = useState<unknown>(null);
+  const [showRate, setShowRate] = useState(false);
+  const live = useLivePurchaseTotals(form.control, currencies);
   // The save itself navigates away, so leaving while it runs needs no question. A suggested
   // purchase counts as unsaved work from the start.
   const blocker = useBlocker((isDirty || prefill !== null) && !isSubmitting);
@@ -143,7 +149,7 @@ export function PurchaseForm({
   const calendarHint = (iso: string) => {
     if (!iso) return undefined;
     const label = formatDay(iso, months);
-    return label === iso ? 'Outside the calendar' : label;
+    return label === iso ? 'Not in calendar' : label;
   };
 
   /** A hotel's reference rates only help when they are in the purchase's currency. */
@@ -211,16 +217,20 @@ export function PurchaseForm({
     (currency) => currency.enabled || currency.code === purchase?.currencyCode,
   );
 
+  const nights = checkIn && checkOut && checkOut > checkIn ? nightsBetween(checkIn, checkOut) : 0;
+  const isRateEditable = currencyCode !== RATE_BASE_CURRENCY && canSetRate;
+  const rateVisible = showRate || Boolean(errors.rateToPkr);
+
   return (
-    <form noValidate onSubmit={handleSubmit} className="space-y-5 p-5 lg:p-8">
+    <form noValidate onSubmit={handleSubmit} className="space-y-5 px-(--page-gutter) pt-4 pb-10">
       {saveError !== null && (
         <ErrorNotice title="This could not be saved">{getErrorMessage(saveError)}</ErrorNotice>
       )}
       {showSummary && <FormErrorSummary form={form} labels={labelsFor(lines.fields.length)} />}
 
-      <div className="grid items-start gap-5 xl:grid-cols-[1fr_20rem]">
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <Card className="min-w-0">
-          <FormSection title="Hotel and stay">
+          <FormSection title="Hotel and vendor">
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField label="Hotel" required error={errors.hotelId?.message}>
                 {(field) => (
@@ -253,76 +263,69 @@ export function PurchaseForm({
                   </Select>
                 )}
               </FormField>
+            </div>
+          </FormSection>
+
+          <FormSection
+            title="Stay"
+            action={
+              nights > 0 && (
+                <span className="text-secondary text-meta tabular-nums">
+                  {nights} {nights === 1 ? 'night' : 'nights'}
+                </span>
+              )
+            }
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 label="Check-in"
                 required
                 error={errors.checkIn?.message}
-                hint={calendarHint(checkIn)}
+                aside={calendarHint(checkIn)}
               >
-                {(field) => <Input {...field} type="date" {...form.register('checkIn')} />}
+                {(field) => <DateInput {...field} {...form.register('checkIn')} />}
               </FormField>
               <FormField
                 label="Check-out"
                 required
                 error={errors.checkOut?.message}
-                hint={calendarHint(checkOut)}
+                aside={calendarHint(checkOut)}
               >
-                {(field) => <Input {...field} type="date" {...form.register('checkOut')} />}
+                {(field) => <DateInput {...field} {...form.register('checkOut')} />}
               </FormField>
             </div>
           </FormSection>
 
-          <FormSection title="Rooms and cost">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField label="Currency" required error={errors.currencyCode?.message}>
-                {(field) => (
-                  <Select
-                    {...field}
-                    {...currencyField}
-                    onChange={(event) => {
-                      void currencyField.onChange(event);
-                      handleCurrencyChange(event.target.value);
-                    }}
-                  >
-                    {currencyOptions.map((currency) => (
-                      <option key={currency.code} value={currency.code}>
-                        {currency.code}
-                      </option>
-                    ))}
-                  </Select>
-                )}
-              </FormField>
-              <FormField
-                label="Rate against PKR"
-                required
-                error={errors.rateToPkr?.message}
-                hint="Stays with this purchase"
-              >
-                {(field) => (
-                  <Input
-                    {...field}
-                    inputMode="decimal"
-                    readOnly={currencyCode === RATE_BASE_CURRENCY || !canSetRate}
-                    {...form.register('rateToPkr')}
-                  />
-                )}
-              </FormField>
-            </div>
-            <div className="flex flex-wrap gap-x-6 gap-y-2">
-              <label className="text-foreground flex items-center gap-2 text-sm">
-                <input type="checkbox" className="accent-primary size-4" {...form.register('perNight')} />
-                Rate is per night
-              </label>
-              <label className="text-foreground flex items-center gap-2 text-sm">
-                <input type="checkbox" className="accent-primary size-4" {...form.register('sameRate')} />
-                Same rate for all lines
-              </label>
-            </div>
+          <FormSection
+            title="Rooms and cost"
+            action={
+              <div className="flex items-center gap-4">
+                <Switch label="Rate per night" {...form.register('perNight')} />
+                <Select
+                  aria-label="Currency"
+                  className="text-meta h-(--control-height-sm) w-24"
+                  {...currencyField}
+                  onChange={(event) => {
+                    void currencyField.onChange(event);
+                    handleCurrencyChange(event.target.value);
+                  }}
+                >
+                  {currencyOptions.map((currency) => (
+                    <option key={currency.code} value={currency.code}>
+                      {currency.code}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            }
+          >
             <RoomLinesField
               form={form}
               lines={lines}
               roomTypes={roomTypes}
               onRoomTypeChange={handleRoomTypeChange}
+              lineCosts={live.totals.lineCosts}
+              decimals={live.format.decimals}
             />
           </FormSection>
 
@@ -332,21 +335,71 @@ export function PurchaseForm({
 
           <FormSection>
             <FormField label="Notes" error={errors.notes?.message}>
-              {(field) => <Textarea {...field} rows={3} {...form.register('notes')} />}
+              {(field) => (
+                <Textarea
+                  {...field}
+                  rows={2}
+                  className="min-h-16"
+                  placeholder="Anything the team should know about this purchase"
+                  {...form.register('notes')}
+                />
+              )}
             </FormField>
           </FormSection>
         </Card>
 
         <Card className="xl:sticky xl:top-6">
-          <CardHeader title="Totals" />
+          <CardHeader title="Summary" />
           <PurchaseTotals control={form.control} currencies={currencies} />
-          <div className="border-border flex flex-wrap justify-end gap-2 border-t px-5 py-4">
-            <Link to={cancelTo} className={buttonClass('secondary')}>
-              Cancel
-            </Link>
-            <Button type="submit" isLoading={isSubmitting}>
+          <div className="border-border text-meta space-y-2 border-t px-4 py-3">
+            {currencyCode === RATE_BASE_CURRENCY ? (
+              <p className="text-muted">Amounts are in {RATE_BASE_CURRENCY}</p>
+            ) : (
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted tabular-nums">
+                  1 {currencyCode} = {live.rateToPkr || '…'} PKR
+                </span>
+                {isRateEditable && !rateVisible && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowRate(true);
+                    }}
+                    className="text-secondary hover:text-foreground underline underline-offset-2"
+                  >
+                    Change
+                  </button>
+                )}
+              </div>
+            )}
+            <div className={rateVisible ? undefined : 'hidden'}>
+              <FormField
+                label="Rate against PKR"
+                required
+                error={errors.rateToPkr?.message}
+                hint="Frozen on this purchase"
+              >
+                {(field) => (
+                  <Input
+                    {...field}
+                    inputMode="decimal"
+                    readOnly={!isRateEditable}
+                    {...form.register('rateToPkr')}
+                  />
+                )}
+              </FormField>
+            </div>
+          </div>
+          <div className="border-border flex flex-col gap-2 border-t px-4 py-4">
+            <Button type="submit" isLoading={isSubmitting} className="w-full">
               {submitLabel}
             </Button>
+            <Link to={cancelTo} className={`${buttonClass('ghost')} w-full`}>
+              Cancel
+            </Link>
+            {!purchase || purchase.status === 'draft' ? (
+              <p className="text-muted text-center text-xs">You confirm it on the next screen</p>
+            ) : null}
           </div>
         </Card>
       </div>

@@ -50,12 +50,12 @@ export function Dialog({ open, onClose, title, children, footer, size = 'md' }: 
       }}
       aria-labelledby={titleId}
       className={cn(
-        'rounded-card border-border bg-surface text-foreground shadow-overlay m-auto w-[calc(100%-2rem)] border p-0',
+        'rounded-card border-border bg-surface text-foreground shadow-overlay animate-overlay-in m-auto w-[calc(100%-2rem)] border p-0',
         size === 'lg' ? 'max-w-3xl' : 'max-w-xl',
       )}
     >
-      <header className="flex items-center justify-between gap-3 px-5 pt-4 pb-2">
-        <h2 id={titleId} className="text-[0.9375rem] font-semibold">
+      <header className="flex items-center justify-between gap-3 px-4 pt-4 pb-2">
+        <h2 id={titleId} className="text-base font-semibold tracking-[-0.01em]">
           {title}
         </h2>
         <button
@@ -67,9 +67,9 @@ export function Dialog({ open, onClose, title, children, footer, size = 'md' }: 
           <X aria-hidden className="size-4" />
         </button>
       </header>
-      <div className="text-secondary max-h-[70vh] overflow-y-auto px-5 pt-1 pb-5 text-sm">{children}</div>
+      <div className="text-secondary max-h-[70vh] overflow-y-auto px-4 pt-1 pb-4 text-sm">{children}</div>
       {footer && (
-        <footer className="border-border bg-background flex flex-wrap justify-end gap-2 rounded-b-[inherit] border-t px-5 py-3">
+        <footer className="border-border bg-background flex flex-wrap justify-end gap-2 rounded-b-[inherit] border-t px-4 py-3">
           {footer}
         </footer>
       )}

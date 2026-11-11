@@ -55,6 +55,8 @@ export function PartnersList({ kind, title, noun }: PartnersListProps) {
   }
 
   const columns = partnerColumns({
+    kind,
+    canManage,
     onEdit: setEditing,
     onSetActive: (partner, active) => {
       setPartnerActive.mutate(
@@ -81,12 +83,12 @@ export function PartnersList({ kind, title, noun }: PartnersListProps) {
                 setEditing('new');
               }}
             >
-              Add {noun}
+              New {noun}
             </Button>
           )
         }
       />
-      <div className="space-y-4 p-5 lg:p-8">
+      <div className="space-y-5 px-(--page-gutter) pt-4 pb-10">
         <TabBar
           label={`${title} by status`}
           value={params.status}
@@ -100,8 +102,9 @@ export function PartnersList({ kind, title, noun }: PartnersListProps) {
         />
         <DataList
           caption={title}
-          columns={canManage ? columns : columns.filter((column) => column.id !== 'actions')}
+          columns={columns}
           getRowId={(partner) => partner.id}
+          {...(canManage ? { onRowClick: setEditing } : {})}
           query={query}
           params={params}
           defaultSortBy="name"

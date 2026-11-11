@@ -96,7 +96,7 @@ export function CurrenciesPage() {
           )
         }
       />
-      <div className="p-5 lg:p-8">
+      <div className="px-(--page-gutter) pt-4 pb-10">
         <Card>
           <DataTable
             caption="Currencies"

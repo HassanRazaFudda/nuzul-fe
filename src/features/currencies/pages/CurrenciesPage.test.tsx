@@ -40,12 +40,17 @@ describe('CurrenciesPage', () => {
   });
 
   it('never offers to disable PKR or SAR, or to change the PKR rate', async () => {
-    renderApp('/currencies');
+    const { user } = renderApp('/currencies');
 
-    await screen.findByRole('button', { name: 'Disable USD' });
+    await user.click(await screen.findByRole('button', { name: 'More actions for USD' }));
+    expect(await screen.findByRole('menuitem', { name: /^Disable/ })).toBeInTheDocument();
+    await user.keyboard('{Escape}');
 
-    expect(screen.queryByRole('button', { name: 'Disable PKR' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Disable SAR' })).not.toBeInTheDocument();
+    for (const code of ['PKR', 'SAR']) {
+      await user.click(screen.getByRole('button', { name: `More actions for ${code}` }));
+      expect(screen.queryByRole('menuitem', { name: /^Disable/ })).not.toBeInTheDocument();
+      await user.keyboard('{Escape}');
+    }
     expect(screen.queryByRole('button', { name: 'Update PKR rate' })).not.toBeInTheDocument();
   });
 
